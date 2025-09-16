@@ -5,13 +5,13 @@ import { Button } from "@/components/ui/button";
 import { useSidebarStore } from "@/stores/sidebarStore";
 import Link from "next/link";
 
-import SideBarBottom from "./components/side-bar-bottom";
-import SideBarTop from "./components/side-bar-top";
+import SideBarBottom from "./sub-pages/side-bar-bottom";
+import SideBarTop from "./sub-pages/side-bar-top";
 const sidebarPages = [
   {
     label: "Generate Resume",
     icon: <FileText />,
-    path: "/dashboard/generate_resume/p1",
+    path: "/dashboard/generate-resume",
   },
   {
     label: "Roast My Resume",

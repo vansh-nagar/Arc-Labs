@@ -15,7 +15,7 @@ const SideBarTop = () => {
         {isSideBarOpen && (
           <div className="  font-semibold">
             <img
-              src="/arc-white.svg"
+              src="/logo/logo-name-light.svg"
               alt=""
               className="  w-20 mix-blend-difference "
             />
