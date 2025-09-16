@@ -36,12 +36,12 @@ const SideBarBottom = () => {
         {isSideBarOpen ? (isDark ? "Light Mode" : "Dark Mode") : ""}
       </Button>
       <Button
-        className=" l_gradient  mt-2   w-full   overflow-hidden border-2 relative  "
+        className=" l_gradient  mt-2   w-full   overflow-hidden border-2 relative cursor-pointer   "
         variant={"ghost"}
         size={"default"}
       >
         <Zap /> {isSideBarOpen ? "Upgrade" : ""}
-        {isSideBarOpen ? <Meteors number={20} className=" absolute " /> : null}
+        {isSideBarOpen ? <Meteors number={30} className=" absolute " /> : null}
       </Button>
     </div>
   );

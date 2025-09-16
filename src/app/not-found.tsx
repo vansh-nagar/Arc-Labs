@@ -1,9 +1,8 @@
 import React from "react";
 
-const NotFound = () => {
+const page = () => {
   return (
     <div className=" h-screen w-full flex  justify-center items-center">
-      {" "}
       <img
         src="https://i.pinimg.com/originals/c1/5d/79/c15d796a596caa398ab322c416cd6056.gif"
         alt=""
@@ -14,4 +13,4 @@ const NotFound = () => {
   );
 };
 
-export default NotFound;
+export default page;
