@@ -8,15 +8,16 @@ import { signIn } from "@/lib/auth";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+type dataType = {
+  email: string;
+  name: string;
+  password: string;
+};
 
 export default function LoginPage() {
-  const { register, handleSubmit } = useForm();
-  type FormData = {
-    email: string;
-    name: string;
-    password: string;
-  };
-  const onSubmit = (data: FormData) => {
+  const { register, handleSubmit } = useForm<dataType>();
+
+  const onSubmit = (data: dataType) => {
     axios
       .post("/api/auth/sign-up", data)
       .then((response) => {
