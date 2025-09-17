@@ -6,18 +6,32 @@ import { IconBrandGoogleFilled } from "@tabler/icons-react";
 import { signIn } from "@/lib/auth";
 
 import Link from "next/link";
+import { useForm } from "react-hook-form";
+import axios from "axios";
 
 export default function LoginPage() {
+  const { register, handleSubmit } = useForm();
+  type FormData = {
+    email: string;
+    name: string;
+    password: string;
+  };
+  const onSubmit = (data: FormData) => {
+    axios
+      .post("/api/auth/sign-up", data)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error("There was an error!", error);
+      });
+  };
   return (
     <section className="bg-linear-to-b from-muted to-background flex min-h-screen px-4 py-16 md:py-32 justify-center items-center ">
       <div>
         <Card className="overflow-hidden p-0">
           <CardContent className="grid p-0 md:grid-cols-2">
-            <form
-              onSubmit={() => {}}
-              action=""
-              className="max-w-92 m-auto h-fit w-full "
-            >
+            <div className="max-w-92 m-auto h-fit w-full ">
               <div className="p-6">
                 <div>
                   <img src="/logo/logo-light.svg" className="w-12" />
@@ -46,38 +60,51 @@ export default function LoginPage() {
                   <hr className="flex-grow border-t  border-dashed " />
                 </div>
 
-                <div className="space-y-6">
-                  <div className="space-y-2">
-                    <Input
-                      type="email"
-                      required
-                      id="email"
-                      placeholder="Your email"
-                      className={`ring-foreground/15 border-transparent ring-1 `}
-                    />
-                    <Input
-                      type="text"
-                      required
-                      id="username"
-                      placeholder="Your username"
-                      className={`ring-foreground/15 border-transparent ring-1 `}
-                    />
+                <form
+                  onSubmit={handleSubmit(onSubmit)}
+                  action=""
+                  className="max-w-92 m-auto h-fit w-full "
+                >
+                  <div className="space-y-6">
+                    <div className="space-y-2">
+                      <Input
+                        type="email"
+                        required
+                        id="email"
+                        placeholder="Your email"
+                        {...register("email")}
+                        className={`ring-foreground/15 border-transparent ring-1 `}
+                      />
+                      <Input
+                        type="text"
+                        required
+                        id="username"
+                        placeholder="Your username"
+                        {...register("name")}
+                        className={`ring-foreground/15 border-transparent ring-1 `}
+                      />
 
-                    <Input
-                      type="password"
-                      required
-                      id="password"
-                      placeholder="Your password"
-                      className={`
+                      <Input
+                        type="password"
+                        required
+                        id="password"
+                        {...register("password")}
+                        placeholder="Your password"
+                        className={`
                       
                        ring-foreground/15 border-transparent ring-1 `}
-                    />
-                  </div>
+                      />
+                    </div>
 
-                  <Button className="w-full cursor-pointer" size="default">
-                    Sign Up
-                  </Button>
-                </div>
+                    <Button
+                      type="submit"
+                      className="w-full cursor-pointer"
+                      size="default"
+                    >
+                      Sign Up
+                    </Button>
+                  </div>
+                </form>
               </div>
 
               <div className="px-6 mb-5">
@@ -88,7 +115,7 @@ export default function LoginPage() {
                   </Button>
                 </p>
               </div>
-            </form>
+            </div>
             <div className="bg-muted relative hidden md:block">
               <img
                 src="https://i.pinimg.com/736x/a7/70/cd/a770cd33fdd08ed309fb2ecf3a0af6d3.jpg"
