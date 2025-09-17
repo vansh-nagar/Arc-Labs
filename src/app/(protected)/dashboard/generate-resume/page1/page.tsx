@@ -11,8 +11,10 @@ const page = () => {
   return (
     <div
       className={`   ${
-        isSideBarOpen ? "ml-64 max-sm:ml-0" : "ml-14 max-sm:ml-0"
-      } mt-16 p-4   text-base transition-all duration-150 grid lg:grid-cols-2  flex-1 min-h-[calc(100vh-64px)]  `}
+        isSideBarOpen
+          ? "dashboard-content-sidebar-open"
+          : "dashboard-content-sidebar-close"
+      }   text-base transition-all duration-150 grid lg:grid-cols-2  flex-1  `}
     >
       <P1LeftSide />
       <P1RightSide />

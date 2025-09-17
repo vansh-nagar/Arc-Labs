@@ -51,6 +51,10 @@ model User {
   email         String?   @unique
   emailVerified DateTime? @map("email_verified")
   image         String?
+  password      String?
+
+  credits       Int       @default(0)
+
   accounts      Account[]
   sessions      Session[]
  
@@ -64,4 +68,16 @@ model VerificationToken {
  
   @@unique([identifier, token])
   @@map("verification_tokens")
+}
+
+
+model Projects {
+  id         String @id @default(cuid())
+  name       String
+  image      String?
+  latex      String @db.Text
+  // history    String[]
+  
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
 }

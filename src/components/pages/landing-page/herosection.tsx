@@ -24,12 +24,12 @@ const HeroSection = () => {
         <div className="  max-sm:gap-4 flex bg-background   gap-10 mt-11 border-y w-full   justify-center dark:bg-[repeating-linear-gradient(135deg,#1a1a1a_0px,#1a1a1a_1px,transparent_1px,transparent_8px)] bg-[repeating-linear-gradient(135deg,#e5e5e5_0px,#e5e5e5_1px,transparent_1px,transparent_8px)]">
           <Button
             asChild
-            className="border-accent max-sm:px-6 bg-indigo-500 text-white px-12"
+            className="border-accent max-sm:px-6 bg-indigo-500 text-white px-12  rounded-none"
           >
             <Link href="/dashboard">Get started</Link>
           </Button>
 
-          <Button className="   border-x px-12 max-sm:px-6  bg-background">
+          <Button className="   border-x px-12 max-sm:px-6  bg-background rounded-none">
             {" "}
             Learn more
           </Button>

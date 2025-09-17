@@ -156,3 +156,27 @@
 .bg-diagonal-grid {
   @apply dark:bg-[repeating-linear-gradient(135deg,#1a1a1a_0px,#1a1a1a_1px,transparent_1px,transparent_8px)] bg-[repeating-linear-gradient(135deg,#e5e5e5_0px,#e5e5e5_1px,transparent_1px,transparent_8px)];
 }
+
+.dashboard-content-sidebar-open {
+  margin-left: 16rem;
+  margin-top: 4rem;
+  padding: 1rem;
+  transition: all 0.1s;
+  min-height: calc(100vh - 64px);
+}
+.dashboard-content-sidebar-close {
+  margin-left: 3.5rem;
+  margin-top: 4rem;
+  padding: 0.75rem;
+  transition: all 0.1s;
+  min-height: calc(100vh - 64px);
+}
+
+@media (max-width: 640px) {
+  .dashboard-content-sidebar-open {
+    margin-left: 0rem;
+  }
+  .dashboard-content-sidebar-close {
+    margin-left: 0rem;
+  }
+}

@@ -116,7 +116,7 @@ const ManualForm = () => {
   };
 
   const content = (
-    <div className="flex flex-col gap-6 ml-4 max-sm:m-1 w-full">
+    <div className="flex flex-col gap-6 ml-4 max-sm:m-0 w-full">
       {/* Personal Information */}
       <form className="flex flex-col gap-2" title="Personal Information">
         <h1 className="text-xl truncate">Personal Information</h1>

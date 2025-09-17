@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { useSidebarStore } from "@/stores/sidebarStore";
-import { HomeIcon, PanelRight, PanelRightClose } from "lucide-react";
+import { HomeIcon, PanelRight, PanelRightClose, Router } from "lucide-react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import React from "react";
 
 const SideBarTop = () => {
   const { isSideBarOpen, setIsSideBarOpen } = useSidebarStore();
+  const router = useRouter();
   return (
     <>
       <div
@@ -37,18 +37,17 @@ const SideBarTop = () => {
       </div>
       <div className="mt-5 px-3">
         <Button
-          className={`w-full  ${
-            isSideBarOpen ? "justify-start" : " justify-center"
-          } `}
-          variant={"ghost"}
-          size={"default"}
+          className={`w-full ${
+            isSideBarOpen ? "justify-start" : "justify-center"
+          } cursor-pointer`}
+          variant="ghost"
+          size="default"
+          onClick={() => {
+            router.push("/dashboard");
+          }}
         >
-          <Link
-            href={"/dashboard"}
-            className=" flex justify-center items-center gap-2"
-          >
-            <HomeIcon /> {isSideBarOpen ? "Dashboard" : ""}
-          </Link>
+          <HomeIcon />
+          {isSideBarOpen && "Dashboard"}
         </Button>
       </div>
     </>
