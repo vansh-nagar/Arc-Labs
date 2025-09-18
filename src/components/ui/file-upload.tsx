@@ -207,7 +207,7 @@ export const FileUpload = ({
               className="mt-2"
               placeholder="Description"
             />
-            <Button type="submit" className="mt-2 w-full">
+            <Button type="submit" className="mt-2 w-full cursor-pointer">
               Submit
             </Button>
           </div>

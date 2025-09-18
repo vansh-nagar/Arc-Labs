@@ -97,16 +97,17 @@ const ManualForm = () => {
   }, []);
 
   const handleSubmit = () => {
+    const data = {
+      personalInfo,
+      skillArr,
+      educationArr,
+      workExperienceArr,
+      projectsArr,
+      certificationsArr,
+      jobTitle,
+    };
     axios
-      .post("/api/ask-ai-sdk/generate-manual", {
-        personalInfo,
-        skillArr,
-        educationArr,
-        workExperienceArr,
-        projectsArr,
-        certificationsArr,
-        jobTitle,
-      })
+      .post("/api/generate-latex/manual", data)
       .then((res: any) => {
         console.log(res);
       })
