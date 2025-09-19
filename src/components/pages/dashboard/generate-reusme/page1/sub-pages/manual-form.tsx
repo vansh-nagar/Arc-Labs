@@ -2,13 +2,16 @@ import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DatePickerDemo } from "@/components/ui/date-picker";
-import { Plus } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { id } from "date-fns/locale";
+import { toast } from "sonner";
 
 const ManualForm = () => {
   const [isSmall, setIsSmall] = useState(false);
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   const [personalInfo, setPersonalInfo] = useState({
     name: "",
@@ -97,6 +100,8 @@ const ManualForm = () => {
   }, []);
 
   const handleSubmit = () => {
+    if (isLoading) return;
+    setIsLoading(true);
     const data = {
       personalInfo,
       skillArr,
@@ -109,10 +114,17 @@ const ManualForm = () => {
     axios
       .post("/api/generate-latex/manual", data)
       .then((res: any) => {
-        console.log(res);
+        if (res.status === 200) {
+          toast.success("Data uploaded successfully! Redirecting...");
+          router.push("/dashboard/generate-resume/page2");
+        }
       })
       .catch((err: any) => {
-        console.error(err);
+        toast.error(err?.response?.data?.error || "Something went wrong!");
+        console.log(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -478,7 +490,7 @@ const ManualForm = () => {
       </div>
 
       <Button variant="default" onClick={handleSubmit}>
-        Upload
+        {isLoading ? <Loader2 className="animate-spin" /> : "Upload"}
       </Button>
 
       {/* Display Sections */}

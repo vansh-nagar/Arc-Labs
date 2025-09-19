@@ -8,6 +8,9 @@ import { Button } from "./button";
 import { Input } from "./input";
 import { Textarea } from "./textarea";
 import axios from "axios";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const mainVariant = {
   initial: {
@@ -42,7 +45,8 @@ export const FileUpload = ({
 }) => {
   const [files, setFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const { register, handleSubmit } = useForm<dataType>();
 
@@ -65,8 +69,11 @@ export const FileUpload = ({
   });
 
   const handleFormSubmit = (data: dataType) => {
+    if (isLoading) return;
+    setIsLoading(true);
     if (files.length === 0) {
-      setError("Please upload a file.");
+      toast.error("Please upload a file");
+      setIsLoading(false);
       return;
     }
 
@@ -77,8 +84,14 @@ export const FileUpload = ({
       .post("/api/generate-latex/pdf", formData, {
         headers: { "content-type": "multipart/form-data" },
       })
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+      .then((res) => {
+        if (res.status === 200) {
+          toast.success("File uploaded successfully Redirecting...");
+          router.push("/dashboard/generate-resume/page2");
+        }
+      })
+      .catch((err) => toast.error(err?.response?.data?.error || err.message))
+      .finally(() => setIsLoading(false));
   };
 
   return (
@@ -208,7 +221,7 @@ export const FileUpload = ({
               placeholder="Description"
             />
             <Button type="submit" className="mt-2 w-full cursor-pointer">
-              Submit
+              {isLoading ? <Loader2 className="animate-spin" /> : "Submit"}
             </Button>
           </div>
         </div>

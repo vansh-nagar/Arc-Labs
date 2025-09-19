@@ -17,7 +17,7 @@ export async function POST(
         const file = formData.get("file") as File;
         console.log(JSON.parse(data), file);
 
-        return NextResponse.json({ file });
+        return NextResponse.json({ file }, { status: 200 });
       } catch (err: any) {
         return NextResponse.json({ error: err.message }, { status: 500 });
       }
