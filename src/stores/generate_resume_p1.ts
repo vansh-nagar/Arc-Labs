@@ -10,26 +10,19 @@ export const optionsStore = create<optionstore>((set) => ({
   selectedOption: 0,
   setSelectedOption: (option: number) => set({ selectedOption: option }),
 }));
-interface generateResumeData {
-  file: File | null;
-  jobDescription: string;
-  setFile: (file: File | null) => void;
-  setJobDescription: (jobDescription: string) => void;
-  jobTitle: string;
-  setJobTitle: (jobTitle: string) => void;
-}
 
-export const generateResumeDataStore = create<generateResumeData>((set) => ({
-  file: null,
-  jobDescription: "",
-  jobTitle: "",
-  setJobDescription: (jobDescription: string) => {
-    set({ jobDescription });
-    console.log(jobDescription);
+export const generateResumeDataStore = create<any>((set) => ({
+  data: {
+    personalInfo: null,
+    skillArr: [],
+    educationArr: [],
+    workExperienceArr: [],
+    projectsArr: [],
+    certificationsArr: [],
+    jobTitle: null,
   },
-  setJobTitle: (jobTitle: string) => {
-    set({ jobTitle });
-    console.log(jobTitle);
+  setData: (data: any) => {
+    set({ data });
+    console.log("Setting data in store:", data);
   },
-  setFile: (file: File | null) => set({ file }),
 }));

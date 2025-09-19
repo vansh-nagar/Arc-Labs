@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
-import { generateText } from "ai";
+import { generateText, streamText } from "ai";
 import { groq } from "@ai-sdk/groq";
 
 export const runtime = "edge"; // or "nodejs" if you want Node
@@ -24,23 +24,31 @@ export async function POST(
     }
     case "manual": {
       try {
-        const data = await req.json();
-        const { text } = await generateText({
+        const { prompt } = await req.json();
+        console.log("Received prompt:", prompt);
+        if (!prompt) {
+          console.log("No prompt provided in the request body");
+          return NextResponse.json(
+            { error: "No prompt provided" },
+            { status: 400 }
+          );
+        }
+
+        const result = streamText({
           model: groq("openai/gpt-oss-120b"),
           prompt: [
             {
               role: "user",
-              content: `Using the information below, generate a complete HTML page with embedded CSS for a résumé in a clean, professional style. 
-              Output valid, semantic HTML and CSS that can be rendered directly in a browser and converted to PDF. 
-              Ensure all special characters are escaped properly. 
-              Include clearly marked sections for contact info, summary, skills, experience, education, and projects.
-
+              content: `Using the information below, generate a **resume in HTML** using Tailwind CSS classes. 
+              Include sections for contact info, summary, skills, experience, education, and projects. 
+              Output only the HTML inside a <div>...</div>. Do not include React JSX or special TSX syntax.
               Candidate Data:
-              ${JSON.stringify(data, null, 2)}`,
+              ${prompt}`,
             },
           ],
         });
-        return NextResponse.json({ text }, { status: 200 });
+
+        return result.toUIMessageStreamResponse();
       } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
       }

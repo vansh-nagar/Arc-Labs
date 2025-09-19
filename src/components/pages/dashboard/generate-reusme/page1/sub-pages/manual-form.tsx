@@ -4,9 +4,8 @@ import { Input } from "@/components/ui/input";
 import { DatePickerDemo } from "@/components/ui/date-picker";
 import { Loader2, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
-import { id } from "date-fns/locale";
 import { toast } from "sonner";
+import { generateResumeDataStore } from "@/stores/generate_resume_p1";
 
 const ManualForm = () => {
   const [isSmall, setIsSmall] = useState(false);
@@ -92,6 +91,8 @@ const ManualForm = () => {
     setState((prev: any) => ({ ...prev, [name]: date }));
   };
 
+  const { setData } = generateResumeDataStore();
+
   useEffect(() => {
     const check = () => setIsSmall(window.innerWidth < 620);
     check();
@@ -102,7 +103,8 @@ const ManualForm = () => {
   const handleSubmit = () => {
     if (isLoading) return;
     setIsLoading(true);
-    const data = {
+
+    setData({
       personalInfo,
       skillArr,
       educationArr,
@@ -110,22 +112,10 @@ const ManualForm = () => {
       projectsArr,
       certificationsArr,
       jobTitle,
-    };
-    axios
-      .post("/api/generate-latex/manual", data)
-      .then((res: any) => {
-        if (res.status === 200) {
-          toast.success("Data uploaded successfully! Redirecting...");
-          router.push("/dashboard/generate-resume/page2");
-        }
-      })
-      .catch((err: any) => {
-        toast.error(err?.response?.data?.error || "Something went wrong!");
-        console.log(err);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    });
+    toast.success("Data saved successfully!");
+    setIsLoading(false);
+    router.push("/dashboard/generate-resume/page2");
   };
 
   const content = (
