@@ -3,11 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { IconBrandGoogleFilled } from "@tabler/icons-react";
-import { signIn } from "@/lib/auth";
+import { signIn } from "next-auth/react";
 
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 type dataType = {
   email: string;
   name: string;
@@ -16,15 +20,27 @@ type dataType = {
 
 export default function LoginPage() {
   const { register, handleSubmit } = useForm<dataType>();
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = (data: dataType) => {
+    if (isLoading) return;
+
+    setIsLoading(true);
     axios
       .post("/api/auth/sign-up", data)
       .then((response) => {
-        console.log(response.data);
+        if (response.status === 200) {
+          toast.success(response.data.message);
+          router.push("/dashboard");
+        }
       })
       .catch((error) => {
-        console.error("There was an error!", error);
+        console.log(error);
+        toast.error(error.response.data.error);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
   return (
@@ -45,8 +61,16 @@ export default function LoginPage() {
                 </div>
                 <div className="mt-6 space-y-2">
                   <Button
-                    onClick={() => {
-                      signIn("google");
+                    onClick={async () => {
+                      try {
+                        const res = await signIn("google", {
+                          redirect: true,
+                          callbackUrl: "/dashboard",
+                        });
+                      } catch (error) {
+                        console.error(error);
+                        toast.error("Failed to sign in with Google");
+                      }
                     }}
                     className=" w-full flex cursor-pointer"
                   >
@@ -102,7 +126,11 @@ export default function LoginPage() {
                       className="w-full cursor-pointer"
                       size="default"
                     >
-                      Sign Up
+                      {isLoading ? (
+                        <Loader2 className="animate-spin" />
+                      ) : (
+                        "Sign Up"
+                      )}
                     </Button>
                   </div>
                 </form>

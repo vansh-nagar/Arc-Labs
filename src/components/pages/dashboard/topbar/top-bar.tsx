@@ -7,6 +7,8 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@radix-ui/react-hover-card";
+import { Button } from "@/components/ui/button";
+import { signOut } from "next-auth/react";
 
 const Top_bar = () => {
   const { isSideBarOpen, setIsSideBarOpen } = useSidebarStore();
@@ -55,7 +57,14 @@ const Top_bar = () => {
           <div className="flex flex-col min-w-80 px-2 pb-2 ">
             <div className="flex items-center text-sm hover:bg-accent py-2 px-3 gap-2 rounded-md shadow-inner  hover:shadow-md transition-all duration-150">
               <PanelRight size={16} className="text-neutral-500" />
-              Button no 1
+              <Button
+                variant="ghost"
+                size={"sm"}
+                className="w-full text-left"
+                onClick={() => signOut()}
+              >
+                Sign out
+              </Button>
             </div>
           </div>
         </HoverCardContent>

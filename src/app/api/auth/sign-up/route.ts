@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
 
     if (user) {
       return NextResponse.json(
-        { error: "User already exists please sign in`" },
+        { error: "User already exists please sign in" },
         { status: 400 }
       );
     }
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(
       { message: "User created successfully" },
-      { status: 201 }
+      { status: 200 }
     );
   } catch (error) {
     return NextResponse.json(

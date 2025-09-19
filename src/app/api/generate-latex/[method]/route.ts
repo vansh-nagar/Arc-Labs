@@ -2,8 +2,6 @@ import { NextResponse, NextRequest } from "next/server";
 import { generateText } from "ai";
 import { groq } from "@ai-sdk/groq";
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
-
 export const runtime = "edge"; // or "nodejs" if you want Node
 
 export async function POST(
@@ -32,10 +30,10 @@ export async function POST(
           prompt: [
             {
               role: "user",
-              content: `Using the information below, generate a complete LaTeX résumé in a clean, professional style. 
-              Output valid LaTeX code that can be compiled directly to PDF. 
-              Ensure all special characters are escaped properly.
-              Include sections for contact info, summary, skills, experience, education, and projects.
+              content: `Using the information below, generate a complete HTML page with embedded CSS for a résumé in a clean, professional style. 
+              Output valid, semantic HTML and CSS that can be rendered directly in a browser and converted to PDF. 
+              Ensure all special characters are escaped properly. 
+              Include clearly marked sections for contact info, summary, skills, experience, education, and projects.
 
               Candidate Data:
               ${JSON.stringify(data, null, 2)}`,

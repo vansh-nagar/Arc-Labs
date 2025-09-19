@@ -3,28 +3,42 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { IconBrandGoogleFilled } from "@tabler/icons-react";
-import { signIn } from "next-auth/react";
+import { signIn, SignInResponse } from "next-auth/react";
 import { useForm } from "react-hook-form";
 
 import Link from "next/link";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
 export default function LoginPage() {
   type FormData = {
     email: string;
     password: string;
   };
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>();
+  const { register, handleSubmit } = useForm<FormData>();
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const onSubmit = (data: FormData) => {
-    signIn("credentials", {
+  const onSubmit = async (data: FormData) => {
+    if (isLoading) return;
+    setIsLoading(true);
+    const res = await signIn("credentials", {
       email: data.email,
       password: data.password,
-      callbackUrl: "/dashboard",
+      redirect: false,
     });
+
+    if (res && res.ok) {
+      toast.success("Logged in successfully!");
+      router.push("/dashboard");
+    }
+    if (res && !res.ok) {
+      toast.error("Invalid credentials");
+    }
+
+    setIsLoading(false);
   };
 
   return (
@@ -48,7 +62,12 @@ export default function LoginPage() {
                 </div>
                 <div className="mt-6 space-y-2">
                   <Button
-                    onClick={() => signIn("google")}
+                    onClick={() =>
+                      signIn("google", {
+                        redirect: true,
+                        callbackUrl: "/dashboard",
+                      })
+                    }
                     className=" w-full flex cursor-pointer"
                   >
                     <IconBrandGoogleFilled /> Google
@@ -74,7 +93,7 @@ export default function LoginPage() {
                         required
                         id="email"
                         placeholder="Your email"
-                        {...register("email", { required: true })}
+                        {...register("email", { required: false })}
                         className={`ring-foreground/15 border-transparent ring-1 `}
                       />
 
@@ -91,7 +110,11 @@ export default function LoginPage() {
                     </div>
 
                     <Button className="w-full cursor-pointer" size="default">
-                      Sign In
+                      {isLoading ? (
+                        <Loader2 className="animate-spin" />
+                      ) : (
+                        "Sign In"
+                      )}
                     </Button>
                   </div>
                 </form>

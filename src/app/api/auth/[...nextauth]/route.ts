@@ -38,7 +38,7 @@ const handler = NextAuth({
           },
         });
 
-        if (!user) return null;
+        if (!user) throw new Error("No user found");
 
         const isValid = await bcrypt.compare(
           credentials!.password,
@@ -56,13 +56,17 @@ const handler = NextAuth({
           };
         } else {
           // If you return null then an error will be displayed advising the user to check their details.
-          return null;
+          throw new Error("Invalid credentials");
 
           // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
         }
       },
     }),
   ],
+  session: {
+    strategy: "jwt",
+  },
+  secret: process.env.NEXTAUTH_SECRET,
 });
 
 export { handler as GET, handler as POST };
