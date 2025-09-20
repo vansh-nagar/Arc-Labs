@@ -12,8 +12,29 @@ import {
   useHTMLEditorStore,
 } from "@/stores/generate_resume_p1";
 import { Button } from "@/components/ui/button";
-import { Code } from "lucide-react";
+import { Code, Loader2, MessageSquare } from "lucide-react";
 import CodeEditor from "@/components/pages/dashboard/generate-reusme/page2/editor";
+import UILoading from "@/components/ui/uiloading";
+import { toast } from "sonner";
+import { useChat } from "@ai-sdk/react";
+import { DefaultChatTransport } from "ai";
+import {
+  PromptInput,
+  PromptInputAttachment,
+  PromptInputAttachments,
+  PromptInputBody,
+  PromptInputSubmit,
+  PromptInputTextarea,
+  PromptInputToolbar,
+} from "@/components/ai-elements/prompt-input";
+
+import {
+  Conversation,
+  ConversationContent,
+  ConversationEmptyState,
+  ConversationScrollButton,
+} from "@/components/ai-elements/conversation";
+import { Message, MessageContent } from "@/components/ai-elements/message";
 
 const page = () => {
   const { isSideBarOpen } = useSidebarStore();
@@ -21,6 +42,8 @@ const page = () => {
   const [loading, setIsLoading] = useState(false);
   const resumeRef = useRef<HTMLDivElement>(null);
   const [showCode, setShowCode] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [chatPrompt, setChatPrompt] = useState("");
   const {
     personalInfo,
     skillArr,
@@ -31,6 +54,12 @@ const page = () => {
     jobTitle,
   } = data;
 
+  const { messages, sendMessage, status } = useChat({
+    transport: new DefaultChatTransport({
+      api: "/api/generate-html/look-up-calls",
+    }),
+  });
+
   const { htmlContent, setHtmlContent } = useHTMLEditorStore();
 
   const { completion, error, complete, isLoading } = useCompletion({
@@ -38,6 +67,7 @@ const page = () => {
   });
 
   useEffect(() => {
+    return;
     if (loading) return;
     setIsLoading(true);
 
@@ -61,17 +91,21 @@ const page = () => {
   }, [completion]);
 
   const downloadPDF = async () => {
-    if (!resumeRef.current) return;
+    if (!resumeRef.current) {
+      toast.error("Resume content is not available to download.");
+      return;
+    }
+    setIsDownloading(true);
 
     const html = `
-<html>
-  <head>
-    <meta charset="utf-8">
-  </head>
-  <body>
-    ${resumeRef.current.innerHTML}
-  </body>
-</html>`;
+              <html>
+                <head>
+                  <meta charset="utf-8">
+                </head>
+                <body>
+                  ${resumeRef.current.innerHTML}
+                </body>
+              </html>`;
 
     console.log(html);
 
@@ -90,6 +124,7 @@ const page = () => {
     a.download = "resume.pdf";
     a.click();
     URL.revokeObjectURL(url);
+    setIsDownloading(false);
   };
 
   return (
@@ -103,9 +138,50 @@ const page = () => {
       <ResizablePanelGroup direction="horizontal" className="h-full w-full">
         <ResizablePanel
           defaultSize={25}
-          className="h-full rounded-md border  mr-3"
+          className="h-full rounded-md   mr-3 p-4 relative"
         >
-          One
+          <Conversation className="relative w-full" style={{ height: "100%" }}>
+            <ConversationContent>
+              {messages.length === 0 ? (
+                <ConversationEmptyState
+                  icon={<MessageSquare className="size-12" />}
+                  title="No messages yet"
+                  description="Start a conversation to see messages here"
+                />
+              ) : (
+                messages.map((message) => (
+                  <Message from={message.from} key={message.id}>
+                    <MessageContent>{message.content}</MessageContent>
+                  </Message>
+                ))
+              )}
+            </ConversationContent>
+            <ConversationScrollButton />
+          </Conversation>
+          <PromptInput
+            onSubmit={(e) => {
+              if (chatPrompt.trim()) {
+                sendMessage({ text: chatPrompt });
+                setChatPrompt("");
+              }
+            }}
+            className="mt-4  absolute bottom-0 left-0 right-0 "
+          >
+            <PromptInputBody>
+              <PromptInputAttachments>
+                {(attachment) => <PromptInputAttachment data={attachment} />}
+              </PromptInputAttachments>
+              <PromptInputTextarea
+                onChange={(e) => {
+                  setChatPrompt(e.target.value);
+                }}
+                value={chatPrompt}
+              />
+            </PromptInputBody>
+            <PromptInputToolbar>
+              <PromptInputSubmit disabled={false} status={"ready"} />
+            </PromptInputToolbar>
+          </PromptInput>
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={75} className="h-full ">
@@ -119,55 +195,43 @@ const page = () => {
             >
               <Code />
             </Button>
-            <Button onClick={downloadPDF} className="mb-3">
-              Download PDF
+            <Button
+              onClick={() => {
+                if (isDownloading) return;
+                downloadPDF();
+              }}
+              className="mb-3"
+            >
+              {isDownloading ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                "Download PDF"
+              )}
             </Button>
           </div>
           {showCode ? (
             <div className=" overflow-y-auto border ml-3 rounded-md p-4">
-              {" "}
               <CodeEditor code={htmlContent} onChange={setHtmlContent} />
             </div>
           ) : (
             <>
-              {" "}
               {error && (
                 <div className=" overflow-y-auto border ml-3 rounded-md p-4">
                   Error: {error.message}
                 </div>
               )}
-              {completion && (
+              {completion ? (
                 <div className="ml-4 h-full border rounded-md  overflow-y-auto">
                   <div
                     ref={resumeRef}
                     className="h-full overflow-auto rounded-md "
-                    dangerouslySetInnerHTML={{ __html:  htmlContent|| completion }}
+                    dangerouslySetInnerHTML={{
+                      __html: htmlContent || completion,
+                    }}
                   ></div>
                 </div>
-              )}
-              {!completion && (
-                <div className="ml-3 h-full border rounded-md p-6">
-                  <div className="animate-pulse">
-                    <div className="h-10 bg-gray-200 rounded-md w-1/3 mb-6"></div>
-                    <div className="h-4 bg-gray-200 rounded-md w-2/3 mb-4"></div>
-                    <div className="h-4 bg-gray-200 rounded-md w-1/2 mb-8"></div>
-
-                    <div className="h-6 bg-gray-200 rounded-md w-1/4 mb-4"></div>
-                    <div className="h-4 bg-gray-200 rounded-md w-full mb-2"></div>
-                    <div className="h-4 bg-gray-200 rounded-md w-full mb-2"></div>
-                    <div className="h-4 bg-gray-200 rounded-md w-3/4 mb-6"></div>
-
-                    <div className="h-6 bg-gray-200 rounded-md w-1/4 mb-4"></div>
-                    <div className="h-4 bg-gray-200 rounded-md w-full mb-2"></div>
-                    <div className="h-4 bg-gray-200 rounded-md w-full mb-2"></div>
-                    <div className="h-4 bg-gray-200 rounded-md w-2/3 mb-6"></div>
-
-                    <div className="h-6 bg-gray-200 rounded-md w-1/4 mb-4"></div>
-                    <div className="h-4 bg-gray-200 rounded-md w-full mb-2"></div>
-                    <div className="h-4 bg-gray-200 rounded-md w-full mb-2"></div>
-                    <div className="h-4 bg-gray-200 rounded-md w-4/5 mb-2"></div>
-                  </div>
-                </div>
+              ) : (
+                <UILoading />
               )}
             </>
           )}
