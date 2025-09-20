@@ -1,4 +1,3 @@
-import { file } from "zod";
 import { create } from "zustand";
 
 interface optionstore {
@@ -25,4 +24,9 @@ export const generateResumeDataStore = create<any>((set) => ({
     set({ data });
     console.log("Setting data in store:", data);
   },
+}));
+
+export const useHTMLEditorStore = create<any>((set) => ({
+  htmlContent: "",
+  setHtmlContent: (html: string) => set({ htmlContent: html }),
 }));
