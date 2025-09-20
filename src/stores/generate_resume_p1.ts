@@ -22,7 +22,6 @@ export const generateResumeDataStore = create<any>((set) => ({
   },
   setData: (data: any) => {
     set({ data });
-    console.log("Setting data in store:", data);
   },
 }));
 

@@ -20,8 +20,6 @@ import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import {
   PromptInput,
-  PromptInputAttachment,
-  PromptInputAttachments,
   PromptInputBody,
   PromptInputSubmit,
   PromptInputTextarea,
@@ -35,26 +33,20 @@ import {
   ConversationScrollButton,
 } from "@/components/ai-elements/conversation";
 import { Message, MessageContent } from "@/components/ai-elements/message";
+import axios from "axios";
+import { useSession } from "next-auth/react";
 
 const page = () => {
   const { isSideBarOpen } = useSidebarStore();
-  const data = generateResumeDataStore();
-  const [loading, setIsLoading] = useState(false);
+  const apiIsCalled = useRef(false);
   const resumeRef = useRef<HTMLDivElement>(null);
   const [showCode, setShowCode] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [chatPrompt, setChatPrompt] = useState("");
-  const {
-    personalInfo,
-    skillArr,
-    educationArr,
-    workExperienceArr,
-    projectsArr,
-    certificationsArr,
-    jobTitle,
-  } = data;
+  const data = generateResumeDataStore();
+  const { data: session, status } = useSession();
 
-  const { messages, sendMessage, status } = useChat({
+  const { messages, sendMessage } = useChat({
     transport: new DefaultChatTransport({
       api: "/api/generate-html/look-up-calls",
     }),
@@ -67,24 +59,29 @@ const page = () => {
   });
 
   useEffect(() => {
-    return;
-    if (loading) return;
-    setIsLoading(true);
+    if (status === "loading") return;
+    if (apiIsCalled.current) return;
+    console.log("Generating resume with data:", data);
+    apiIsCalled.current = true;
 
-    const prompt = {
-      personalInfo,
-      skillArr,
-      educationArr,
-      workExperienceArr,
-      projectsArr,
-      certificationsArr,
-      jobTitle,
-    };
-
-    complete(JSON.stringify(prompt)).then(() => {
-      setIsLoading(false);
+    complete(JSON.stringify(data)).then(() => {
+      apiIsCalled.current = false;
+      console.log("Resume generation completed", resumeRef.current?.innerHTML);
+      axios
+        .post("/api/generate-html/save-to-db", {
+          htmlContent: resumeRef.current?.innerHTML,
+          email: session?.user?.email,
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            toast.success(res.data.message || "Resume saved successfully.");
+          }
+        })
+        .catch((err) => {
+          toast.error(err?.response?.data?.error || "Failed to save resume.");
+        });
     });
-  }, []);
+  }, [status]);
 
   useEffect(() => {
     setHtmlContent(completion || "");
@@ -138,9 +135,9 @@ const page = () => {
       <ResizablePanelGroup direction="horizontal" className="h-full w-full">
         <ResizablePanel
           defaultSize={25}
-          className="h-full rounded-md   mr-3 p-4 relative"
+          className="h-full rounded-md   flex justify-between flex-col  mr-3 p-4 "
         >
-          <Conversation className="relative w-full" style={{ height: "100%" }}>
+          <Conversation className=" w-full" style={{ height: "100%" }}>
             <ConversationContent>
               {messages.length === 0 ? (
                 <ConversationEmptyState
@@ -150,8 +147,12 @@ const page = () => {
                 />
               ) : (
                 messages.map((message) => (
-                  <Message from={message.from} key={message.id}>
-                    <MessageContent>{message.content}</MessageContent>
+                  <Message from={message.role} key={message.id}>
+                    <MessageContent>
+                      {" "}
+                      {message.parts.find((part) => part.type === "text")
+                        ?.text || ""}
+                    </MessageContent>
                   </Message>
                 ))
               )}
@@ -161,16 +162,14 @@ const page = () => {
           <PromptInput
             onSubmit={(e) => {
               if (chatPrompt.trim()) {
-                sendMessage({ text: chatPrompt });
+                sendMessage({
+                  text: chatPrompt,
+                });
                 setChatPrompt("");
               }
             }}
-            className="mt-4  absolute bottom-0 left-0 right-0 "
           >
             <PromptInputBody>
-              <PromptInputAttachments>
-                {(attachment) => <PromptInputAttachment data={attachment} />}
-              </PromptInputAttachments>
               <PromptInputTextarea
                 onChange={(e) => {
                   setChatPrompt(e.target.value);
@@ -178,7 +177,7 @@ const page = () => {
                 value={chatPrompt}
               />
             </PromptInputBody>
-            <PromptInputToolbar>
+            <PromptInputToolbar className=" flex items-end justify-end">
               <PromptInputSubmit disabled={false} status={"ready"} />
             </PromptInputToolbar>
           </PromptInput>
@@ -210,7 +209,7 @@ const page = () => {
             </Button>
           </div>
           {showCode ? (
-            <div className=" overflow-y-auto border ml-3 rounded-md p-4">
+            <div className=" h-full border ml-3 rounded-md p-4  ">
               <CodeEditor code={htmlContent} onChange={setHtmlContent} />
             </div>
           ) : (

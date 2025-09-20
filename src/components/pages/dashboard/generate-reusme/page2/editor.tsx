@@ -30,9 +30,7 @@ export default function CodeEditor({
   };
 
   return (
-    <div
-      style={{ border: "1px solid #ddd", borderRadius: "8px", height: "500px" }}
-    >
+    <div className="h-full rounded-md">
       <Editor
         height="100%"
         defaultLanguage={language}

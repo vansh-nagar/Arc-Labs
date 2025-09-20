@@ -7,12 +7,12 @@ import React from "react";
 
 const sidebarPages = [
   {
-    label: "Generate Resume",
+    label: "Notifications",
     icon: <BellDot />,
     path: "/dashboard/generate-resume/page1",
   },
   {
-    label: "Roast My Resume",
+    label: "Settings",
     icon: <Settings />,
     path: "/dashboard/roast-resume",
   },
@@ -23,19 +23,6 @@ const SideBarBottom = () => {
   const { isDark, toggleTheme } = useThemeToggle();
   return (
     <div className=" mb-3 px-3 w-full   absolute bottom-0  flex flex-col gap-1  ">
-      {sidebarPages.map((page) => (
-        <Button
-          key={page.label}
-          className={`w-full ${
-            isSideBarOpen ? "justify-start" : "justify-center"
-          } cursor-pointer`}
-          variant={"ghost"}
-          size={"default"}
-        >
-          {page.icon} {isSideBarOpen ? page.label : ""}
-        </Button>
-      ))}
-
       <Button
         className={`w-full ${
           isSideBarOpen ? "justify-start" : "justify-center"
@@ -49,6 +36,19 @@ const SideBarBottom = () => {
         {isDark ? <Sun /> : <Moon />}
         {isSideBarOpen ? (isDark ? "Light Mode" : "Dark Mode") : ""}
       </Button>
+      {sidebarPages.map((page) => (
+        <Button
+          key={page.label}
+          className={`w-full ${
+            isSideBarOpen ? "justify-start" : "justify-center"
+          } cursor-pointer`}
+          variant={"ghost"}
+          size={"default"}
+        >
+          {page.icon} {isSideBarOpen ? page.label : ""}
+        </Button>
+      ))}
+
       <Button
         className=" l_gradient  mt-2   w-full   overflow-hidden border-2 relative cursor-pointer   "
         variant={"ghost"}

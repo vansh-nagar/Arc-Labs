@@ -1,6 +1,7 @@
 import { NextResponse, NextRequest } from "next/server";
 import { generateText, streamText } from "ai";
 import { groq } from "@ai-sdk/groq";
+import { prisma } from "@/lib/prisma";
 
 export const runtime = "edge"; // or "nodejs" if you want Node
 
@@ -8,7 +9,7 @@ export async function POST(
   req: NextRequest,
   { params }: { params: { method: string } }
 ) {
-  const { method } = await params;
+  const { method } = params;
   switch (method) {
     case "pdf": {
       try {
@@ -40,47 +41,63 @@ export async function POST(
             {
               role: "user",
               content: `Using the information below, generate a **resume in plain HTML** with **all CSS inlined** using style attributes. 
-Include sections for contact info, summary, skills, experience, education, and projects. 
-Do not include class names, React JSX, or TSX syntax. Use only standard HTML tags with inline style attributes. Do not wrap the output in markdown or any code blocks.
+Make the layout **clean, professional, and compact** like a modern corporate resume. 
+Use subtle colors for section headers (#333 for main text, #555 for subtext), a sans-serif font, slightly smaller font sizes, and balanced spacing.  
+
+When writing sections, make them **descriptive and achievement-focused**:
+- For Experience: use action verbs, quantify achievements where possible, mention technologies used.
+- For Projects: explain purpose, features, technologies, and impact.
+- For Skills: highlight proficiency or level.
+- For Summary: write a 2–3 sentence professional summary that highlights strengths, experience, and goals.
+
+Include these sections if data exists: Contact Info, Summary, Skills, Experience, Education, Projects. 
+Use only standard HTML tags with inline style attributes. 
+Do not use class names, React JSX, or TSX syntax. 
+Do not wrap the output in markdown or code blocks. 
+Do not add shadows or rounded corners.  
+
+**Important for editing later:**
+- Wrap each section in identifiable HTML comments so it can be targeted individually:
+  <!-- SECTION: HEADER -->
+  <!-- SECTION: SUMMARY -->
+  <!-- SECTION: SKILLS -->
+  <!-- SECTION: EXPERIENCE -->
+  <!-- SECTION: EDUCATION -->
+  <!-- SECTION: PROJECTS -->
+- Make each section descriptive and achievement-oriented, using metrics, technologies, and outcomes wherever applicable.
 
 Candidate Data:
 ${prompt}
 
-Template for reference (ignore classes, just follow the structure and styling):
-<div style="max-width: 768px; margin: 2rem auto; background-color: #fff; padding: 2rem; font-family: sans-serif;">
-  <!-- Header -->
-  <div style="margin-bottom: 1.5rem;">
-    <h1 style="font-size: 2.25rem; font-weight: 700; text-transform: uppercase;">
-      John <span style="font-weight: 300;">Doe</span>
-    </h1>
-    <div style="color: #6b7280; margin-top: 0.5rem;">
+Template reference for styling and structure (ignore classes):
+<div style="max-width:700px; margin:1.5rem auto; background-color:#fff; padding:1.5rem; font-family:Arial,sans-serif; font-size:14px; line-height:1.5; color:#333;">
+  <!-- SECTION: HEADER -->
+  <div style="margin-bottom:1rem; border-bottom:1px solid #ccc; padding-bottom:0.5rem;">
+    <h1 style="font-size:1.75rem; font-weight:700; margin:0;">John <span style="font-weight:400;">Doe</span></h1>
+    <div style="color:#555; font-size:13px; margin-top:0.25rem;">
       <span>Email:</span> john.doe@gmail.com 
-      <span style="margin: 0 0.5rem; border-left: 1px solid #9ca3af; height: 1rem; display: inline-block;"></span>
+      <span style="margin:0 0.5rem; border-left:1px solid #999; height:0.75rem; display:inline-block;"></span>
       <span>Phone:</span> 111-222-3333
     </div>
-    <p style="margin-top: 1rem;">
-      <span style="font-weight: 600; text-decoration: underline;">Front-End Developer</span> –  
-      I am a front-end developer with 3+ years of experience writing HTML, CSS and JS.
+    <p style="margin-top:0.5rem; font-size:13px;">
+      <span style="font-weight:600;">Front-End Developer</span> – Creative and detail-oriented developer with 4+ years’ experience building responsive, user-friendly websites and web apps.
     </p>
   </div>
-  
-  <!-- Experience -->
-  <!-- Add experience entries here, each with inline styles similar to the header -->
 
-  <!-- Education -->
-  <!-- Add education entries here, each with inline styles -->
+  <!-- SECTION: EXPERIENCE -->
+  <!-- Add experience entries here, each with inline styles similar to the header, making them descriptive and achievement-focused -->
 
-  <!-- Projects -->
-  <!-- Add projects entries here, each with inline styles -->
+  <!-- SECTION: EDUCATION -->
+  <!-- Add education entries here with inline styles, include degree, institution, dates, and notable achievements -->
 
-  <!-- Skills -->
-  <!-- Add skills entries here, each with inline styles -->
+  <!-- SECTION: PROJECTS -->
+  <!-- Add projects entries here with inline styles, describing purpose, technologies, and impact -->
 
-  <!-- Interests -->
-  <!-- Add interests entries here, each with inline styles -->
+  <!-- SECTION: SKILLS -->
+  <!-- Add skills entries here with inline styles, highlight proficiency or level -->
 </div>
 
-Output only the final HTML with all styles inlined in style attributes. No shadows, no border-radius, no class names, and do not use markdown or code blocks.`,
+              Output only the final HTML with all styles inlined in style attributes. Wrap each section with the HTML comments as specified so that sections can be individually edited later.`,
             },
           ],
         });

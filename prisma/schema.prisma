@@ -57,6 +57,7 @@ model User {
 
   accounts      Account[]
   sessions      Session[]
+  projects      Projects[]
  
   @@map("users")
 }
@@ -75,8 +76,11 @@ model Projects {
   id         String @id @default(cuid())
   name       String
   image      String?
-  latex      String @db.Text
-  // history    String[]
+  html       String @db.Text
+  
+
+  userId     String
+  user       User    @relation(fields: [userId]  , references: [id], onDelete: Cascade)
   
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
