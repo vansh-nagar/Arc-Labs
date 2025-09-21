@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -7,6 +7,8 @@ import { Plus } from "lucide-react";
 
 import { useSidebarStore } from "@/stores/sidebarStore";
 import { Skeleton } from "@/components/ui/skeleton";
+import Link from "next/link";
+import { toast } from "sonner";
 
 type Project = {
   id: string;
@@ -22,14 +24,26 @@ const page = () => {
   const { data: session, status } = useSession();
   const [projects, setProjects] = useState<Project[]>([]);
   const router = useRouter();
+  const calledGetProjects = useRef(false);
 
   useEffect(() => {
     if (status !== "authenticated") return;
+    if (calledGetProjects.current) return;
+    calledGetProjects.current = true;
 
     const email = session?.user?.email;
-    axios.post("/api/dashboard/get-user-projects", { email }).then((res) => {
-      setProjects(res.data.projects);
-    });
+    axios
+      .post("/api/dashboard/get-user-projects", { email })
+      .then((res) => {
+        setProjects(res.data.projects);
+        toast.success(res.data.message);
+      })
+      .catch((err) => {
+        toast.error(err.response?.data?.error || "Something went wrong");
+      })
+      .finally(() => {
+        calledGetProjects.current = false;
+      });
   }, [status]);
 
   return (
@@ -44,19 +58,16 @@ const page = () => {
         {projects.length > 0 ? (
           projects.map((project) => (
             <div key={project.id} className="flex flex-col items-center gap-2">
-              <div
-                onClick={() => {
-                  router.push(`/dashboard/generate-resume/page2/${project.id}`);
-                }}
-                className="border-2 h-60 w-60 rounded-md cursor-pointer overflow-hidden relative"
-              >
-                <div className="h-full w-full relative">
-                  <img
-                    className=" h-full w-full"
-                    src="https://i.pinimg.com/originals/8e/6f/64/8e6f64217df3d96711e200bf1432fceb.gif"
-                  />
+              <Link href={`/dashboard/generate-resume/page2/${project.id}`}>
+                <div className="border-2 h-60 w-60 rounded-md cursor-pointer overflow-hidden relative">
+                  <div className="h-full w-full relative">
+                    <img
+                      className=" h-full w-full"
+                      src="https://i.pinimg.com/originals/8e/6f/64/8e6f64217df3d96711e200bf1432fceb.gif"
+                    />
+                  </div>
                 </div>
-              </div>
+              </Link>
               <div>
                 <div>{project.name}</div>
               </div>
@@ -75,14 +86,11 @@ const page = () => {
           </>
         )}
 
-        <div
-          onClick={() => {
-            router.push("/dashboard/generate-resume/page1");
-          }}
-          className="border-2 border-dashed h-60 w-60 rounded-md cursor-pointer overflow-hidden relative flex justify-center items-center"
-        >
-          <Plus size={40} className="text-muted-foreground" />{" "}
-        </div>
+        <Link href={"/dashboard/generate-resume/page1"}>
+          <div className="border-2 border-dashed h-60 w-60 rounded-md cursor-pointer overflow-hidden relative flex justify-center items-center">
+            <Plus size={40} className="text-muted-foreground" />{" "}
+          </div>
+        </Link>
       </div>
     </div>
   );

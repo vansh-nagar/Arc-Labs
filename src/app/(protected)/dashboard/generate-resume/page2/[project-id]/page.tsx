@@ -12,7 +12,7 @@ import {
   useHTMLEditorStore,
 } from "@/stores/generate_resume_p1";
 import { Button } from "@/components/ui/button";
-import { Code, Eye, EyeIcon, Loader2, MessageSquare, View } from "lucide-react";
+import { Code, Eye, Loader2, MessageSquare } from "lucide-react";
 import CodeEditor from "@/components/pages/dashboard/generate-reusme/page2/editor";
 import UILoading from "@/components/ui/uiloading";
 import { toast } from "sonner";
@@ -54,6 +54,11 @@ const page = ({ params }: PageProps) => {
   const [isSavingToDb, setIsSavingToDb] = useState(false);
   const [Count, setCount] = useState(0);
 
+  const updateFunctionCalled = useRef(false);
+
+  const resolvedParams = React.use(params);
+  const projectId = resolvedParams["project-id"];
+
   const { messages, sendMessage } = useChat({
     transport: new DefaultChatTransport({
       api: "/api/generate-html/look-up-calls",
@@ -67,8 +72,9 @@ const page = ({ params }: PageProps) => {
   });
 
   useEffect(() => {
-    if (params["project-id"] === "new") return;
-    const projectId = params["project-id"];
+    if (projectId === "new") return;
+    if (updateFunctionCalled.current) return;
+    updateFunctionCalled.current = true;
 
     axios
       .post("/api/generate-html/update-project-view", { projectId })
@@ -86,11 +92,14 @@ const page = ({ params }: PageProps) => {
         toast.error(
           err?.response?.data?.error || "Failed to fetch project data."
         );
+      })
+      .finally(() => {
+        updateFunctionCalled.current = false;
       });
   }, []);
 
   useEffect(() => {
-    if (params["project-id"] !== "new") return;
+    if (projectId !== "new") return;
     if (status === "loading") return;
     if (apiIsCalled.current) return;
     console.log("Generating resume with data:", data);
@@ -159,11 +168,10 @@ const page = ({ params }: PageProps) => {
   const handleSaveProgress = async () => {
     if (isSavingToDb) return;
     setIsSavingToDb(true);
-    const projectId = params["project-id"];
 
     axios
       .post("/api/generate-html/update-project-html", {
-        htmlContent: resumeRef.current?.innerHTML,
+        htmlContent,
         projectId,
       })
       .then((res) => {
@@ -254,7 +262,6 @@ const page = ({ params }: PageProps) => {
               <Button
                 onClick={() => {
                   if (isSavingToDb) return;
-                  setShowCode(false);
 
                   handleSaveProgress();
                 }}

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { redis } from "@/lib/redis";
 
 export async function POST(req: NextRequest) {
   try {
@@ -7,6 +8,17 @@ export async function POST(req: NextRequest) {
 
     if (!email)
       return NextResponse.json({ error: "Missing email" }, { status: 400 });
+
+    const cachedProjects = await redis.get(`user:${email}:projects`);
+    if (cachedProjects) {
+      return NextResponse.json(
+        {
+          message: "Projects fetched from cache",
+          projects: JSON.parse(cachedProjects),
+        },
+        { status: 200 }
+      );
+    }
 
     const foundUser = await prisma.user.findUnique({
       where: {
@@ -17,13 +29,24 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    if (!foundUser) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
     const userProjects = await prisma.projects.findMany({
       where: {
         userId: foundUser?.id,
       },
     });
 
-    return NextResponse.json({ projects: userProjects }, { status: 200 });
+    if (!userProjects) {
+      return NextResponse.json({ error: "No projects found" }, { status: 404 });
+    }
+
+    return NextResponse.json(
+      { message: "Projects fetched successfully", projects: userProjects },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error fetching user projects:", error);
     return NextResponse.json(
