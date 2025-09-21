@@ -278,7 +278,7 @@ const page = ({ params }: PageProps) => {
           className="h-full rounded-md   flex justify-between flex-col  mr-3  "
         >
           <Conversation className=" w-full" style={{ height: "100%" }}>
-            <ConversationContent>
+            <ConversationContent className="p-0">
               {messages.length === 0 ? (
                 <ConversationEmptyState
                   icon={<MessageSquare className="size-12" />}
