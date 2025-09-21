@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import { redis } from "@/lib/redis";
 
 export async function POST(req: NextRequest) {
   try {
@@ -8,17 +7,6 @@ export async function POST(req: NextRequest) {
 
     if (!email)
       return NextResponse.json({ error: "Missing email" }, { status: 400 });
-
-    const cachedProjects = await redis.get(`user:${email}:projects`);
-    if (cachedProjects) {
-      return NextResponse.json(
-        {
-          message: "Projects fetched from cache",
-          projects: JSON.parse(cachedProjects),
-        },
-        { status: 200 }
-      );
-    }
 
     const foundUser = await prisma.user.findUnique({
       where: {

@@ -25,24 +25,30 @@ const page = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const router = useRouter();
   const calledGetProjects = useRef(false);
+  const [showSkeletonLoading, setShowSkeletonLoading] = useState(true);
 
   useEffect(() => {
     if (status !== "authenticated") return;
+
     if (calledGetProjects.current) return;
     calledGetProjects.current = true;
+    toast.loading("Fetching your projects...");
 
     const email = session?.user?.email;
     axios
       .post("/api/dashboard/get-user-projects", { email })
       .then((res) => {
-        setProjects(res.data.projects);
-        toast.success(res.data.message);
+        setProjects(res.data.projects || []);
+        toast.dismiss();
+        toast.success(res.data.message || "Projects loaded successfully");
       })
       .catch((err) => {
+        toast.dismiss();
         toast.error(err.response?.data?.error || "Something went wrong");
       })
       .finally(() => {
         calledGetProjects.current = false;
+        setShowSkeletonLoading(false);
       });
   }, [status]);
 
@@ -54,35 +60,47 @@ const page = () => {
           : "dashboard-content-sidebar-close"
       }  flex  justify-center`}
     >
-      <div className="  h-full   grid grid-cols-4 gap-4 p-4">
-        {projects.length > 0 ? (
-          projects.map((project) => (
-            <div key={project.id} className="flex flex-col items-center gap-2">
-              <Link href={`/dashboard/generate-resume/page2/${project.id}`}>
-                <div className="border-2 h-60 w-60 rounded-md cursor-pointer overflow-hidden relative">
-                  <div className="h-full w-full relative">
-                    <img
-                      className=" h-full w-full"
-                      src="https://i.pinimg.com/originals/8e/6f/64/8e6f64217df3d96711e200bf1432fceb.gif"
-                    />
-                  </div>
-                </div>
-              </Link>
-              <div>
-                <div>{project.name}</div>
+      <div className="  h-full   grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5  gap-4 p-4">
+        {showSkeletonLoading ? (
+          <>
+            {Array.from({ length: 2 }).map((_, i) => (
+              <div key={i} className="flex flex-col items-center gap-2">
+                <Skeleton className="h-60 w-60" />
+                <Skeleton className="h-5 w-60" />
               </div>
-            </div>
-          ))
+            ))}
+          </>
         ) : (
           <>
-            <div className="flex flex-col items-center gap-2">
-              <Skeleton className="h-60 w-60" />
-              <Skeleton className="h-5 w-60" />
-            </div>
-            <div className="flex flex-col items-center gap-2">
-              <Skeleton className="h-60 w-60" />
-              <Skeleton className="h-5 w-60" />
-            </div>
+            {projects.length > 0 &&
+              projects.map((project) => (
+                <div
+                  key={project.id}
+                  className="flex flex-col items-center gap-2"
+                >
+                  <Link href={`/dashboard/generate-resume/page2/${project.id}`}>
+                    <div className="border-2 h-60 w-60 rounded-md cursor-pointer overflow-hidden relative">
+                      <div className="h-full w-full relative">
+                        <img
+                          className="h-full w-full"
+                          src="https://i.pinimg.com/originals/8e/6f/64/8e6f64217df3d96711e200bf1432fceb.gif"
+                          style={{
+                            filter: `hue-rotate(${Math.floor(
+                              Math.random() * 360
+                            )}deg) 
+                               contrast(${0.8 + Math.random() * 0.4}) 
+                               brightness(${0.8 + Math.random() * 0.4}) 
+                               saturate(${0.8 + Math.random() * 0.8})`,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </Link>
+                  <div>
+                    <div>{project.name}</div>
+                  </div>
+                </div>
+              ))}
           </>
         )}
 

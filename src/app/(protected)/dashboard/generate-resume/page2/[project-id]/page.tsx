@@ -12,7 +12,7 @@ import {
   useHTMLEditorStore,
 } from "@/stores/generate_resume_p1";
 import { Button } from "@/components/ui/button";
-import { Code, Eye, Loader2, MessageSquare } from "lucide-react";
+import { Code, Eye, Link, Loader2, MessageSquare } from "lucide-react";
 import CodeEditor from "@/components/pages/dashboard/generate-reusme/page2/editor";
 import UILoading from "@/components/ui/uiloading";
 import { toast } from "sonner";
@@ -56,7 +56,7 @@ const page = ({ params }: PageProps) => {
 
   const updateFunctionCalled = useRef(false);
 
-  const resolvedParams = React.use(params);
+  const resolvedParams: { "project-id": string } = React.use(params);
   const projectId = resolvedParams["project-id"];
 
   const { messages, sendMessage } = useChat({
@@ -285,6 +285,16 @@ const page = ({ params }: PageProps) => {
                 ) : (
                   "Download PDF"
                 )}
+              </Button>
+              <Button
+                onClick={() => {
+                  navigator.clipboard.writeText(window.location.href);
+                  toast.success("Link copied to clipboard");
+                }}
+                variant="outline"
+                size="icon"
+              >
+                <Link />
               </Button>
               <Button variant="ghost">
                 <Eye /> <div>{Count}</div>

@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { redis } from "@/lib/redis";
 import { NextResponse, NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {
