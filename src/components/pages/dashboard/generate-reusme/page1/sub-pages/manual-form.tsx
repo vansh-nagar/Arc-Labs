@@ -115,7 +115,7 @@ const ManualForm = () => {
     });
     toast.success("Data saved successfully!");
     setIsLoading(false);
-    router.push("/dashboard/generate-resume/page2");
+    router.push("/dashboard/generate-resume/page2/new");
   };
 
   const content = (

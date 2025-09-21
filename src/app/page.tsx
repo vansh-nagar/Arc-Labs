@@ -2,7 +2,6 @@ import DashboardImage from "@/components/pages/landing-page/dashboard-image";
 import GenerateResumeIntro from "@/components/pages/landing-page/generate-resume-into";
 import HeroSection from "@/components/pages/landing-page/herosection";
 import Navbar from "@/components/pages/landing-page/navbar";
-import React from "react";
 
 const page = () => {
   return (

@@ -12,7 +12,7 @@ import {
   useHTMLEditorStore,
 } from "@/stores/generate_resume_p1";
 import { Button } from "@/components/ui/button";
-import { Code, Loader2, MessageSquare } from "lucide-react";
+import { Code, Eye, EyeIcon, Loader2, MessageSquare, View } from "lucide-react";
 import CodeEditor from "@/components/pages/dashboard/generate-reusme/page2/editor";
 import UILoading from "@/components/ui/uiloading";
 import { toast } from "sonner";
@@ -36,7 +36,13 @@ import { Message, MessageContent } from "@/components/ai-elements/message";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 
-const page = () => {
+interface PageProps {
+  params: {
+    "project-id": string;
+  };
+}
+
+const page = ({ params }: PageProps) => {
   const { isSideBarOpen } = useSidebarStore();
   const apiIsCalled = useRef(false);
   const resumeRef = useRef<HTMLDivElement>(null);
@@ -45,6 +51,8 @@ const page = () => {
   const [chatPrompt, setChatPrompt] = useState("");
   const data = generateResumeDataStore();
   const { data: session, status } = useSession();
+  const [isSavingToDb, setIsSavingToDb] = useState(false);
+  const [Count, setCount] = useState(0);
 
   const { messages, sendMessage } = useChat({
     transport: new DefaultChatTransport({
@@ -59,6 +67,30 @@ const page = () => {
   });
 
   useEffect(() => {
+    if (params["project-id"] === "new") return;
+    const projectId = params["project-id"];
+
+    axios
+      .post("/api/generate-html/update-project-view", { projectId })
+      .then((res) => {
+        console.log("View count updated:", res.data);
+        setCount(res.data.data);
+      });
+
+    axios
+      .post("/api/generate-html/get-project-data", { projectId })
+      .then((res) => {
+        setHtmlContent(JSON.parse(res.data.project.html) || "");
+      })
+      .catch((err) => {
+        toast.error(
+          err?.response?.data?.error || "Failed to fetch project data."
+        );
+      });
+  }, []);
+
+  useEffect(() => {
+    if (params["project-id"] !== "new") return;
     if (status === "loading") return;
     if (apiIsCalled.current) return;
     console.log("Generating resume with data:", data);
@@ -124,6 +156,29 @@ const page = () => {
     setIsDownloading(false);
   };
 
+  const handleSaveProgress = async () => {
+    if (isSavingToDb) return;
+    setIsSavingToDb(true);
+    const projectId = params["project-id"];
+
+    axios
+      .post("/api/generate-html/update-project-html", {
+        htmlContent: resumeRef.current?.innerHTML,
+        projectId,
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          toast.success(res.data.message || "Project updated successfully.");
+        }
+      })
+      .catch((err) => {
+        toast.error(err?.response?.data?.error || "Failed to update project.");
+      })
+      .finally(() => {
+        setIsSavingToDb(false);
+      });
+  };
+
   return (
     <div
       className={` h-[calc(100vh-64px)] ${
@@ -171,7 +226,7 @@ const page = () => {
           >
             <PromptInputBody>
               <PromptInputTextarea
-                onChange={(e) => {
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
                   setChatPrompt(e.target.value);
                 }}
                 value={chatPrompt}
@@ -194,19 +249,40 @@ const page = () => {
             >
               <Code />
             </Button>
-            <Button
-              onClick={() => {
-                if (isDownloading) return;
-                downloadPDF();
-              }}
-              className="mb-3"
-            >
-              {isDownloading ? (
-                <Loader2 className="animate-spin" />
-              ) : (
-                "Download PDF"
-              )}
-            </Button>
+            <div className=" flex gap-4">
+              {" "}
+              <Button
+                onClick={() => {
+                  if (isSavingToDb) return;
+                  setShowCode(false);
+
+                  handleSaveProgress();
+                }}
+                className="mb-3"
+              >
+                {isSavingToDb ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  "Save your Progress"
+                )}
+              </Button>
+              <Button
+                onClick={() => {
+                  if (isDownloading) return;
+                  downloadPDF();
+                }}
+                className="mb-3"
+              >
+                {isDownloading ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  "Download PDF"
+                )}
+              </Button>
+              <Button variant="ghost">
+                <Eye /> <div>{Count}</div>
+              </Button>
+            </div>
           </div>
           {showCode ? (
             <div className=" h-full border ml-3 rounded-md p-4  ">
@@ -219,7 +295,7 @@ const page = () => {
                   Error: {error.message}
                 </div>
               )}
-              {completion ? (
+              {htmlContent || completion ? (
                 <div className="ml-4 h-full border rounded-md  overflow-y-auto">
                   <div
                     ref={resumeRef}

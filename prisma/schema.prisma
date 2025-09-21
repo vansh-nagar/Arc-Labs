@@ -81,6 +81,8 @@ model Projects {
 
   userId     String
   user       User    @relation(fields: [userId]  , references: [id], onDelete: Cascade)
+
+  viewCount  Int    @default(0)
   
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
