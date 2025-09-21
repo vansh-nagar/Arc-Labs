@@ -12,7 +12,16 @@ import {
   useHTMLEditorStore,
 } from "@/stores/generate_resume_p1";
 import { Button } from "@/components/ui/button";
-import { Code, Eye, Link, Loader2, MessageSquare } from "lucide-react";
+import {
+  Code,
+  Eye,
+  Link,
+  Loader2,
+  LockIcon,
+  MessageSquare,
+  SmileIcon,
+  UnlockIcon,
+} from "lucide-react";
 import CodeEditor from "@/components/pages/dashboard/generate-reusme/page2/editor";
 import UILoading from "@/components/ui/uiloading";
 import { toast } from "sonner";
@@ -36,11 +45,6 @@ import { Message, MessageContent } from "@/components/ai-elements/message";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 interface PageProps {
   params: {
@@ -50,20 +54,23 @@ interface PageProps {
 
 const page = ({ params }: PageProps) => {
   const { isSideBarOpen } = useSidebarStore();
-  const apiIsCalled = useRef(false);
-  const resumeRef = useRef<HTMLDivElement>(null);
+  const data = generateResumeDataStore();
+  const { htmlContent, setHtmlContent } = useHTMLEditorStore();
+
   const [showCode, setShowCode] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [chatPrompt, setChatPrompt] = useState("");
-  const data = generateResumeDataStore();
   const { data: session, status } = useSession();
   const [isSavingToDb, setIsSavingToDb] = useState(false);
   const [Count, setCount] = useState(0);
-
+  const [isLocked, setIsLocked] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [projectId, setProjectId] = useState("");
+  const [isToggleLock, setIsToggleLock] = useState(false);
 
-  const { htmlContent, setHtmlContent } = useHTMLEditorStore();
   const updateFunctionCalled = useRef(false);
+  const apiIsCalled = useRef(false);
+  const resumeRef = useRef<HTMLDivElement>(null);
 
   const router = useRouter();
 
@@ -73,25 +80,33 @@ const page = ({ params }: PageProps) => {
     }),
   });
 
-  const [projectId, setProjectId] = useState("");
+  const { completion, error, complete } = useCompletion({
+    api: "/api/generate-html/manual",
+  });
 
   const resolvedParams: { "project-id": string } = React.use(params as any);
   const originalProjectId = useRef(resolvedParams["project-id"]);
-
-  const { completion, error, complete, isLoading } = useCompletion({
-    api: "/api/generate-html/manual",
-  });
 
   // Set projectId from route params
   useEffect(() => {
     setProjectId(resolvedParams["project-id"]);
   }, [resolvedParams]);
 
-  // Increment view count and fetch project data if not "new"
+  // Sync completion to htmlContent state
   useEffect(() => {
-    if (!projectId || projectId === "new") return;
-    if (updateFunctionCalled.current) return;
-    if (status !== "authenticated") return;
+    setHtmlContent(completion || "");
+  }, [completion]);
+
+  // Increment view count and fetch project data
+  useEffect(() => {
+    if (
+      !projectId ||
+      projectId === "new" ||
+      updateFunctionCalled.current ||
+      status !== "authenticated"
+    )
+      return;
+
     updateFunctionCalled.current = true;
 
     axios
@@ -104,11 +119,7 @@ const page = ({ params }: PageProps) => {
       .post("/api/generate-html/get-project-data", { projectId })
       .then((res) => {
         setHtmlContent(JSON.parse(res.data.project.html) || "");
-        console.log(
-          "Project data:",
-          res.data.project.user.email,
-          session?.user?.email
-        );
+        setIsLocked(res.data.project.locked);
         if (res.data.project.user.email === session?.user?.email) {
           setIsAuthenticated(true);
         }
@@ -126,9 +137,12 @@ const page = ({ params }: PageProps) => {
 
   // Auto-generate resume if "new"
   useEffect(() => {
-    if (originalProjectId.current !== "new") return;
-    if (status === "loading") return;
-    if (apiIsCalled.current) return;
+    if (
+      originalProjectId.current !== "new" ||
+      status === "loading" ||
+      apiIsCalled.current
+    )
+      return;
     console.log("Generating resume with data:", data);
     apiIsCalled.current = true;
     //resume streaming
@@ -156,12 +170,7 @@ const page = ({ params }: PageProps) => {
     });
   }, [status]);
 
-  // Sync completion to htmlContent state
-  useEffect(() => {
-    setHtmlContent(completion || "");
-  }, [completion]);
-
-  const downloadPDF = async () => {
+  const handleDownloadPDF = async () => {
     if (!resumeRef.current) {
       toast.error("Resume content is not available to download.");
       return;
@@ -224,6 +233,34 @@ const page = ({ params }: PageProps) => {
       });
   };
 
+  const handleToggleLockProject = async (lockState: boolean) => {
+    if (isToggleLock) return;
+    if (!isAuthenticated) {
+      toast.error("You are not authorized to lock/unlock this project.");
+      return;
+    }
+    setIsToggleLock(true);
+
+    axios
+      .post("/api/generate-html/toggle-lock-project", {
+        projectId,
+        lockState,
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          toast.success(res.data.message || "Project lock state updated.");
+        }
+      })
+      .catch((err) => {
+        toast.error(
+          err?.response?.data?.error || "Failed to update lock state."
+        );
+      })
+      .finally(() => {
+        setIsToggleLock(false);
+      });
+  };
+
   return (
     <div
       className={` h-[calc(100vh-64px)] ${
@@ -232,10 +269,13 @@ const page = ({ params }: PageProps) => {
           : "dashboard-content-sidebar-close"
       }`}
     >
-      <ResizablePanelGroup direction="horizontal" className="h-full w-full">
+      <ResizablePanelGroup
+        direction="horizontal"
+        className="h-full w-full relative"
+      >
         <ResizablePanel
           defaultSize={25}
-          className="h-full rounded-md   flex justify-between flex-col  mr-3 p-4 "
+          className="h-full rounded-md   flex justify-between flex-col  mr-3  "
         >
           <Conversation className=" w-full" style={{ height: "100%" }}>
             <ConversationContent>
@@ -260,6 +300,7 @@ const page = ({ params }: PageProps) => {
             <ConversationScrollButton />
           </Conversation>
           <PromptInput
+            className=" rounded-md"
             onSubmit={(e) => {
               if (chatPrompt.trim()) {
                 sendMessage({
@@ -277,7 +318,8 @@ const page = ({ params }: PageProps) => {
                 value={chatPrompt}
               />
             </PromptInputBody>
-            <PromptInputToolbar className=" flex items-end justify-end">
+            <PromptInputToolbar className=" flex items-center justify-between">
+              <SmileIcon className="ml-1" />
               <PromptInputSubmit disabled={false} status={"ready"} />
             </PromptInputToolbar>
           </PromptInput>
@@ -288,7 +330,7 @@ const page = ({ params }: PageProps) => {
             <Button
               onClick={() => {
                 if (!isAuthenticated) {
-                  toast.error("You are not authorized to save this project.");
+                  toast.error("You are not authorized to see the code editor.");
                   return;
                 }
                 setShowCode(!showCode);
@@ -298,9 +340,9 @@ const page = ({ params }: PageProps) => {
             >
               <Code />
             </Button>
-            <div className=" flex gap-4 ">
-              {" "}
+            <div className=" flex gap-2 ">
               <Button
+                variant="outline"
                 onClick={() => {
                   if (isSavingToDb) return;
 
@@ -315,9 +357,10 @@ const page = ({ params }: PageProps) => {
                 )}
               </Button>
               <Button
+                variant="outline"
                 onClick={() => {
                   if (isDownloading) return;
-                  downloadPDF();
+                  handleDownloadPDF();
                 }}
                 className="mb-3"
               >
@@ -329,6 +372,28 @@ const page = ({ params }: PageProps) => {
               </Button>
               <Button
                 onClick={() => {
+                  if (!isAuthenticated) {
+                    toast.error(
+                      "You are not authorized to lock/unlock this project."
+                    );
+                    return;
+                  }
+                  setIsLocked(!isLocked);
+                  handleToggleLockProject(!isLocked);
+                }}
+                variant={`${isLocked ? "default" : "outline"}`}
+                size="icon"
+              >
+                {isToggleLock ? (
+                  <Loader2 className="animate-spin" />
+                ) : isLocked ? (
+                  <LockIcon />
+                ) : (
+                  <UnlockIcon />
+                )}
+              </Button>
+              <Button
+                onClick={() => {
                   navigator.clipboard.writeText(window.location.href);
                   toast.success("Link copied to clipboard");
                 }}
@@ -336,7 +401,7 @@ const page = ({ params }: PageProps) => {
                 size="icon"
               >
                 <Link />
-              </Button>{" "}
+              </Button>
               <Button variant="ghost">
                 <Eye /> <div>{Count}</div>
               </Button>
@@ -369,6 +434,14 @@ const page = ({ params }: PageProps) => {
             </>
           )}
         </ResizablePanel>
+        {isLocked && !isAuthenticated && (
+          <div className=" absolute flex flex-col gap-3 bg-white/40 backdrop-blur-md z-50 inset-0  justify-center items-center rounded-md">
+            <LockIcon size={30} />
+            <p className="text-sm text-gray-500">
+              This project is locked. Please log in to unlock.
+            </p>
+          </div>
+        )}
       </ResizablePanelGroup>
     </div>
   );
