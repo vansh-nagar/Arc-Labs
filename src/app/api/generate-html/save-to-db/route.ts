@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json(
-      { message: "Project saved successfully" },
+      { message: "Project saved successfully", projectId: createdProject.id },
       { status: 200 }
     );
   } catch (error) {

@@ -35,6 +35,12 @@ import {
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface PageProps {
   params: {
@@ -54,10 +60,12 @@ const page = ({ params }: PageProps) => {
   const [isSavingToDb, setIsSavingToDb] = useState(false);
   const [Count, setCount] = useState(0);
 
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const { htmlContent, setHtmlContent } = useHTMLEditorStore();
   const updateFunctionCalled = useRef(false);
 
-  const resolvedParams: { "project-id": string } = React.use(params);
-  const projectId = resolvedParams["project-id"];
+  const router = useRouter();
 
   const { messages, sendMessage } = useChat({
     transport: new DefaultChatTransport({
@@ -65,21 +73,30 @@ const page = ({ params }: PageProps) => {
     }),
   });
 
-  const { htmlContent, setHtmlContent } = useHTMLEditorStore();
+  const [projectId, setProjectId] = useState("");
+
+  const resolvedParams: { "project-id": string } = React.use(params as any);
+  const originalProjectId = useRef(resolvedParams["project-id"]);
 
   const { completion, error, complete, isLoading } = useCompletion({
     api: "/api/generate-html/manual",
   });
 
+  // Set projectId from route params
   useEffect(() => {
-    if (projectId === "new") return;
+    setProjectId(resolvedParams["project-id"]);
+  }, [resolvedParams]);
+
+  // Increment view count and fetch project data if not "new"
+  useEffect(() => {
+    if (!projectId || projectId === "new") return;
     if (updateFunctionCalled.current) return;
+    if (status !== "authenticated") return;
     updateFunctionCalled.current = true;
 
     axios
       .post("/api/generate-html/update-project-view", { projectId })
       .then((res) => {
-        console.log("View count updated:", res.data);
         setCount(res.data.data);
       });
 
@@ -87,24 +104,34 @@ const page = ({ params }: PageProps) => {
       .post("/api/generate-html/get-project-data", { projectId })
       .then((res) => {
         setHtmlContent(JSON.parse(res.data.project.html) || "");
+        console.log(
+          "Project data:",
+          res.data.project.user.email,
+          session?.user?.email
+        );
+        if (res.data.project.user.email === session?.user?.email) {
+          setIsAuthenticated(true);
+        }
+        toast.success(res.data.message || "Project data loaded.");
       })
       .catch((err) => {
         toast.error(
-          err?.response?.data?.error || "Failed to fetch project data."
+          err?.response?.data?.error || "Failed to fetch project dataaaaaaaa."
         );
       })
       .finally(() => {
         updateFunctionCalled.current = false;
       });
-  }, []);
+  }, [projectId, status]);
 
+  // Auto-generate resume if "new"
   useEffect(() => {
-    if (projectId !== "new") return;
+    if (originalProjectId.current !== "new") return;
     if (status === "loading") return;
     if (apiIsCalled.current) return;
     console.log("Generating resume with data:", data);
     apiIsCalled.current = true;
-
+    //resume streaming
     complete(JSON.stringify(data)).then(() => {
       apiIsCalled.current = false;
       console.log("Resume generation completed", resumeRef.current?.innerHTML);
@@ -115,6 +142,11 @@ const page = ({ params }: PageProps) => {
         })
         .then((res) => {
           if (res.status === 200) {
+            setProjectId(res.data.projectId);
+            router.replace(
+              `/dashboard/generate-resume/page2/${res.data.projectId}`
+            );
+
             toast.success(res.data.message || "Resume saved successfully.");
           }
         })
@@ -124,6 +156,7 @@ const page = ({ params }: PageProps) => {
     });
   }, [status]);
 
+  // Sync completion to htmlContent state
   useEffect(() => {
     setHtmlContent(completion || "");
   }, [completion]);
@@ -166,6 +199,10 @@ const page = ({ params }: PageProps) => {
   };
 
   const handleSaveProgress = async () => {
+    if (!isAuthenticated) {
+      toast.error("You are not authorized to save this project.");
+      return;
+    }
     if (isSavingToDb) return;
     setIsSavingToDb(true);
 
@@ -250,6 +287,10 @@ const page = ({ params }: PageProps) => {
           <div className="ml-4 justify-between flex">
             <Button
               onClick={() => {
+                if (!isAuthenticated) {
+                  toast.error("You are not authorized to save this project.");
+                  return;
+                }
                 setShowCode(!showCode);
               }}
               size="icon"
@@ -257,7 +298,7 @@ const page = ({ params }: PageProps) => {
             >
               <Code />
             </Button>
-            <div className=" flex gap-4">
+            <div className=" flex gap-4 ">
               {" "}
               <Button
                 onClick={() => {
@@ -295,7 +336,7 @@ const page = ({ params }: PageProps) => {
                 size="icon"
               >
                 <Link />
-              </Button>
+              </Button>{" "}
               <Button variant="ghost">
                 <Eye /> <div>{Count}</div>
               </Button>

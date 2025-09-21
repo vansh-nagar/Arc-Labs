@@ -11,15 +11,15 @@ const DashboardImage = () => {
       <div className="p-3 bg-accent bg-diagonal-grid shadow-inner">
         {theme === "light" ? (
           <img
-            src="https://pbs.twimg.com/media/G0FN-smWUAAXYLf?format=jpg&name=large"
-            alt=""
-            className=" rounded-lg"
-          />
-        ) : (
-          <img
             src="https://pbs.twimg.com/media/G0FOCcpXgAArDLT?format=jpg&name=large"
             alt=""
             className=" rounded-lg  "
+          />
+        ) : (
+          <img
+            src="https://pbs.twimg.com/media/G0FN-smWUAAXYLf?format=jpg&name=large"
+            alt=""
+            className=" rounded-lg"
           />
         )}
       </div>

@@ -1,6 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { useSidebarStore } from "@/stores/sidebarStore";
-import { HomeIcon, PanelRight, PanelRightClose, Router } from "lucide-react";
+import {
+  HomeIcon,
+  PanelRight,
+  PanelRightClose,
+  Router,
+} from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
 
@@ -13,13 +19,15 @@ const SideBarTop = () => {
         className={` mt-6  min-h-10 text-xl  flex   justify-between items-center px-5`}
       >
         {isSideBarOpen && (
-          <div className="  font-semibold">
-            <img
-              src="/logo/logo-name-light.svg"
-              alt=""
-              className="  w-20 mix-blend-difference "
-            />
-          </div>
+          <Link href="/">
+            <div className="  font-semibold">
+              <img
+                src="/logo/logo-name-light.svg"
+                alt=""
+                className="  w-20 mix-blend-difference "
+              />
+            </div>
+          </Link>
         )}
         {isSideBarOpen ? (
           <PanelRight
