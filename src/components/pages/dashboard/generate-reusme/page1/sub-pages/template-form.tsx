@@ -1,36 +1,25 @@
 "use client";
 import { useRouter } from "next/navigation";
 import React from "react";
-const Images = [
-  {
-    link: "https://ik.imagekit.io/ijuiklevk/45943.jpeg",
-    text: "Template 1",
-  },
-  {
-    link: "https://ik.imagekit.io/ijuiklevk/38460.jpeg",
-    text: "Template 1",
-  },
-  {
-    link: "https://ik.imagekit.io/ijuiklevk/38460.jpeg",
-    text: "Template 1",
-  },
-  {
-    link: "https://ik.imagekit.io/ijuiklevk/45943.jpeg",
-    text: "Template 1",
-  },
-];
+import { templates } from "@/data/templates";
+import { generateResumeDataStore } from "@/stores/generate_resume_p1";
 
 const TemplateForm = () => {
   const router = useRouter();
+  const { setType, setData } = generateResumeDataStore();
   return (
     <div className="p-0 sm:p-4 ">
       <div className=" column-1 md:columns-2 ">
-        {Images.map((image, index) => (
+        {templates.map((template, index) => (
           <img
             key={index}
-            src={image.link}
+            src={template.image}
             alt=""
-            onClick={() => router.push("/dashboard/generate_resume/p2")}
+            onClick={() => {
+              setData({ template: template.template });
+              setType("template");
+              router.push("/dashboard/generate-resume/page2/new");
+            }}
             className=" mb-4 object-contain  cursor-pointer  border border-border rounded-sm  border-dotted bg-gradient-to-r hover:shadow-lg  shadow transition-all duration-150"
           />
         ))}

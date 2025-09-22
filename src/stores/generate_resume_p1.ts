@@ -11,6 +11,8 @@ export const optionsStore = create<optionstore>((set) => ({
 }));
 
 export const generateResumeDataStore = create<any>((set) => ({
+  type: "",
+  setType: (type: string) => set({ type }),
   data: {},
   setData: (data: any) => {
     set({ data });

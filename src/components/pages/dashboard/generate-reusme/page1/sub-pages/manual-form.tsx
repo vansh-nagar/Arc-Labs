@@ -91,7 +91,7 @@ const ManualForm = () => {
     setState((prev: any) => ({ ...prev, [name]: date }));
   };
 
-  const { setData } = generateResumeDataStore();
+  const { setData, setType } = generateResumeDataStore();
 
   useEffect(() => {
     const check = () => setIsSmall(window.innerWidth < 620);
@@ -113,6 +113,7 @@ const ManualForm = () => {
       certificationsArr,
       jobTitle,
     });
+    setType("manual");
     toast.success("Data saved successfully!");
     setIsLoading(false);
     router.push("/dashboard/generate-resume/page2/new");

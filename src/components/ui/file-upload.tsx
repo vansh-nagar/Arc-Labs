@@ -48,7 +48,7 @@ export const FileUpload = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { data, setData } = generateResumeDataStore();
+  const { data, setData, setType } = generateResumeDataStore();
 
   const { register, handleSubmit } = useForm<dataType>();
 
@@ -90,12 +90,13 @@ export const FileUpload = ({
         if (res.status === 200) {
           toast.success("File uploaded successfully Redirecting...");
           console.log(res.data);
-          setData({ 
-          parsedText: res.data.parsedText , 
-          jobTitle: data.jobTitle,
-          description: data.description
-           });  
-           
+          setData({
+            parsedText: res.data.parsedText,
+            jobTitle: data.jobTitle,
+            description: data.description,
+          });
+          setType("file");
+
           router.push("/dashboard/generate-resume/page2/new");
         }
       })

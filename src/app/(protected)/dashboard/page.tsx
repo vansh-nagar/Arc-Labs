@@ -3,17 +3,39 @@ import React, { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { Ellipsis, Eye, LinkIcon, LockIcon, Plus, UnlockIcon } from "lucide-react";
+import {
+  Ellipsis,
+  Eye,
+  LinkIcon,
+  LockIcon,
+  Plus,
+  UnlockIcon,
+} from "lucide-react";
 
 import { useSidebarStore } from "@/stores/sidebarStore";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import { toast } from "sonner";
-import { PopoverContent, PopoverTrigger , Popover } from "@/components/ui/popover";
+import {
+  PopoverContent,
+  PopoverTrigger,
+  Popover,
+} from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Dropzone, DropzoneContent, DropzoneEmptyState } from "@/components/shadcn-io/dropzone";
+import {
+  Dropzone,
+  DropzoneContent,
+  DropzoneEmptyState,
+} from "@/components/shadcn-io/dropzone";
 
 type Project = {
   id: string;
@@ -85,9 +107,9 @@ const page = () => {
                 <div key={project.id} className="flex flex-col   ">
                   <Link href={`/dashboard/generate-resume/page2/${project.id}`}>
                     <div className=" h-60 w-60 shadow rounded-md cursor-pointer overflow-hidden relative">
-                      <div className="h-full w-full relative">
+                      <div className="h-full w-full relative z-10">
                         <img
-                          className="h-full w-full z-10"
+                          className="h-full w-full "
                           src="https://i.pinimg.com/originals/8e/6f/64/8e6f64217df3d96711e200bf1432fceb.gif"
                           style={{
                             filter: `hue-rotate(${Math.floor(
@@ -99,69 +121,77 @@ const page = () => {
                           }}
                         />
                       </div>
-<div className=" absolute top-3 right-3 flex flex-row gap-2 z-30">
-  <Button
-                  onClick={() => {
-                    navigator.clipboard.writeText(window.location.href);
-                    toast.success("Link copied to clipboard");
-                  }}
-                  variant="outline"
-                  size="icon"
-                >
-                  <LinkIcon/>
-                </Button><Button
-             
-                variant={`${project.locked ? "default" : "outline"}`}
-                size="icon"
-              >
-                {project.locked ? (
-                  <LockIcon />
-                ) : (
-                  <UnlockIcon />
-                )}
-              </Button>
-              <Button
-                onClick={() => {
-                  navigator.clipboard.writeText(window.location.href);
-                  toast.success("Link copied to clipboard");
-                }}
-                variant="outline"
-                size="icon"
-              >
-                <LinkIcon />
-              </Button>
-              <Button variant="ghost">
-               <Eye /> <div>{project.viewCount}</div>
-              </Button></div>
-
+                      <div className=" absolute top-3 right-3 flex flex-row gap-2 z-30">
+                        <Button
+                          variant={`${project.locked ? "default" : "outline"}`}
+                          size="icon"
+                        >
+                          {project.locked ? <LockIcon /> : <UnlockIcon />}
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            navigator.clipboard.writeText(window.location.href);
+                            toast.success("Link copied to clipboard");
+                          }}
+                          variant="outline"
+                          size="icon"
+                        >
+                          <LinkIcon />
+                        </Button>
+                        <Button variant="outline" className=" cursor-pointer">
+                          <Eye /> <div>{project.viewCount}</div>
+                        </Button>
+                      </div>
                     </div>
-             </Link>
+                  </Link>
                   <div className="text-sm text-muted-foreground mt-2 flex justify-between items-center">
                     <div className="  truncate  max-w-44">{project.name} </div>
                     <Popover>
                       <PopoverTrigger>
-                         <Ellipsis className=" cursor-pointer"/>
+                        <Ellipsis className=" cursor-pointer" />
                       </PopoverTrigger>
-                      <PopoverContent className="p-0">
-                        <Dialog  >
-                          <DialogTrigger className="w-full"  >
-                            <Button size={"sm"} variant={"ghost"} className=" w-full rounded-none" >Edit</Button>
+                      <PopoverContent className="p-0 overflow-hidden">
+                        <Dialog>
+                          <DialogTrigger asChild className="w-full">
+                            <Button
+                              size={"sm"}
+                              variant={"ghost"}
+                              className=" w-full rounded-none"
+                            >
+                              Edit
+                            </Button>
                           </DialogTrigger>
-                          <DialogContent className="p-3">
-                               <Dropzone
-                                        maxFiles={1}
-                                        onDrop={(e: any) => {
-                                          
-                                        }}
-                                        onError={console.error}
-                                      >
-                                        <DropzoneEmptyState />
-                                        <DropzoneContent />
+                          <DialogContent className="p-3  ">
+                            <DialogHeader>
+                              <DialogTitle className="mt-2">
+                                Edit Project
+                              </DialogTitle>
+                              <DialogDescription className=" flex flex-col gap-2 mt-2 w-full">
+                                <Dropzone
+                                  maxFiles={1}
+                                  onDrop={(e: any) => {
+                                    console.log(e);
+                                  }}
+                                  onError={console.error}
+                                >
+                                  <DropzoneEmptyState />
+                                  <DropzoneContent />
                                 </Dropzone>
-                            <Input value={project.name}  placeholder="Project Name"/>
-                            </DialogContent>
+                                <Input
+                                  value={project.name}
+                                  placeholder="Project Name"
+                                />
+                              </DialogDescription>
+                            </DialogHeader>
+                          </DialogContent>
                         </Dialog>
-                        <Button size={"sm"} variant={"ghost"} className=" w-full rounded-none" >Delete</Button>
+                        <Button
+                          size={"sm"}
+                          variant={"ghost"}
+                          className=" w-full rounded-none"
+                        >
+                          Delete
+                        </Button>
                       </PopoverContent>
                     </Popover>
                   </div>
@@ -174,10 +204,9 @@ const page = () => {
           <div className="border-2 border-dashed h-60 w-60 rounded-md cursor-pointer overflow-hidden relative flex flex-col gap-2 justify-center items-center">
             <Plus size={40} className="text-muted-foreground" />{" "}
             <div className="text-sm text-muted-foreground mt-2">
-            Create new project
+              Create new project
+            </div>
           </div>
-          </div>
-          
         </Link>
       </div>
     </div>

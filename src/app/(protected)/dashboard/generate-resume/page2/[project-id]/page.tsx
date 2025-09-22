@@ -55,7 +55,7 @@ interface PageProps {
 
 const page = ({ params }: PageProps) => {
   const { isSideBarOpen } = useSidebarStore();
-  const data = generateResumeDataStore();
+  const { data, type } = generateResumeDataStore();
   const { htmlContent, setHtmlContent } = useHTMLEditorStore();
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -145,8 +145,38 @@ const page = ({ params }: PageProps) => {
       apiIsCalled.current
     )
       return;
+
     console.log("Generating resume with data:", data);
+    console.log("Type:", type);
     apiIsCalled.current = true;
+
+    if (type === "template" && data.template !== "") {
+      setHtmlContent(data.template);
+      toast.success("Template applied successfully!");
+      axios
+        .post("/api/generate-html/save-to-db", {
+          htmlContent: data.template,
+          email: session?.user?.email,
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            setProjectId(res.data.projectId);
+            router.replace(
+              `/dashboard/generate-resume/page2/${res.data.projectId}`
+            );
+
+            toast.success(res.data.message || "Resume saved successfully.");
+          }
+        })
+        .catch((err) => {
+          toast.error(err?.response?.data?.error || "Failed to save resume.");
+        })
+        .finally(() => {
+          apiIsCalled.current = false;
+        });
+      return;
+    }
+
     //resume streaming
     complete(JSON.stringify(data)).then(() => {
       apiIsCalled.current = false;
@@ -347,7 +377,6 @@ const page = ({ params }: PageProps) => {
                 variant="outline"
                 onClick={() => {
                   if (isSavingToDb) return;
-
                   handleSaveProgress();
                 }}
               >
@@ -392,17 +421,17 @@ const page = ({ params }: PageProps) => {
                   <UnlockIcon />
                 )}
               </Button>
-                    <Button
-                      onClick={() => {
-                        navigator.clipboard.writeText(window.location.href);
-                        toast.success("Link copied to clipboard");
-                      }}
-                      variant="outline"
-                      size="icon"
-                    >
-                      <Link />
-                    </Button>
-              <Button variant="ghost">
+              <Button
+                onClick={() => {
+                  navigator.clipboard.writeText(window.location.href);
+                  toast.success("Link copied to clipboard");
+                }}
+                variant="outline"
+                size="icon"
+              >
+                <Link />
+              </Button>
+              <Button variant="outline">
                 <Eye /> <div>{Count}</div>
               </Button>
             </div>
