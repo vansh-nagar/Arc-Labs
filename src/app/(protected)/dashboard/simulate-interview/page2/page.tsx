@@ -4,6 +4,11 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { useSidebarStore } from "@/stores/sidebarStore";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
 
 const Page = () => {
   const [Room, setRoom] = useState(null);
@@ -25,18 +30,31 @@ const Page = () => {
           : "dashboard-content-sidebar-close"
       }  h-[calc(100vh-64px)] `}
     >
-      <Canvas
-        camera={{ position: [-Math.PI, 1, 0] }}
-        className="  h-full w-full rounded-md shadow"
+      <ResizablePanelGroup
+        direction="horizontal"
+        className="h-full w-full relative"
       >
-        <OrbitControls />
-        <ambientLight />
-        <pointLight position={[10, 10, 10]} />
+        <ResizablePanel defaultSize={75} className="pr-4">
+          <Canvas
+            camera={{ position: [-Math.PI, 1, 0] }}
+            className="  h-full w-full rounded-md shadow"
+          >
+            <OrbitControls />
+            <ambientLight />
+            <pointLight position={[10, 10, 10]} />
 
-        <Suspense fallback={null}>
-          {Room && <primitive object={Room} rotation={[0, -Math.PI / 2, 0]} />}
-        </Suspense>
-      </Canvas>
+            <Suspense fallback={null}>
+              {Room && (
+                <primitive object={Room} rotation={[0, -Math.PI / 2, 0]} />
+              )}
+            </Suspense>
+          </Canvas>
+        </ResizablePanel>
+        <ResizableHandle withHandle />
+        <ResizablePanel defaultSize={25} className="pl-4">
+          hi
+        </ResizablePanel>
+      </ResizablePanelGroup>
     </div>
   );
 };

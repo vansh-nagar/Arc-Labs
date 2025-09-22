@@ -11,6 +11,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { generateResumeDataStore } from "@/stores/generate_resume_p1";
 
 const mainVariant = {
   initial: {
@@ -18,8 +19,8 @@ const mainVariant = {
     y: 0,
   },
   animate: {
-    x: 20,
-    y: -20,
+    x: 10,
+    y: -10,
     opacity: 0.9,
   },
 };
@@ -47,6 +48,7 @@ export const FileUpload = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { data, setData } = generateResumeDataStore();
 
   const { register, handleSubmit } = useForm<dataType>();
 
@@ -70,24 +72,31 @@ export const FileUpload = ({
 
   const handleFormSubmit = (data: dataType) => {
     if (isLoading) return;
-    setIsLoading(true);
     if (files.length === 0) {
       toast.error("Please upload a file");
       setIsLoading(false);
       return;
     }
+    setIsLoading(true);
 
     const formData = new FormData();
     formData.append("data", JSON.stringify(data));
     formData.append("file", files[0]);
     axios
-      .post("/api/generate-latex/pdf", formData, {
+      .post("/api/generate-html/pdf", formData, {
         headers: { "content-type": "multipart/form-data" },
       })
       .then((res) => {
         if (res.status === 200) {
           toast.success("File uploaded successfully Redirecting...");
-          router.push("/dashboard/generate-resume/page2");
+          console.log(res.data);
+          setData({ 
+          parsedText: res.data.parsedText , 
+          jobTitle: data.jobTitle,
+          description: data.description
+           });  
+           
+          router.push("/dashboard/generate-resume/page2/new");
         }
       })
       .catch((err) => toast.error(err?.response?.data?.error || err.message))

@@ -1,8 +1,7 @@
 import { NextResponse, NextRequest } from "next/server";
 import { streamText } from "ai";
 import { groq } from "@ai-sdk/groq";
-
-export const runtime = "edge"; // or "nodejs" if you want Node
+import pdfParse from "pdf-parse-new";
 
 export async function POST(
   req: NextRequest,
@@ -15,9 +14,21 @@ export async function POST(
         const formData = await req.formData();
         const data = formData.get("data") as string;
         const file = formData.get("file") as File;
-        console.log(JSON.parse(data), file);
+        if(!data || !file) {
+          return NextResponse.json({ error: "Missing data or file" }, { status: 400 });
+        }
 
-        return NextResponse.json({ file }, { status: 200 });
+        const { jobTitle, description } = JSON.parse(data);
+
+        //
+        const arrayBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+
+        //
+        const parsed = await pdfParse(buffer);
+
+
+        return NextResponse.json({ parsedText: parsed.text  , jobTitle: jobTitle , description: description  }, { status: 200 });
       } catch (err: any) {
         return NextResponse.json({ error: err.message }, { status: 500 });
       }

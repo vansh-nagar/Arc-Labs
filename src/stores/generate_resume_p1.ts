@@ -11,15 +11,7 @@ export const optionsStore = create<optionstore>((set) => ({
 }));
 
 export const generateResumeDataStore = create<any>((set) => ({
-  data: {
-    personalInfo: null,
-    skillArr: [],
-    educationArr: [],
-    workExperienceArr: [],
-    projectsArr: [],
-    certificationsArr: [],
-    jobTitle: null,
-  },
+  data: {},
   setData: (data: any) => {
     set({ data });
   },

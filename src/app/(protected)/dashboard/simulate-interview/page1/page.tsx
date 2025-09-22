@@ -101,9 +101,7 @@ const OnboardingSteps = () => {
     if (isLoading) return;
     setisLoading(true);
     setshowConfetti(true);
-    // router.push("/dashboard/simulate-interview/page2");
-    localStorage.setItem("jobTitle", jobTitle);
-    localStorage.setItem("userName", UserName);
+
     const formdata = new FormData();
     if (Resume) {
       formdata.append("resume", Resume);
@@ -120,7 +118,7 @@ const OnboardingSteps = () => {
       .then((res) => {
         console.log(res.data.message);
         if (res.status === 200) {
-          console.log(res.data.message);
+          console.log(res);
           localStorage.setItem("questions", res.data.message);
           // router.push("/dashboard/simulate-interview/page2");
         }
@@ -140,7 +138,7 @@ const OnboardingSteps = () => {
         isSideBarOpen
           ? "dashboard-content-sidebar-open"
           : "dashboard-content-sidebar-close"
-      }   flex justify-center items-center  relative `}
+      }   flex justify-center items-center  relative overflow-hidden `}
     >
       {showConfetti && (
         <Confetti className=" absolute inset-0 border h-full w-full " />
@@ -157,7 +155,7 @@ const OnboardingSteps = () => {
         />
         {/* Your Content/Components */}
       </div>
-      {isLoading && <Ripple className=" absolute inset-0 z-50" />}
+      {isLoading && <Ripple className=" absolute inset-0 " />}
 
       <div className=" z-40   ">
         <div className="flex  flex-wrap items-center  gap-3 mb-3">

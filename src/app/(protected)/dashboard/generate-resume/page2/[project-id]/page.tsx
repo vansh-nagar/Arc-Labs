@@ -392,16 +392,16 @@ const page = ({ params }: PageProps) => {
                   <UnlockIcon />
                 )}
               </Button>
-              <Button
-                onClick={() => {
-                  navigator.clipboard.writeText(window.location.href);
-                  toast.success("Link copied to clipboard");
-                }}
-                variant="outline"
-                size="icon"
-              >
-                <Link />
-              </Button>
+                    <Button
+                      onClick={() => {
+                        navigator.clipboard.writeText(window.location.href);
+                        toast.success("Link copied to clipboard");
+                      }}
+                      variant="outline"
+                      size="icon"
+                    >
+                      <Link />
+                    </Button>
               <Button variant="ghost">
                 <Eye /> <div>{Count}</div>
               </Button>
