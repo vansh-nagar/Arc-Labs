@@ -74,12 +74,9 @@ const page = () => {
           <>
             {projects.length > 0 &&
               projects.map((project) => (
-                <div
-                  key={project.id}
-                  className="flex flex-col items-center gap-2"
-                >
+                <div key={project.id} className="flex flex-col   ">
                   <Link href={`/dashboard/generate-resume/page2/${project.id}`}>
-                    <div className="border-2 h-60 w-60 rounded-md cursor-pointer overflow-hidden relative">
+                    <div className=" h-60 w-60 shadow rounded-md cursor-pointer overflow-hidden relative">
                       <div className="h-full w-full relative">
                         <img
                           className="h-full w-full"
@@ -96,8 +93,8 @@ const page = () => {
                       </div>
                     </div>
                   </Link>
-                  <div>
-                    <div>{project.name}</div>
+                  <div className="text-sm text-muted-foreground mt-2">
+                    <div className="  truncate ">{project.name} </div>
                   </div>
                 </div>
               ))}
@@ -107,6 +104,9 @@ const page = () => {
         <Link href={"/dashboard/generate-resume/page1"}>
           <div className="border-2 border-dashed h-60 w-60 rounded-md cursor-pointer overflow-hidden relative flex justify-center items-center">
             <Plus size={40} className="text-muted-foreground" />{" "}
+          </div>
+          <div className="text-sm text-muted-foreground mt-2">
+            Create new project
           </div>
         </Link>
       </div>

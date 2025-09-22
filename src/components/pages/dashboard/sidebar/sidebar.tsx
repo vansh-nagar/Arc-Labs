@@ -7,6 +7,7 @@ import { useSidebarStore } from "@/stores/sidebarStore";
 import SideBarBottom from "./sub-pages/side-bar-bottom";
 import SideBarTop from "./sub-pages/side-bar-top";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 const sidebarPages = [
   {
     label: "Generate Resume",
@@ -31,7 +32,7 @@ const sidebarPages = [
   {
     label: "Simulate Interview",
     icon: <Monitor />,
-    path: "/dashboard/simulate_interview",
+    path: "/dashboard/simulate-interview/page1",
   },
   {
     label: "LeetCode Daily",
@@ -55,20 +56,19 @@ const Side_bar = () => {
         <h1 className="px-1 font-bold ">{isSideBarOpen ? "Playground" : ""}</h1>
         <div className="mt-2 flex flex-col gap-1">
           {sidebarPages.map((page, index) => (
-            <Button
-              className={`w-full ${
-                isSideBarOpen ? "justify-start" : "justify-center"
-              } cursor-pointer`}
-              variant="ghost"
-              size="default"
-              key={index}
-              onClick={() => {
-                router.push(page.path);
-              }}
-            >
-              {page.icon}
-              {isSideBarOpen && page.label}
-            </Button>
+            <Link key={index} href={page.path}>
+              <Button
+                className={`w-full ${
+                  isSideBarOpen ? "justify-start" : "justify-center"
+                } cursor-pointer`}
+                variant="ghost"
+                size="default"
+                key={index}
+              >
+                {page.icon}
+                {isSideBarOpen && page.label}
+              </Button>
+            </Link>
           ))}
         </div>
       </div>

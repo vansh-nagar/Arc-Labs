@@ -1,7 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
-import { generateText, streamText } from "ai";
+import { streamText } from "ai";
 import { groq } from "@ai-sdk/groq";
-import { prisma } from "@/lib/prisma";
 
 export const runtime = "edge"; // or "nodejs" if you want Node
 

@@ -45,6 +45,7 @@ import { Message, MessageContent } from "@/components/ai-elements/message";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Lock from "@/components/ui/lock";
 
 interface PageProps {
   params: {
@@ -57,14 +58,15 @@ const page = ({ params }: PageProps) => {
   const data = generateResumeDataStore();
   const { htmlContent, setHtmlContent } = useHTMLEditorStore();
 
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLocked, setIsLocked] = useState(false);
+
   const [showCode, setShowCode] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [chatPrompt, setChatPrompt] = useState("");
   const { data: session, status } = useSession();
   const [isSavingToDb, setIsSavingToDb] = useState(false);
   const [Count, setCount] = useState(0);
-  const [isLocked, setIsLocked] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [projectId, setProjectId] = useState("");
   const [isToggleLock, setIsToggleLock] = useState(false);
 
@@ -326,7 +328,7 @@ const page = ({ params }: PageProps) => {
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={75} className="h-full ">
-          <div className="ml-4 justify-between flex">
+          <div className="ml-3 justify-between gap-2 flex  mb-3">
             <Button
               onClick={() => {
                 if (!isAuthenticated) {
@@ -348,7 +350,6 @@ const page = ({ params }: PageProps) => {
 
                   handleSaveProgress();
                 }}
-                className="mb-3"
               >
                 {isSavingToDb ? (
                   <Loader2 className="animate-spin" />
@@ -362,7 +363,6 @@ const page = ({ params }: PageProps) => {
                   if (isDownloading) return;
                   handleDownloadPDF();
                 }}
-                className="mb-3"
               >
                 {isDownloading ? (
                   <Loader2 className="animate-spin" />
@@ -408,7 +408,7 @@ const page = ({ params }: PageProps) => {
             </div>
           </div>
           {showCode ? (
-            <div className=" h-full border ml-3 rounded-md p-4  ">
+            <div className=" h-full border ml-3 rounded-md  overflow-hidden  ">
               <CodeEditor code={htmlContent} onChange={setHtmlContent} />
             </div>
           ) : (
@@ -419,10 +419,10 @@ const page = ({ params }: PageProps) => {
                 </div>
               )}
               {htmlContent || completion ? (
-                <div className="ml-4 h-full border rounded-md  overflow-y-auto">
+                <div className="ml-3 h-full border rounded-md  overflow-y-auto">
                   <div
                     ref={resumeRef}
-                    className="h-full overflow-auto rounded-md "
+                    className="h-full overflow-auto  "
                     dangerouslySetInnerHTML={{
                       __html: htmlContent || completion,
                     }}
@@ -434,14 +434,7 @@ const page = ({ params }: PageProps) => {
             </>
           )}
         </ResizablePanel>
-        {isLocked && !isAuthenticated && (
-          <div className=" absolute flex flex-col gap-3 bg-white/40 backdrop-blur-md z-50 inset-0  justify-center items-center rounded-md">
-            <LockIcon size={30} />
-            <p className="text-sm text-gray-500">
-              This project is locked. Please log in to unlock.
-            </p>
-          </div>
-        )}
+        {isLocked && !isAuthenticated && <Lock />}
       </ResizablePanelGroup>
     </div>
   );
