@@ -126,7 +126,7 @@ export const templates = [
     template: `<div style="max-width:700px;margin:1.5rem auto;background-color:#fff;padding:1.5rem;font-family:'Times New Roman',serif;font-size:14px;line-height:1.5;color:#000;">
   <!-- HEADER -->
   <div style="text-align:center;margin-bottom:1rem;">
-    <h1 style="margin:0;font-size:1.75rem;font-weight:500;">John Doe</h1>
+    <h1 style="margin:0;font-size:1.75rem;font-weight:500;">Jhon Doe</h1>
     <div style="font-size:13px;color:#333;margin-top:0.25rem;">
       Your Location | youremail@yourdomain.com | 0541 999 99 99 | yourwebsite.com
     </div>
@@ -150,10 +150,10 @@ export const templates = [
   <div style="margin-bottom:1rem;">
     <h2 style="font-size:1.25rem;font-weight:600;border-bottom:1px solid #000;margin:0 0 0.5rem 0;padding-bottom:0.25rem;">Quick Guide</h2>
     <ul style="margin:0;padding-left:1.2rem;">
-      <li>Each section title is arbitrary and each section contains a list of entries.</li>
-      <li>There are 7 unique entry types: <i>BulletEntry, TextEntry, EducationEntry, ExperienceEntry, NormalEntry, PublicationEntry,</i> and <i>OneLineEntry</i>.</li>
-      <li>Select a section title, pick an entry type, and start writing your section!</li>
-      <li>Here, you can find a comprehensive user guide for RenderCV.</li>
+     <li>• Each section title is arbitrary and each section contains a list of entries.</li>
+     <li>• There are 7 unique entry types: <i>BulletEntry, TextEntry, EducationEntry, ExperienceEntry, NormalEntry, PublicationEntry,</i> and <i>OneLineEntry</i>.</li>
+     <li>• Select a section title, pick an entry type, and start writing your section!</li>
+     <li>• Here, you can find a comprehensive user guide for RenderCV.</li>
     </ul>
   </div>
 
@@ -165,8 +165,8 @@ export const templates = [
       <span>Sept 2000 – May 2005</span>
     </div>
     <ul style="margin:0;padding-left:1.2rem;">
-      <li>GPA: 3.9/4.0 (a link to somewhere)</li>
-      <li><strong>Coursework:</strong> Computer Architecture, Comparison of Learning Algorithms, Computational Theory</li>
+      <li>• GPA: 3.9/4.0 (a link to somewhere)</li>
+      <li><strong>• Coursework:</strong> Computer Architecture, Comparison of Learning Algorithms, Computational Theory</li>
     </ul>
   </div>
 
@@ -180,9 +180,9 @@ export const templates = [
         <span>June 2005 – Aug 2007</span>
       </div>
       <ul style="margin:0.25rem 0 0 1.2rem;padding:0;">
-        <li>Reduced time to render user buddy lists by 75% by implementing a prediction algorithm</li>
-        <li>Integrated iChat with Spotlight Search by creating a tool to extract metadata...</li>
-        <li>Redesigned chat file format and implemented backward compatibility for search</li>
+        <li>• Reduced time to render user buddy lists by 75% by implementing a prediction algorithm</li>
+        <li>• Integrated iChat with Spotlight Search by creating a tool to extract metadata...</li>
+        <li>• Redesigned chat file format and implemented backward compatibility for search</li>
       </ul>
     </div>
 
@@ -192,11 +192,11 @@ export const templates = [
         <span>June 2003 – Aug 2003</span>
       </div>
       <ul style="margin:0.25rem 0 0 1.2rem;padding:0;">
-        <li>Designed a UI for the VS open file switcher (Ctrl+Tab) and extended it to tool windows</li>
-        <li>Created a service to provide gradient across VS and VS add-ins...</li>
-        <li>Built an app to compute similarity of methods, reducing time from O(n²) to O(n log n)</li>
-        <li>Created a test case generation tool from XML Schema</li>
-        <li>Automated extraction/processing of datasets using SQL and Perl scripts</li>
+        <li>• Designed a UI for the VS open file switcher (Ctrl+Tab) and extended it to tool windows</li>
+        <li>• Created a service to provide gradient across VS and VS add-ins...</li>
+        <li>• Built an app to compute similarity of methods, reducing time from O(n²) to O(n log n)</li>
+        <li>• Created a test case generation tool from XML Schema</li>
+        <li>• Automated extraction/processing of datasets using SQL and Perl scripts</li>
       </ul>
     </div>
   </div>
@@ -215,7 +215,7 @@ export const templates = [
     <h2 style="font-size:1.25rem;font-weight:600;border-bottom:1px solid #000;margin:0 0 0.5rem 0;padding-bottom:0.25rem;">Projects</h2>
 
     <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
-      <span><strong>Multi-User Drawing Tool</strong><br/>Developed an electronic classroom where multiple users can view/draw on a "chalkboard"<br/>Tools Used: C++, MFC</span>
+      <span><strong>Multi-User Drawing Tool</strong><br/>• Developed an electronic classroom where multiple users can view/draw on a "chalkboard"<br/>• Tools Used: C++, MFC</span>
       <span style="color:#00f;">github.com/name/repo</span>
     </div>
 
