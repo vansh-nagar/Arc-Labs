@@ -88,7 +88,7 @@ export const FileUpload = ({
       })
       .then((res) => {
         if (res.status === 200) {
-          toast.success("File uploaded successfully Redirecting...");
+          toast.success("File data extracted successfully Redirecting...");
           console.log(res.data);
           setData({
             parsedText: res.data.parsedText,

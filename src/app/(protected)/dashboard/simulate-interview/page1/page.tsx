@@ -141,7 +141,7 @@ const OnboardingSteps = () => {
       }   flex justify-center items-center  relative overflow-hidden `}
     >
       {showConfetti && (
-        <Confetti className=" absolute inset-0 border h-full w-full " />
+        <Confetti className=" absolute inset-0  h-full w-full " />
       )}
       <div className="h-full w-full absolute">
         {/* Radial Gradient Background */}

@@ -90,7 +90,7 @@ const page = () => {
           : "dashboard-content-sidebar-close"
       }  flex  justify-center`}
     >
-      <div className="  h-full   grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5  gap-4 p-4">
+      <div className="  h-full   grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4  gap-4 p-4">
         {showSkeletonLoading ? (
           <>
             {Array.from({ length: 2 }).map((_, i) => (
