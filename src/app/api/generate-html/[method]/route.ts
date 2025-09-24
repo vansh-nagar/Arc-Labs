@@ -14,8 +14,11 @@ export async function POST(
         const formData = await req.formData();
         const data = formData.get("data") as string;
         const file = formData.get("file") as File;
-        if(!data || !file) {
-          return NextResponse.json({ error: "Missing data or file" }, { status: 400 });
+        if (!data || !file) {
+          return NextResponse.json(
+            { error: "Missing data or file" },
+            { status: 400 }
+          );
         }
 
         const { jobTitle, description } = JSON.parse(data);
@@ -27,8 +30,14 @@ export async function POST(
         //
         const parsed = await pdfParse(buffer);
 
-
-        return NextResponse.json({ parsedText: parsed.text  , jobTitle: jobTitle , description: description  }, { status: 200 });
+        return NextResponse.json(
+          {
+            parsedText: parsed.text,
+            jobTitle: jobTitle,
+            description: description,
+          },
+          { status: 200 }
+        );
       } catch (err: any) {
         return NextResponse.json({ error: err.message }, { status: 500 });
       }
@@ -74,6 +83,14 @@ Do not add shadows or rounded corners.
   <!-- SECTION: EXPERIENCE -->
   <!-- SECTION: EDUCATION -->
   <!-- SECTION: PROJECTS -->
++ Also give each section a unique id attribute matching the section name so it can be selected programmatically later:
++ <div id="header-section">...</div>
++ <div id="summary-section">...</div>
++ <div id="skills-section">...</div>
++ <div id="experience-section">...</div>
++ <div id="education-section">...</div>
++ <div id="projects-section">...</div>
+
 - Make each section descriptive and achievement-oriented, using metrics, technologies, and outcomes wherever applicable.
 
 Candidate Data:

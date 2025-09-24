@@ -56,6 +56,7 @@ const page = () => {
   const router = useRouter();
   const calledGetProjects = useRef(false);
   const [showSkeletonLoading, setShowSkeletonLoading] = useState(true);
+  const [projectIsDeleting, setProjectIsDeleting] = useState(false);
 
   useEffect(() => {
     if (status !== "authenticated") return;
@@ -81,6 +82,29 @@ const page = () => {
         setShowSkeletonLoading(false);
       });
   }, [status]);
+
+  const handleUpdateProject = (projectId: string) => {};
+
+  const handleDeleteProject = (projectId: string) => {
+    if (projectIsDeleting) return;
+    toast.loading("Deleting project...");
+    setProjectIsDeleting(true);
+    console.log("Delete project", projectId);
+    axios
+      .post("/api/dashboard/delete-project", { projectId })
+      .then((res) => {
+        toast.dismiss();
+        toast.success(res.data.message || "Project deleted successfully");
+        setProjects((prev) => prev.filter((p) => p.id !== projectId));
+      })
+      .catch((err) => {
+        toast.dismiss();
+        toast.error(err.response?.data?.error || "Something went wrong");
+      })
+      .finally(() => {
+        setProjectIsDeleting(false);
+      });
+  };
 
   return (
     <div
@@ -121,7 +145,7 @@ const page = () => {
                           }}
                         />
                       </div>
-                      <div className=" absolute top-3 right-3 flex flex-row gap-2 z-30">
+                      <div className=" absolute bottom-2 right-2 flex flex-row gap-2 z-30">
                         <Button
                           variant={`${project.locked ? "default" : "outline"}`}
                           size="icon"
@@ -181,6 +205,13 @@ const page = () => {
                                   value={project.name}
                                   placeholder="Project Name"
                                 />
+                                <Button
+                                  onClick={() => {
+                                    handleUpdateProject(project.id);
+                                  }}
+                                >
+                                  Update
+                                </Button>
                               </DialogDescription>
                             </DialogHeader>
                           </DialogContent>
@@ -189,6 +220,7 @@ const page = () => {
                           size={"sm"}
                           variant={"ghost"}
                           className=" w-full rounded-none"
+                          onClick={() => handleDeleteProject(project.id)}
                         >
                           Delete
                         </Button>

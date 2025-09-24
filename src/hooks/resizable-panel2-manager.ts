@@ -27,8 +27,11 @@ export const useProjectManager = (
   const [isSavingToDb, setIsSavingToDb] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [isToggleLock, setIsToggleLock] = useState(false);
+  const [ProjectDataLoading, setProjectDataLoading] = useState(false);
 
-  const updateFunctionCalled = useRef(false);
+
+
+
   const apiIsCalled = useRef(false);
   const resumeRef = useRef<HTMLDivElement>(null);
 
@@ -51,12 +54,12 @@ export const useProjectManager = (
     if (
       !projectId ||
       projectId === "new" ||
-      updateFunctionCalled.current ||
-      status !== "authenticated"
+      status !== "authenticated" ||
+      ProjectDataLoading
     )
       return;
 
-    updateFunctionCalled.current = true;
+    setProjectDataLoading(true);
 
     axios
       .post("/api/generate-html/update-project-view", { projectId })
@@ -78,7 +81,7 @@ export const useProjectManager = (
         )
       )
       .finally(() => {
-        updateFunctionCalled.current = false;
+        setProjectDataLoading(false);
       });
   }, [projectId, status]);
 
