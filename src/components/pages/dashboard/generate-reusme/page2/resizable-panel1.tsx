@@ -12,6 +12,7 @@ import { Message, MessageContent } from "@/components/ai-elements/message";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { MessageSquare, SmileIcon } from "lucide-react";
+import { useHTMLEditorStore } from "@/stores/generate_resume_p1";
 import {
   PromptInput,
   PromptInputBody,
@@ -19,9 +20,13 @@ import {
   PromptInputTextarea,
   PromptInputToolbar,
 } from "@/components/ai-elements/prompt-input";
+import { Response } from "@/components/ai-elements/response";
+import axios from "axios";
 
 const ResizablePanel1 = () => {
   const [chatPrompt, setChatPrompt] = useState("");
+
+  const { htmlContent, setHtmlContent } = useHTMLEditorStore();
 
   const { messages, sendMessage } = useChat({
     transport: new DefaultChatTransport({
@@ -46,9 +51,10 @@ const ResizablePanel1 = () => {
             messages.map((message) => (
               <Message from={message.role} key={message.id}>
                 <MessageContent>
-                  {" "}
-                  {message.parts.find((part) => part.type === "text")?.text ||
-                    ""}
+                  <Response>
+                    {message.parts.find((part) => part.type === "text")?.text ||
+                      ""}
+                  </Response>
                 </MessageContent>
               </Message>
             ))
@@ -59,12 +65,15 @@ const ResizablePanel1 = () => {
       <PromptInput
         className=" rounded-md"
         onSubmit={(e) => {
-          if (chatPrompt.trim()) {
-            sendMessage({
-              text: chatPrompt,
+          axios
+            .post("/api/generate-html/look-up-calls", {
+              htmlContent,
+              chatPrompt,
+            })
+            .then((res) => {
+              console.log("Response from API:", res.data);
+              setHtmlContent(res.data.finalHtml);
             });
-            setChatPrompt("");
-          }
         }}
       >
         <PromptInputBody>
