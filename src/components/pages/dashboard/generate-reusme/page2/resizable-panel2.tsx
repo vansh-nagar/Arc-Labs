@@ -2,7 +2,16 @@ import React from "react";
 import { ResizablePanel } from "@/components/ui/resizable";
 
 import { Button } from "@/components/ui/button";
-import { Code, Eye, Link, Loader2, LockIcon, UnlockIcon } from "lucide-react";
+import {
+  Code,
+  Eye,
+  Link,
+  Loader2,
+  LockIcon,
+  Redo,
+  Undo,
+  UnlockIcon,
+} from "lucide-react";
 import CodeEditor from "@/components/pages/dashboard/generate-reusme/page2/editor";
 import UILoading from "@/components/ui/uiloading";
 import { toast } from "sonner";
@@ -36,19 +45,28 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
     <ResizablePanel defaultSize={75} className="h-full ">
       {isLocked && !isAuthenticated && <Lock />}
       <div className="ml-3 justify-between gap-2 flex  mb-3">
-        <Button
-          onClick={() => {
-            if (!isAuthenticated) {
-              toast.error("You are not authorized to see the code editor.");
-              return;
-            }
-            setShowCode(!showCode);
-          }}
-          size="icon"
-          variant={`${showCode ? "default" : "outline"}`}
-        >
-          <Code />
-        </Button>
+        <div className=" flex gap-2">
+          <Button
+            onClick={() => {
+              if (!isAuthenticated) {
+                toast.error("You are not authorized to see the code editor.");
+                return;
+              }
+              setShowCode(!showCode);
+            }}
+            size="icon"
+            variant={`${showCode ? "default" : "outline"}`}
+          >
+            <Code />
+          </Button>
+          <Button variant="outline" size={"icon"}>
+            <Undo />
+          </Button>
+          <Button variant="outline" size={"icon"}>
+            <Redo />
+          </Button>
+        </div>
+
         <div className=" flex gap-2 ">
           <Button
             variant="outline"
@@ -114,7 +132,7 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
         </div>
       </div>
       {showCode ? (
-        <div className=" h-full border ml-3 rounded-md  overflow-hidden  ">
+        <div className=" h-full ml-3 rounded-md  overflow-hidden  ">
           <CodeEditor code={htmlContent} onChange={setHtmlContent} />
         </div>
       ) : (

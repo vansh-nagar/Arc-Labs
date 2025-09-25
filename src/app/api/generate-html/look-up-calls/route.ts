@@ -1,12 +1,5 @@
 import { groq } from "@ai-sdk/groq";
-import {
-  convertToModelMessages,
-  generateObject,
-  generateText,
-  streamObject,
-  streamText,
-  UIMessage,
-} from "ai";
+import { generateObject } from "ai";
 import { z } from "zod";
 import * as cheerio from "cheerio";
 import { NextRequest, NextResponse } from "next/server";
@@ -30,6 +23,8 @@ const updateSchema = z.object({
   updatedHtml: z
     .string()
     .describe("The updated HTML content for the specified div."),
+
+  reply: z.string().describe("reply for the changes you made."),
 });
 
 export async function POST(req: NextRequest) {
@@ -53,17 +48,17 @@ export async function POST(req: NextRequest) {
   const Stream = await generateObject({
     model: groq("openai/gpt-oss-120b"),
     schema: updateSchema,
-
     prompt: `User wants to update  HTML: ${sectionHtml}.
 Please provide updated HTML. according to user request: ${chatPrompt}.
 Make sure to keep the same div id and class names as the original HTML. Only provide the updated HTML without any additional text or explanations. If the user request is not relevant to this section, respond with the original HTML without any changes.`,
   });
 
   const updatedHtml = Stream?.object?.updatedHtml || "";
+  const reply = Stream?.object?.reply || "";
 
   $(`div#${divId}`).replaceWith(updatedHtml);
 
   const finalHtml = $.html();
 
-  return NextResponse.json({ finalHtml, divId }); // Return the updated HTML and divId
+  return NextResponse.json({ finalHtml, divId, reply }); // Return the updated HTML and divId
 }

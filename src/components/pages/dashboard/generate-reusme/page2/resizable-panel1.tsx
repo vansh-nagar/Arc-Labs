@@ -23,15 +23,16 @@ import {
 import { Response } from "@/components/ai-elements/response";
 import axios from "axios";
 
+import { useId } from "react";
+
 const ResizablePanel1 = () => {
   const [chatPrompt, setChatPrompt] = useState("");
+  const Id = useId();
 
   const { htmlContent, setHtmlContent } = useHTMLEditorStore();
 
-  const { messages, sendMessage } = useChat({
-    transport: new DefaultChatTransport({
-      api: "/api/generate-html/look-up-calls",
-    }),
+  const { messages, setMessages } = useChat({
+    transport: new DefaultChatTransport({ api: "/api/dummy" }),
   });
 
   return (
@@ -65,6 +66,12 @@ const ResizablePanel1 = () => {
       <PromptInput
         className=" rounded-md"
         onSubmit={(e) => {
+          messages.push({
+            id: Id,
+            role: "user",
+            parts: [{ type: "text", text: chatPrompt }],
+          });
+          setChatPrompt("");
           axios
             .post("/api/generate-html/look-up-calls", {
               htmlContent,
@@ -72,6 +79,11 @@ const ResizablePanel1 = () => {
             })
             .then((res) => {
               console.log("Response from API:", res.data);
+              messages.push({
+                id: Id,
+                role: "assistant",
+                parts: [{ type: "text", text: res.data.reply }],
+              });
               setHtmlContent(res.data.finalHtml);
             });
         }}
