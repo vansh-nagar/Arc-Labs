@@ -36,6 +36,7 @@ import {
   DropzoneContent,
   DropzoneEmptyState,
 } from "@/components/shadcn-io/dropzone";
+import { useHistoryStore } from "@/stores/editor-history";
 
 type Project = {
   id: string;
@@ -57,6 +58,7 @@ const page = () => {
   const calledGetProjects = useRef(false);
   const [showSkeletonLoading, setShowSkeletonLoading] = useState(true);
   const [projectIsDeleting, setProjectIsDeleting] = useState(false);
+  const { resetHistory } = useHistoryStore();
 
   useEffect(() => {
     if (status !== "authenticated") return;
@@ -64,6 +66,8 @@ const page = () => {
     if (calledGetProjects.current) return;
     calledGetProjects.current = true;
     toast.loading("Fetching your projects...");
+
+    resetHistory();
 
     const email = session?.user?.email;
     axios

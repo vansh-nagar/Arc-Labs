@@ -5,6 +5,7 @@ type HistoryState = {
   currentIndex: number;
   addVersion: (code: string) => void;
   setIndex: (index: number) => void;
+  resetHistory: () => void;
 };
 
 export const useHistoryStore = create<HistoryState>((set) => ({
@@ -24,4 +25,6 @@ export const useHistoryStore = create<HistoryState>((set) => ({
     }),
 
   setIndex: (index: number) => set({ currentIndex: index }),
+
+  resetHistory: () => set({ history: [], currentIndex: 0 }),
 }));
