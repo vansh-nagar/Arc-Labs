@@ -59,72 +59,39 @@ export async function POST(
           prompt: [
             {
               role: "user",
-              content: `Using the information below, generate a **resume in plain HTML** with **all CSS inlined** using style attributes. 
-Make the layout **clean, professional, and compact** like a modern corporate resume. 
-Use subtle colors for section headers (#333 for main text, #555 for subtext), a sans-serif font, slightly smaller font sizes, and balanced spacing.  
+              content: `Using the candidate information provided below, generate a complete, professional resume in plain HTML with all CSS fully inlined using style attributes. The HTML must be clean, modern, and compact like a top-tier corporate resume.
+                        Layout & Styling:
+                        - Use a sans-serif font, subtle colors for text (#333 main, #555 subtext), slightly smaller font sizes, and balanced spacing for readability.
+                        - Keep the layout professional, compact, and visually clean. Avoid shadows, rounded corners, tables, or images.
+                        - All sections must have unique IDs and be wrapped in identifiable HTML comments for easy programmatic editing:
+                          <!-- SECTION: HEADER --> <div id="header-section">...</div>
+                          <!-- SECTION: SUMMARY --> <div id="summary-section">...</div>
+                          <!-- SECTION: SKILLS --> <div id="skills-section">...</div>
+                          <!-- SECTION: EXPERIENCE --> <div id="experience-section">...</div>
+                          <!-- SECTION: EDUCATION --> <div id="education-section">...</div>
+                          <!-- SECTION: PROJECTS --> <div id="projects-section">...</div>
 
-When writing sections, make them **descriptive and achievement-focused**:
-- For Experience: use action verbs, quantify achievements where possible, mention technologies used.
-- For Projects: explain purpose, features, technologies, and impact.
-- For Skills: highlight proficiency or level.
-- For Summary: write a 2–3 sentence professional summary that highlights strengths, experience, and goals.
+                        Content Guidelines:
+                        - Header/Contact Info: Name, professional title, email, phone, LinkedIn/GitHub if provided.
+                        - Summary: 2–3 sentence professional overview highlighting strengths, experience, achievements, and career goals.
+                        - Skills: Include hard and soft skills, highlight proficiency levels, technologies used, and relevant keywords for ATS scoring.
+                        - Experience: Use action verbs, quantify results (percentages, metrics, numbers), mention technologies and tools used. Include achievements, not just responsibilities.
+                        - Education: Include degree, institution, graduation year, honors, certifications.
+                        - Projects: Explain purpose, scope, technologies, impact, and results. Focus on measurable outcomes.
 
-Include these sections if data exists: Contact Info, Summary, Skills, Experience, Education, Projects. 
-Use only standard HTML tags with inline style attributes. 
-Do not use class names, React JSX, or TSX syntax. 
-Do not wrap the output in markdown or code blocks. 
-Do not add shadows or rounded corners.  
+                        Formatting & Output Rules:
+                        - Use only standard HTML tags and inline style attributes; no classes, no React/JSX/TSX.
+                        - Each section must be wrapped in HTML comments and have a unique ID.
+                        - Use bullet points for lists, concise descriptive text, and strong action verbs.
+                        - Output only the final HTML; do not include markdown, code fences, or explanations.
 
-**Important for editing later:**
-- Wrap each section in identifiable HTML comments so it can be targeted individually:
-  <!-- SECTION: HEADER -->
-  <!-- SECTION: SUMMARY -->
-  <!-- SECTION: SKILLS -->
-  <!-- SECTION: EXPERIENCE -->
-  <!-- SECTION: EDUCATION -->
-  <!-- SECTION: PROJECTS -->
-+ Also give each section a unique id attribute matching the section name so it can be selected programmatically later:
-+ <div id="header-section">...</div>
-+ <div id="summary-section">...</div>
-+ <div id="skills-section">...</div>
-+ <div id="experience-section">...</div>
-+ <div id="education-section">...</div>
-+ <div id="projects-section">...</div>
+                        Extra Requirements for ATS & Readability:
+                        - Optimize content for keyword matching with job-relevant skills.
+                        - Highlight measurable achievements for each experience/project.
+                        - Ensure the resume is human-readable, visually clean, and fully parseable by ATS systems.
 
-- Make each section descriptive and achievement-oriented, using metrics, technologies, and outcomes wherever applicable.
-
-Candidate Data:
-${prompt}
-
-Template reference for styling and structure (ignore classes):
-<div style="max-width:700px; margin:1.5rem auto; background-color:#fff; padding:1.5rem; font-family:Arial,sans-serif; font-size:14px; line-height:1.5; color:#333;">
-  <!-- SECTION: HEADER -->
-  <div style="margin-bottom:1rem; border-bottom:1px solid #ccc; padding-bottom:0.5rem;">
-    <h1 style="font-size:1.75rem; font-weight:700; margin:0;">John <span style="font-weight:400;">Doe</span></h1>
-    <div style="color:#555; font-size:13px; margin-top:0.25rem;">
-      <span>Email:</span> john.doe@gmail.com 
-      <span style="margin:0 0.5rem; border-left:1px solid #999; height:0.75rem; display:inline-block;"></span>
-      <span>Phone:</span> 111-222-3333
-    </div>
-    <p style="margin-top:0.5rem; font-size:13px;">
-      <span style="font-weight:600;">Front-End Developer</span> – Creative and detail-oriented developer with 4+ years’ experience building responsive, user-friendly websites and web apps.
-    </p>
-  </div>
-
-  <!-- SECTION: EXPERIENCE -->
-  <!-- Add experience entries here, each with inline styles similar to the header, making them descriptive and achievement-focused -->
-
-  <!-- SECTION: EDUCATION -->
-  <!-- Add education entries here with inline styles, include degree, institution, dates, and notable achievements -->
-
-  <!-- SECTION: PROJECTS -->
-  <!-- Add projects entries here with inline styles, describing purpose, technologies, and impact -->
-
-  <!-- SECTION: SKILLS -->
-  <!-- Add skills entries here with inline styles, highlight proficiency or level -->
-</div>
-
-              Output only the final HTML with all styles inlined in style attributes. Wrap each section with the HTML comments as specified so that sections can be individually edited later.`,
+                        Candidate Data:
+            ${prompt}`,
             },
           ],
         });

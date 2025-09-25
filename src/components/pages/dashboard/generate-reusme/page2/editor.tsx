@@ -18,6 +18,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
+import { useHistoryStore } from "@/stores/editor-history";
+
 interface CodeEditorProps {
   code: string;
   language?: string;

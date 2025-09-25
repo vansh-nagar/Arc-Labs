@@ -64,9 +64,11 @@ export async function POST(req: NextRequest) {
     const Stream = await generateObject({
       model: groq("openai/gpt-oss-120b"),
       schema: updateSchema,
-      prompt: `User wants to update  HTML: ${sectionHtml}.
- Please provide updated HTML. according to user request: ${chatPrompt}.
- Make sure to keep the same div id and class names as the original HTML. Only provide the updated HTML without any additional text or explanations. If the user request is not relevant to this section, respond with the original HTML without any changes.`,
+      prompt: `User wants to update HTML: ${sectionHtml}.
+      Please provide updated HTML according to the user request: ${chatPrompt}.
+      Make sure to keep the same div id, class names, inline styles, and formatting as the original HTML.
+      Only provide the updated HTML without any additional text, explanations, or alterations unrelated to the request.
+      If the user request is not relevant to this section, respond with the original HTML exactly as it is.`,
     });
 
     const updatedHtml = Stream?.object?.updatedHtml || "";

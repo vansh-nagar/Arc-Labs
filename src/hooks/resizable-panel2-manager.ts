@@ -8,6 +8,7 @@ import {
   generateResumeDataStore,
   useHTMLEditorStore,
 } from "@/stores/generate_resume_p1";
+import { useHistoryStore } from "@/stores/editor-history";
 
 export const useProjectManager = (
   resolvedParams: any,
@@ -28,6 +29,8 @@ export const useProjectManager = (
   const [isDownloading, setIsDownloading] = useState(false);
   const [isToggleLock, setIsToggleLock] = useState(false);
   const [ProjectDataLoading, setProjectDataLoading] = useState(false);
+
+  const { history, addVersion } = useHistoryStore();
 
   const apiIsCalled = useRef(false);
   const resumeRef = useRef<HTMLDivElement>(null);
@@ -66,6 +69,7 @@ export const useProjectManager = (
       .post("/api/generate-html/get-project-data", { projectId })
       .then((res) => {
         setHtmlContent(JSON.parse(res.data.project.html) || "");
+        addVersion(JSON.parse(res.data.project.html) || "");
         setIsLocked(res.data.project.locked);
         if (res.data.project.user.email === session?.user?.email) {
           setIsAuthenticated(true);

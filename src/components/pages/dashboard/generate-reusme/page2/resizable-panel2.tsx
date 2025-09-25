@@ -18,6 +18,7 @@ import { toast } from "sonner";
 
 import { useProjectManager } from "@/hooks/resizable-panel2-manager";
 import Lock from "@/components/ui/lock";
+import { useHistoryStore } from "@/stores/editor-history";
 
 const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
   const {
@@ -41,6 +42,8 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
     handleDownloadPDF,
   } = useProjectManager(resolvedParams, originalProjectId);
 
+  const { history, currentIndex, setIndex } = useHistoryStore();
+
   return (
     <ResizablePanel defaultSize={75} className="h-full ">
       {isLocked && !isAuthenticated && <Lock />}
@@ -59,10 +62,39 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
           >
             <Code />
           </Button>
-          <Button variant="outline" size={"icon"}>
+          <Button
+            onClick={() => {
+              const newIndex = currentIndex - 1;
+              console.log({ history });
+              console.log({ newIndex, currentIndex });
+              if (newIndex < 0) {
+                toast.error("No more undo available");
+                return;
+              }
+              setHtmlContent(history[newIndex]?.code || "");
+              setIndex(newIndex);
+            }}
+            variant="outline"
+            size={"icon"}
+          >
             <Undo />
           </Button>
-          <Button variant="outline" size={"icon"}>
+          <Button
+            onClick={() => {
+              const newIndex = currentIndex + 1;
+              console.log({ newIndex, currentIndex });
+              if (newIndex >= history.length) {
+                toast.error("No more redo available");
+                return;
+              }
+              setHtmlContent(history[newIndex]?.code || "");
+              if (newIndex < history.length) {
+                setIndex(newIndex);
+              }
+            }}
+            variant="outline"
+            size={"icon"}
+          >
             <Redo />
           </Button>
         </div>

@@ -1,0 +1,27 @@
+import { create } from "zustand";
+
+type HistoryState = {
+  history: { code: string; time: number }[];
+  currentIndex: number;
+  addVersion: (code: string) => void;
+  setIndex: (index: number) => void;
+};
+
+export const useHistoryStore = create<HistoryState>((set) => ({
+  history: [],
+  currentIndex: 0,
+
+  addVersion: (code: string) =>
+    set((state) => {
+      const newHistory = [
+        ...state.history.slice(0, state.currentIndex + 1), // discard future
+        { code, time: Date.now() },
+      ];
+      return {
+        history: newHistory,
+        currentIndex: newHistory.length - 1,
+      };
+    }),
+
+  setIndex: (index: number) => set({ currentIndex: index }),
+}));

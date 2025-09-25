@@ -24,6 +24,7 @@ import { Response } from "@/components/ai-elements/response";
 import axios from "axios";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { useHistoryStore } from "@/stores/editor-history";
 
 const ResizablePanel1 = () => {
   const [chatPrompt, setChatPrompt] = useState("");
@@ -31,7 +32,9 @@ const ResizablePanel1 = () => {
   const { htmlContent, setHtmlContent } = useHTMLEditorStore();
   const [updateCallLoading, setUpdateCallLoading] = useState(false);
 
-  const { messages, setMessages } = useChat({
+  const { history, addVersion } = useHistoryStore();
+
+  const { messages } = useChat({
     transport: new DefaultChatTransport({ api: "/api/dummy" }),
   });
 
@@ -86,6 +89,7 @@ const ResizablePanel1 = () => {
                 parts: [{ type: "text", text: res.data.reply }],
               });
               setHtmlContent(res.data.finalHtml);
+              addVersion(res.data.finalHtml);
             })
             .catch((err) => {
               toast.error(err.response?.data?.error);
