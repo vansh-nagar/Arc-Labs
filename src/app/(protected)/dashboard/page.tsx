@@ -236,10 +236,16 @@ const page = () => {
         )}
 
         <Link href={"/dashboard/generate-resume/page1"}>
-          <div className="border-2 border-dashed h-60 w-60 rounded-md cursor-pointer overflow-hidden relative flex flex-col gap-2 justify-center items-center">
+          <div className="border-2 group border-dashed h-60 w-60 rounded-md cursor-pointer  relative flex flex-col gap-2 justify-center items-center">
             <Plus size={40} className="text-muted-foreground" />{" "}
             <div className="text-sm text-muted-foreground mt-2">
               Create new project
+            </div>
+            <div className=" absolute flex flex-col gap-2 justify-center items-center inset-0 backdrop-blur-md border-2  opacity-0 border-dashed  group-hover:scale-105 group-hover:opacity-100 group-active:scale-100 transition-all duration-200 rounded-md group-hover:shadow-2xl   ">
+              <Plus size={40} className="text-muted-foreground" />{" "}
+              <div className="text-sm text-muted-foreground mt-2">
+                Create new project
+              </div>
             </div>
           </div>
         </Link>

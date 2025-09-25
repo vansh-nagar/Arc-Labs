@@ -49,7 +49,7 @@ const ResizablePanel1 = () => {
             <ConversationEmptyState
               icon={<MessageSquare className="size-12" />}
               title="No messages yet"
-              description="Start a conversation to see messages here"
+              description="Start a conversation to refine and improve your resume"
             />
           ) : (
             messages.map((message) => (

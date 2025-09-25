@@ -52,7 +52,7 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
           <Button
             onClick={() => {
               if (!isAuthenticated) {
-                toast.error("You are not authorized to see the code editor.");
+                toast.error("You are not authorized to open code editor.");
                 return;
               }
               setShowCode(!showCode);
@@ -68,7 +68,7 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
               console.log({ history });
               console.log({ newIndex, currentIndex });
               if (newIndex < 0) {
-                toast.error("No more undo available");
+                toast.error("No undo available");
                 return;
               }
               setHtmlContent(history[newIndex]?.code || "");
@@ -84,7 +84,7 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
               const newIndex = currentIndex + 1;
               console.log({ newIndex, currentIndex });
               if (newIndex >= history.length) {
-                toast.error("No more redo available");
+                toast.error("No redo available");
                 return;
               }
               setHtmlContent(history[newIndex]?.code || "");

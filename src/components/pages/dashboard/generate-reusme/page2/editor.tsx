@@ -112,7 +112,7 @@ export default function CodeEditor({
           },
         }}
       />
-      <div className="   z-50 flex flex-col gap-2">
+      <div className="   z-50 flex flex-col gap-3">
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
