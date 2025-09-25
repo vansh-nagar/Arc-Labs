@@ -29,9 +29,6 @@ export const useProjectManager = (
   const [isToggleLock, setIsToggleLock] = useState(false);
   const [ProjectDataLoading, setProjectDataLoading] = useState(false);
 
-
-
-
   const apiIsCalled = useRef(false);
   const resumeRef = useRef<HTMLDivElement>(null);
 
@@ -99,7 +96,7 @@ export const useProjectManager = (
 
     apiIsCalled.current = true;
 
-    console.log("Generating resume with dataaaaaaaaaaaaaaaaaaa", type);
+    console.log("Type", type);
 
     if (type === "template" && data.template !== "") {
       setHtmlContent(data.template);
@@ -148,10 +145,6 @@ export const useProjectManager = (
         );
     });
   }, [status]);
-
-  useEffect(() => {
-    console.log("typeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", type);
-  }, []);
 
   const handleSaveProgress = async () => {
     if (!isAuthenticated) {

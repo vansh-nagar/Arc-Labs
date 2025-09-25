@@ -89,7 +89,6 @@ const page = () => {
     if (projectIsDeleting) return;
     toast.loading("Deleting project...");
     setProjectIsDeleting(true);
-    console.log("Delete project", projectId);
     axios
       .post("/api/dashboard/delete-project", { projectId })
       .then((res) => {
