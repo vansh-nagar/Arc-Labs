@@ -98,6 +98,8 @@ const OnboardingSteps = () => {
   ];
 
   const handleSubmit = async () => {
+    router.push("/dashboard/simulate-interview/page2");
+
     if (isLoading) return;
     setisLoading(true);
     setshowConfetti(true);

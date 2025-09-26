@@ -125,6 +125,7 @@ export default function CodeEditor({
 
         {settingButtons.map((button, index) => (
           <Button
+            key={index}
             title={button.title}
             variant="outline"
             onClick={button.onClick}
