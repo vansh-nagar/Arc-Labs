@@ -17,7 +17,7 @@ const sidebarPages = [
   {
     label: "Roast My Resume",
     icon: <Zap />,
-    path: "/dashboard/roast-resume",
+    path: "/dashboard/roast-my-resume/page1",
   },
   {
     label: "Find & Apply",

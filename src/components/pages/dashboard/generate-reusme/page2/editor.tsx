@@ -5,12 +5,7 @@ import Editor, { OnChange } from "@monaco-editor/react";
 import { useHTMLEditorStore } from "@/stores/generate_resume_p1";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
-import {
-  Minus,
-  PanelRight,
-  Plus,
-  RotateCw,
-} from "lucide-react";
+import { Minus, PanelRight, Plus, RotateCw } from "lucide-react";
 import { toast } from "sonner";
 import {
   Tooltip,
@@ -32,7 +27,7 @@ export default function CodeEditor({
   onChange,
 }: CodeEditorProps) {
   const editorRef = useRef<any>(null);
-  const { setHtmlContent } = useHTMLEditorStore();
+  const { setHtmlContent, htmlContent } = useHTMLEditorStore();
   const { theme } = useTheme();
   const [changeLoading, setChangeLoading] = useState(false);
 
@@ -93,6 +88,7 @@ export default function CodeEditor({
     <div className="h-full flex flex-row gap-3">
       <Editor
         className=" border"
+        value={htmlContent}
         height="100%"
         defaultLanguage={language}
         defaultValue={code}
@@ -113,37 +109,29 @@ export default function CodeEditor({
         }}
       />
       <div className="   z-50 flex flex-col gap-3">
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant={isMiniMapOpen ? "default" : "outline"}
-              onClick={() => {
-                localStorage.setItem(
-                  "isMiniMapOpen",
-                  JSON.stringify(!isMiniMapOpen)
-                );
-                setisMiniMapOpen(!isMiniMapOpen);
-              }}
-              size={"icon"}
-            >
-              <PanelRight />{" "}
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Toggle mini map</p>
-          </TooltipContent>
-        </Tooltip>
+        <Button
+          variant={isMiniMapOpen ? "default" : "outline"}
+          onClick={() => {
+            localStorage.setItem(
+              "isMiniMapOpen",
+              JSON.stringify(!isMiniMapOpen)
+            );
+            setisMiniMapOpen(!isMiniMapOpen);
+          }}
+          size={"icon"}
+        >
+          <PanelRight />{" "}
+        </Button>
+
         {settingButtons.map((button, index) => (
-          <Tooltip key={index}>
-            <TooltipTrigger asChild>
-              <Button variant="outline" onClick={button.onClick} size={"icon"}>
-                {button.icon}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{button.title}</p>
-            </TooltipContent>
-          </Tooltip>
+          <Button
+            title={button.title}
+            variant="outline"
+            onClick={button.onClick}
+            size={"icon"}
+          >
+            {button.icon}
+          </Button>
         ))}
       </div>
     </div>

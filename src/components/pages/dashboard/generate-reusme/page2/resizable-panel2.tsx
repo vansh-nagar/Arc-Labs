@@ -74,7 +74,7 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
               setHtmlContent(history[newIndex]?.code || "");
               setIndex(newIndex);
             }}
-            variant="outline"
+            variant={currentIndex - 1 < 0 ? "outline" : "default"}
             size={"icon"}
           >
             <Undo />
@@ -92,7 +92,7 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
                 setIndex(newIndex);
               }
             }}
-            variant="outline"
+            variant={currentIndex + 1 >= history.length ? "outline" : "default"}
             size={"icon"}
           >
             <Redo />
