@@ -9,6 +9,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import AIChat from "@/components/pages/dashboard/simulate-interview/page2/ai-chat";
 
 const Page = () => {
   const [Room, setRoom] = useState(null);
@@ -51,9 +52,7 @@ const Page = () => {
           </Canvas>
         </ResizablePanel>
         <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={25} className="pl-4">
-          hi
-        </ResizablePanel>
+        <AIChat />
       </ResizablePanelGroup>
     </div>
   );

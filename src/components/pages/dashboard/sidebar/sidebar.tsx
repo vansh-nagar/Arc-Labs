@@ -27,7 +27,7 @@ const sidebarPages = [
   {
     label: "Build My Roadmap",
     icon: <Map />,
-    path: "/dashboard/build_roadmap",
+    path: "/dashboard/build-my-roadmap/page1",
   },
   {
     label: "Simulate Interview",

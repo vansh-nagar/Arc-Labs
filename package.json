@@ -61,7 +61,7 @@
     "ioredis": "^5.7.0",
     "lucide-react": "^0.544.0",
     "monaco-editor": "^0.53.0",
-    "motion": "^12.23.13",
+    "motion": "^12.23.22",
     "nanoid": "^5.1.5",
     "next": "15.5.3",
     "next-auth": "^4.24.11",
