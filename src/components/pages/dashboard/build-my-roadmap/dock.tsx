@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { Dock, DockIcon } from "@/components/ui/dock";
 
-const ToolDock = () => {
+const ToolDock = ({ className }: { className: string }) => {
   const DockIcons = [
     {
       icon: <Hand size={14} />,
@@ -73,23 +73,25 @@ const ToolDock = () => {
     },
   ];
   return (
-    <Dock
-      direction="middle"
-      className="  flex max-sm:hidden absolute bottom-6 right-1/2 translate-x-1/2 z-40 h-10 rounded-md gap-2"
-    >
-      {DockIcons.map((icon, index) => (
-        <DockIcon
-          className=" relative   hover:bg-accent"
-          key={index}
-          title={icon.label}
-        >
-          {icon.icon}
-          <div className="text-[10px] absolute right-1 bottom-1 text-muted-foreground">
-            {icon.index}
-          </div>
-        </DockIcon>
-      ))}
-    </Dock>
+    <div className={` overflow-x-auto hide-scrollbar ${className}`}>
+      <Dock direction="middle" className="flex h-10 mt-0 rounded-md gap-2">
+        {DockIcons.map((icon, index) => (
+          <DockIcon
+            className=" relative   hover:bg-accent"
+            key={index}
+            title={icon.label}
+            onClick={() => {
+              console.log(icon.label);
+            }}
+          >
+            {icon.icon}
+            <div className="text-[10px] absolute right-1 bottom-1 text-muted-foreground">
+              {icon.index}
+            </div>
+          </DockIcon>
+        ))}
+      </Dock>
+    </div>
   );
 };
 

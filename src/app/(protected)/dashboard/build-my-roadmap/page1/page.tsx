@@ -22,6 +22,7 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
+  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
@@ -76,45 +77,24 @@ const page = () => {
         isSideBarOpen
           ? "dashboard-content-sidebar-open"
           : "dashboard-content-sidebar-close"
-      }    relative   cursor-none cursor-hidden   `}
+      }    relative`}
     >
-      <SmoothCursor />
       <div className=" absolute top-6 left-6 z-40 ">
         <Button variant={"secondary"} size={"icon"}>
           <Menu />
         </Button>
       </div>
 
-      <div className=" absolute right-6 top-6 z-40 flex justify-center items-center gap-3">
+      <div className=" absolute right-6 top-6 z-40 flex justify-center items-center gap-2">
         <Button size={"icon"}>
           <Lock />
         </Button>
         <Button className=" bg-[#484aaa] text-white">Share</Button>
       </div>
 
-      <Drawer>
-        <DrawerTrigger
-          className=" absolute bottom-6 right-1/2 translate-x-1/2 z-40"
-          asChild
-        >
-          <Button size={"icon"} className="h-10 w-10">
-            <ToolCaseIcon />
-          </Button>
-        </DrawerTrigger>
-        <DrawerContent>
-          <DrawerHeader>
-            <DrawerTitle>Select any</DrawerTitle>
-          </DrawerHeader>
-          <DrawerFooter>
-            <ToolDock />
-            <DrawerClose>
-              <Button variant="outline">Cancel</Button>
-            </DrawerClose>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
-
-      <ToolDock />
+      <div className="absolute bottom-6 right-1/2 translate-x-1/2 z-40  max-lg:hidden ">
+        <ToolDock className="" />
+      </div>
 
       <div className="z-40  overflow-hidden absolute bottom-6 left-6">
         <Button
@@ -127,10 +107,29 @@ const page = () => {
         </Button>
       </div>
 
-      <div className=" flex flex-col  items-end   gap-3 absolute bottom-6   right-6">
+      <div className=" flex flex-col  items-end   gap-2 absolute bottom-6   right-6 z-40">
+        <Drawer>
+          <DrawerTrigger asChild>
+            <Button size={"icon"} className="h-10 w-10 md:hidden">
+              <ToolCaseIcon />
+            </Button>
+          </DrawerTrigger>
+          <DrawerContent>
+            <DrawerHeader>
+              <DrawerTitle className="text-xl font-bold">Toolkit</DrawerTitle>{" "}
+              <DrawerDescription className="text-sm text-muted-foreground">
+                Select a tool from the palette below to begin creating your
+                custom roadmap
+              </DrawerDescription>{" "}
+              <DrawerClose className="mt-6">
+                <ToolDock className="mask-r-from-90% mask-l-from-90% " />
+              </DrawerClose>
+            </DrawerHeader>
+          </DrawerContent>
+        </Drawer>
         <ToggleGroup
           type="single"
-          className="  border h-10  text-xs z-40 overflow-hidden"
+          className="  border h-10  text-xs  overflow-hidden"
         >
           <Button
             size={"icon"}
@@ -149,7 +148,7 @@ const page = () => {
         </ToggleGroup>
         <ToggleGroup
           type="single"
-          className=" border h-10  text-xs z-40 overflow-hidden"
+          className=" border h-10  text-xs  overflow-hidden"
         >
           <Button
             size={"icon"}
@@ -167,6 +166,7 @@ const page = () => {
             <Minus className="" size={14} />
           </Button>
         </ToggleGroup>
+        <ToolDock className=" max-md:hidden  lg:hidden" />
       </div>
 
       <canvas

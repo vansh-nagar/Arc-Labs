@@ -47,7 +47,7 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
   return (
     <ResizablePanel defaultSize={75} className="h-full ">
       {isLocked && !isAuthenticated && <Lock />}
-      <div className="ml-3 justify-between gap-2 flex  mb-3">
+      <div className="ml-3 justify-between gap-2 flex  mb-3 overflow-x-auto hide-scrollbar">
         <div className=" flex gap-2">
           <Button
             onClick={() => {
