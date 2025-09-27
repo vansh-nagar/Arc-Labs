@@ -33,13 +33,12 @@ const P1LeftSide = () => {
     <>
       <div className="   max-lg:border-none border-r    ">
         <div className="sticky top-20">
-          <h1 className=" font-semibold text-2xl sm:text-3xl   ">
-            Select how you want to {""}
-            <span className=" underline  decoration-neutral-100 ">
-              get started
-            </span>
-          </h1>
-          <div className=" flex flex-wrap gap-2 mt-5  lg:mt-5 mr-4 mb-4">
+          <div className="text-2xl font-medium">Generate Your Resume</div>
+          <div className=" text-muted-foreground text-sm">
+            Choose a method to create, import, or customize your resume{" "}
+          </div>
+
+          <div className=" flex flex-wrap gap-2 m-4 ml-0  lg:mt-5">
             {options.map((option, index) => (
               <Button
                 key={option.label}

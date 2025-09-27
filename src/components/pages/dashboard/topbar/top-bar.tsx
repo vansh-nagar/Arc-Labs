@@ -11,15 +11,15 @@ import { Button } from "@/components/ui/button";
 import { signOut } from "next-auth/react";
 
 const Top_bar = () => {
-  const { isSideBarOpen, setIsSideBarOpen } = useSidebarStore();
+  const { isSideBarOpen, setIsSideBarOpen, currentPage } = useSidebarStore();
 
   return (
     <div
-      className={`  h-16 fixed top-0  right-0   bg-background z-50  ${
-        isSideBarOpen ? "left-64 max-sm:left-0" : "left-14 max-sm:left-0 "
+      className={`  h-16 fixed top-0  right-0   bg-background z-40  ${
+        isSideBarOpen ? "left-64 max-sm:left-0" : "left-16 max-sm:left-0 "
       } px-4 flex border-b border-dashed items-center  justify-between bg-background  transition-all duration-150`}
     >
-      <h1 className=" font-bold text-lg max-sm:hidden ">Dashboard</h1>
+      <h1 className=" font-bold text-lg max-sm:hidden ">{currentPage}</h1>
 
       <div className="  sm:hidden">
         {isSideBarOpen ? (

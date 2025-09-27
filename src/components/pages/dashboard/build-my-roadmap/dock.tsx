@@ -73,7 +73,7 @@ const ToolDock = ({ className }: { className: string }) => {
     },
   ];
   return (
-    <div className={` overflow-x-auto hide-scrollbar ${className}`}>
+    <div className={`   hide-scrollbar ${className}`}>
       <Dock direction="middle" className="flex h-10 mt-0 rounded-md gap-2">
         {DockIcons.map((icon, index) => (
           <DockIcon

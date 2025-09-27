@@ -67,6 +67,7 @@ const ResizablePanel1 = () => {
         <ConversationScrollButton />
       </Conversation>
       <PromptInput
+        aria-placeholder="Ask me to improve your resume"
         className=" rounded-md"
         onSubmit={(e) => {
           if (updateCallLoading) return;

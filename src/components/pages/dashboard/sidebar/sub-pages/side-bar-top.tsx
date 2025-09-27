@@ -1,17 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { useSidebarStore } from "@/stores/sidebarStore";
-import {
-  HomeIcon,
-  PanelRight,
-  PanelRightClose,
-  Router,
-} from "lucide-react";
+import { HomeIcon, PanelRight, PanelRightClose, Router } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
 
 const SideBarTop = () => {
-  const { isSideBarOpen, setIsSideBarOpen } = useSidebarStore();
+  const { isSideBarOpen, setIsSideBarOpen, currentPage } = useSidebarStore();
   const router = useRouter();
   return (
     <>
@@ -48,7 +43,7 @@ const SideBarTop = () => {
           className={`w-full ${
             isSideBarOpen ? "justify-start" : "justify-center"
           } cursor-pointer`}
-          variant="ghost"
+          variant={currentPage === "Dashboard" ? "secondary" : "ghost"}
           size="default"
           onClick={() => {
             router.push("/dashboard");

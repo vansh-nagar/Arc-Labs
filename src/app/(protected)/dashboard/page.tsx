@@ -115,9 +115,15 @@ const page = () => {
         isSideBarOpen
           ? "dashboard-content-sidebar-open"
           : "dashboard-content-sidebar-close"
-      }  flex  justify-center`}
+      }  flex flex-col   items-start `}
     >
-      <div className="  h-full   grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4  gap-4 p-4">
+      <div className=" sm:px-4 ">
+        <div className="text-2xl font-medium">Your Projects</div>
+        <div className=" text-muted-foreground text-sm">
+          Manage your projects and continue where you left off.
+        </div>
+      </div>
+      <div className="sm:px-4  h-full  justify-center sm:justify-start  flex flex-wrap mt-4 gap-4 ">
         {showSkeletonLoading ? (
           <>
             {Array.from({ length: 2 }).map((_, i) => (

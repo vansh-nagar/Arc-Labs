@@ -188,7 +188,7 @@
   min-height: calc(100vh - 64px);
 }
 .dashboard-content-sidebar-close {
-  margin-left: 3.5rem;
+  margin-left: 4rem;
   margin-top: 4rem;
   padding: 0.75rem;
   transition: all 0.1s;

@@ -41,13 +41,13 @@ const sidebarPages = [
   },
 ];
 const Side_bar = () => {
-  const { isSideBarOpen } = useSidebarStore();
+  const { isSideBarOpen, currentPage } = useSidebarStore();
   const router = useRouter();
 
   return (
     <div
       className={`     fixed text left-0 bottom-0 top-0    overflow-hidden  border-r border-dashed h-screen z-30  bg-background ${
-        isSideBarOpen ? "w-64" : "w-14 max-sm:w-0"
+        isSideBarOpen ? "w-64" : "w-16 max-sm:w-0"
       }  max-h-[100vh]   transition-all duration-75 z-50`}
     >
       <SideBarTop />
@@ -61,7 +61,7 @@ const Side_bar = () => {
                 className={`w-full ${
                   isSideBarOpen ? "justify-start" : "justify-center"
                 } cursor-pointer`}
-                variant="ghost"
+                variant={currentPage === page.label ? "secondary" : "ghost"}
                 size="default"
                 key={index}
               >
