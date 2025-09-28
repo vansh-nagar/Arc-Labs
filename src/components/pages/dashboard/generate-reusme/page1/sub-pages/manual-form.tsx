@@ -456,7 +456,7 @@ const ManualForm = () => {
       </form>
 
       {/* Hobbies / Interests Section */}
-      <div className="mt-6">
+      <div >
         <label className="mb-2 block text-xl font-semibold truncate">
           Hobbies / Interests (optional)
         </label>
@@ -468,7 +468,7 @@ const ManualForm = () => {
         />
       </div>
 
-      <div className="mt-6">
+      <div>
         <label className="mb-2 block text-xl font-semibold truncate">
           Target Role*
         </label>
