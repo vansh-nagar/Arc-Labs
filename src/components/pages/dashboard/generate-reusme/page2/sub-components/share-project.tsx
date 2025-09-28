@@ -6,7 +6,7 @@ import {
   Link,
   RefreshCcw,
 } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import { toast } from "sonner";
 import {
   InputOTP,
@@ -31,10 +31,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Avatar } from "@/components/ui/avatar";
 import { ShineBorder } from "@/components/ui/shine-border";
 
 const ShareProject = () => {
+  const [RandomCode, setRandomCode] = useState(
+    Math.random().toString(36).slice(-6).toUpperCase()
+  );
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -51,31 +53,33 @@ const ShareProject = () => {
             <Input size={9} placeholder="Search...." />
             <Button variant="outline">Invite</Button>
           </div>
-          <div className=" mt-2">
+          <div className=" mt-2 flex  flex-col gap-1 max-h-32  mask-b-from-70% overflow-y-auto hide-scrollbar">
             {" "}
-            <div className=" flex justify-start gap-2 ">
-              <img
-                src="https://i.pinimg.com/736x/07/46/3e/07463ee1e49f11c06655128369416b7c.jpg"
-                className=" h-10 w-10 rounded-full"
-                alt=""
-              />
-              <div className=" flex justify-between items-center flex-grow">
-                <div className="  leading-5 ">
-                  Username <br />
-                  Email
+            {Array.from([1, 2, 3, 4, 5, 6, 7]).map((item) => (
+              <div key={item} className=" flex gap-2 items-center">
+                <img
+                  src="https://i.pinimg.com/736x/07/46/3e/07463ee1e49f11c06655128369416b7c.jpg"
+                  className=" h-10 w-10 rounded-full"
+                  alt=""
+                />
+                <div className=" flex justify-between items-center flex-grow">
+                  <div className="  leading-5 ">
+                    Username <br />
+                    Email
+                  </div>
+                  <Select>
+                    <SelectTrigger className="w-[120px] ">
+                      <SelectValue placeholder="Can view" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="light">Can view</SelectItem>
+                      <SelectItem value="dark">Can edit</SelectItem>
+                      <SelectItem value="system">Full Access</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
-                <Select>
-                  <SelectTrigger className="w-[120px] ">
-                    <SelectValue placeholder="Can view" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="light">Can view</SelectItem>
-                    <SelectItem value="dark">Can edit</SelectItem>
-                    <SelectItem value="system">Full Access</SelectItem>
-                  </SelectContent>
-                </Select>
               </div>
-            </div>
+            ))}
           </div>
         </div>
 
@@ -86,20 +90,28 @@ const ShareProject = () => {
           </DropdownMenuLabel>
           <div className=" flex items-center justify-between">
             {" "}
-            <InputOTP maxLength={6}>
-              <InputOTPGroup>
+            <InputOTP value={RandomCode} maxLength={6}>
+              <InputOTPGroup className=" mr-2">
                 <InputOTPSlot index={0} />
                 <InputOTPSlot index={1} />
                 <InputOTPSlot index={2} />
               </InputOTPGroup>
-              <InputOTPSeparator />
               <InputOTPGroup>
                 <InputOTPSlot index={3} />
                 <InputOTPSlot index={4} />
                 <InputOTPSlot index={5} />
               </InputOTPGroup>
             </InputOTP>
-            <Button variant="outline" size={"icon"} className=" ml-2">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setRandomCode(
+                  Math.random().toString(36).slice(-6).toUpperCase()
+                );
+              }}
+              size={"icon"}
+              className=" ml-2"
+            >
               <RefreshCcw />
             </Button>
           </div>{" "}
@@ -113,12 +125,18 @@ const ShareProject = () => {
               <SelectItem value="system">Full Access</SelectItem>
             </SelectContent>
           </Select>
-          <Button variant="default" className="  ">
+          <Button variant="outline" className="  ">
             Copy code
           </Button>
-          <Button variant="destructive" className="mb-2  ">
-            Kill Session
-          </Button>
+          <div className=" grid grid-cols-2 gap-2">
+            {" "}
+            <Button variant="default" className=" ">
+              Start Session
+            </Button>
+            <Button variant="destructive" className="mb-2  ">
+              Kill Session
+            </Button>
+          </div>
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuItem

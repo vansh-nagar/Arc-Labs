@@ -9,9 +9,10 @@ import { Input } from "./input";
 import { Textarea } from "./textarea";
 import axios from "axios";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, Terminal } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { generateResumeDataStore } from "@/stores/generate_resume_p1";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const mainVariant = {
   initial: {
@@ -217,19 +218,31 @@ export const FileUpload = ({
             </div>
           </div>
         </motion.div>
-        <div className=" flex justify-center ">
-          <div className=" flex justify-center  items-center flex-col max-w-40">
+        <div className=" flex justify-center items-center">
+          {" "}
+          <div className=" flex flex-col justify-center items-center   ">
+            <Alert variant="default" className=" mb-2">
+              <Terminal />
+              <AlertTitle>Steps!</AlertTitle>
+              <AlertDescription>
+                <span>Enter job title you are applying for</span>
+                <span>
+                  Enter a brief description about yourself and the job you are
+                  applying for
+                </span>
+              </AlertDescription>
+            </Alert>
             <Input
               {...register("jobTitle")}
               placeholder="Job Title"
-              className="max-w-40"
+              className=""
             />
             <Textarea
               {...register("description")}
               className="mt-2"
               placeholder="Description"
             />
-            <Button type="submit" className="mt-2 w-full cursor-pointer">
+            <Button type="submit" className="mt-4 w-full cursor-pointer">
               {isLoading ? <Loader2 className="animate-spin" /> : "Submit"}
             </Button>
           </div>

@@ -2,12 +2,15 @@ import { NextResponse, NextRequest } from "next/server";
 import { streamText } from "ai";
 import { groq } from "@ai-sdk/groq";
 import pdfParse from "pdf-parse-new";
+import axios from "axios";
+import * as cheerio from "cheerio";
+import puppeteer from "puppeteer";
 
 export async function POST(
   req: NextRequest,
   { params }: { params: { method: string } }
 ) {
-  const { method } = params;
+  const { method } = await params;
   switch (method) {
     case "pdf": {
       try {
@@ -131,7 +134,68 @@ ${prompt}
       return NextResponse.json({ method });
     }
     case "linkedin": {
-      return NextResponse.json({ method });
+      const { LinkedinUrl } = await req.json();
+
+      if (!LinkedinUrl) {
+        return NextResponse.json(
+          { error: "No LinkedIn URL provided" },
+          { status: 400 }
+        );
+      }
+
+      let browser;
+      try {
+        // Launch Puppeteer
+        browser = await puppeteer.launch({ headless: true });
+        const page = await browser.newPage();
+
+        // Set User-Agent to mimic real browser
+        await page.setUserAgent(
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
+            "(KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36"
+        );
+
+        // Go to LinkedIn profile
+        await page.goto(LinkedinUrl, { waitUntil: "networkidle2" });
+
+        // Extract profile data
+        const profile = await page.evaluate(() => {
+          const name = document.querySelector("h1")?.textContent?.trim() || "";
+          const headline =
+            document
+              .querySelector("div.text-body-medium")
+              ?.textContent?.trim() || "";
+          const summary =
+            document
+              .querySelector("section.pv-about-section p")
+              ?.textContent?.trim() || "";
+
+          const experience: Array<{ title: string; company: string }> = [];
+          const expElements = document.querySelectorAll(
+            "li.pv-entity__position-group-pager"
+          );
+          expElements.forEach((el) => {
+            const title = el.querySelector("h3")?.textContent?.trim() || "";
+            const company =
+              el
+                .querySelector("p.pv-entity__secondary-title")
+                ?.textContent?.trim() || "";
+            experience.push({ title, company });
+          });
+
+          return { name, headline, summary, experience };
+        });
+
+        return NextResponse.json(profile);
+      } catch (err) {
+        console.error(err);
+        return NextResponse.json(
+          { error: "Failed to fetch LinkedIn profile" },
+          { status: 500 }
+        );
+      } finally {
+        if (browser) await browser.close();
+      }
     }
   }
 
