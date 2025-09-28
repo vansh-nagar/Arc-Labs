@@ -4,8 +4,8 @@ import { ResizablePanel } from "@/components/ui/resizable";
 import { Button } from "@/components/ui/button";
 import {
   Code,
+  Download,
   Eye,
-  Link,
   Loader2,
   LockIcon,
   Redo,
@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import { useProjectManager } from "@/hooks/resizable-panel2-manager";
 import Lock from "@/components/ui/lock";
 import { useHistoryStore } from "@/stores/editor-history";
+import ShareProject from "./sub-components/share-project";
 
 const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
   const {
@@ -115,6 +116,7 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
           </Button>
           <Button
             variant="outline"
+            size={"icon"}
             onClick={() => {
               if (isDownloading) return;
               handleDownloadPDF();
@@ -123,7 +125,7 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
             {isDownloading ? (
               <Loader2 className="animate-spin" />
             ) : (
-              "Download PDF"
+              <Download />
             )}
           </Button>
           <Button
@@ -148,16 +150,7 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
               <UnlockIcon />
             )}
           </Button>
-          <Button
-            onClick={() => {
-              navigator.clipboard.writeText(window.location.href);
-              toast.success("Link copied to clipboard");
-            }}
-            variant="outline"
-            size="icon"
-          >
-            <Link />
-          </Button>
+          <ShareProject />
           <Button variant="outline">
             <Eye /> <div>{count}</div>
           </Button>
