@@ -3,6 +3,8 @@ import GenerateResumeIntro from "@/components/pages/landing-page/generate-resume
 import HeroSection from "@/components/pages/landing-page/herosection";
 import Navbar from "@/components/pages/landing-page/navbar";
 
+
+
 const page = () => {
   return (
     <div className=" flex  flex-col  items-center">

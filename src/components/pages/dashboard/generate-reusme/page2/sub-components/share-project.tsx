@@ -33,10 +33,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { ShineBorder } from "@/components/ui/shine-border";
 
+import { useSocketManager } from "@/hooks/sockets";
+
 const ShareProject = () => {
   const [RandomCode, setRandomCode] = useState(
     Math.random().toString(36).slice(-6).toUpperCase()
   );
+
+  const { startWebSocketConnection } = useSocketManager();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -130,7 +135,13 @@ const ShareProject = () => {
           </Button>
           <div className=" grid grid-cols-2 gap-2">
             {" "}
-            <Button variant="default" className=" ">
+            <Button
+              onClick={() => {
+                startWebSocketConnection(RandomCode);
+              }}
+              variant="default"
+              className=" "
+            >
               Start Session
             </Button>
             <Button variant="destructive" className="mb-2  ">

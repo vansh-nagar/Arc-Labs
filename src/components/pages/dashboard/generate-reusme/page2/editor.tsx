@@ -7,13 +7,6 @@ import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { Minus, PanelRight, Plus, RotateCw } from "lucide-react";
 import { toast } from "sonner";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-
-import { useHistoryStore } from "@/stores/editor-history";
 
 interface CodeEditorProps {
   code: string;
@@ -85,7 +78,7 @@ export default function CodeEditor({
   };
 
   return (
-    <div className="h-full flex flex-row gap-3">
+    <div className="h-full flex flex-row gap-3 ">
       <Editor
         className=" border"
         value={htmlContent}

@@ -178,12 +178,15 @@ const page = () => {
                     </div>
                   </Link>
                   <div className="text-sm text-muted-foreground mt-2 flex justify-between items-center">
-                    <div className="  truncate  max-w-44">{project.name} </div>
+                    <div className="  truncate  max-w-32">{project.name} </div>
                     <Popover>
                       <PopoverTrigger>
                         <Ellipsis className=" cursor-pointer" />
                       </PopoverTrigger>
-                      <PopoverContent className="p-0 overflow-hidden">
+                      <PopoverContent
+                        align="end"
+                        className="p-0 overflow-hidden"
+                      >
                         <Dialog>
                           <DialogTrigger asChild className="w-full">
                             <Button
