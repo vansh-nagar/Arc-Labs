@@ -20,6 +20,7 @@ import { useProjectManager } from "@/hooks/resizable-panel2-manager";
 import Lock from "@/components/ui/lock";
 import { useHistoryStore } from "@/stores/editor-history";
 import ShareProject from "./sub-components/share-project";
+import { usePermissionStore } from "@/stores/generate_resume_p1";
 
 const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
   const {
@@ -30,7 +31,6 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
     setShowCode,
     isSavingToDb,
     isDownloading,
-    isAuthenticated,
     setHtmlContent,
     isToggleLock,
     setIsLocked,
@@ -45,14 +45,18 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
 
   const { history, currentIndex, setIndex } = useHistoryStore();
 
+  const { permissionType } = usePermissionStore();
+
   return (
     <ResizablePanel defaultSize={75} className="h-full ">
-      {isLocked && !isAuthenticated && <Lock />}
+      {isLocked && (permissionType !== "EDIT" && permissionType !== "VIEW") && (
+        <Lock />
+      )}
       <div className="ml-3 justify-between gap-2 flex  mb-3 overflow-x-auto hide-scrollbar">
         <div className=" flex gap-2">
           <Button
             onClick={() => {
-              if (!isAuthenticated) {
+              if (permissionType !== "EDIT") {
                 toast.error("You are not authorized to open code editor.");
                 return;
               }
@@ -130,7 +134,7 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
           </Button>
           <Button
             onClick={() => {
-              if (!isAuthenticated) {
+              if (permissionType !== "EDIT") {
                 toast.error(
                   "You are not authorized to lock/unlock this project."
                 );

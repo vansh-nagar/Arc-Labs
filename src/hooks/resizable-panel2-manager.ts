@@ -7,6 +7,7 @@ import { useCompletion } from "@ai-sdk/react";
 import {
   generateResumeDataStore,
   useHTMLEditorStore,
+  usePermissionStore,
 } from "@/stores/generate_resume_p1";
 import { useHistoryStore } from "@/stores/editor-history";
 
@@ -31,6 +32,7 @@ export const useProjectManager = (
   const [ProjectDataLoading, setProjectDataLoading] = useState(false);
 
   const { history, addVersion } = useHistoryStore();
+  const { permissionType, setPermissionType } = usePermissionStore();
 
   const apiIsCalled = useRef(false);
   const resumeRef = useRef<HTMLDivElement>(null);
@@ -66,14 +68,17 @@ export const useProjectManager = (
       .then((res) => setCount(res.data.data));
 
     axios
-      .post("/api/generate-html/get-project-data", { projectId })
+      .post("/api/generate-html/get-project-data", {
+        projectId,
+        fetcherEmail: session?.user?.email,
+      })
       .then((res) => {
+        console.log("Fetched project data:", res.data);
         setHtmlContent(JSON.parse(res.data.project.html) || "");
+
         addVersion(JSON.parse(res.data.project.html) || "");
         setIsLocked(res.data.project.locked);
-        if (res.data.project.user.email === session?.user?.email) {
-          setIsAuthenticated(true);
-        }
+        setPermissionType(res.data.permissionType);
         toast.success(res.data.message || "Project data loaded.");
       })
       .catch((err) =>
@@ -151,7 +156,7 @@ export const useProjectManager = (
   }, [status]);
 
   const handleSaveProgress = async () => {
-    if (!isAuthenticated) {
+    if (permissionType !== "EDIT") {
       toast.error("You are not authorized to save this project.");
       return;
     }
@@ -178,7 +183,7 @@ export const useProjectManager = (
 
   const handleToggleLockProject = async (lockState: boolean) => {
     if (isToggleLock) return;
-    if (!isAuthenticated) {
+    if (permissionType !== "EDIT") {
       toast.error("You are not authorized to lock/unlock this project.");
       return;
     }
@@ -244,8 +249,6 @@ export const useProjectManager = (
     projectId,
     isLocked,
     setIsLocked,
-    isAuthenticated,
-    setIsAuthenticated,
     count,
     showCode,
     setShowCode,

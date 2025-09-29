@@ -70,21 +70,47 @@ model VerificationToken {
   @@unique([identifier, token])
   @@map("verification_tokens")
 }
-
+ 
+ enum LinkPermissionType  {
+    VIEW
+    EDIT
+    LOCKED
+ }
 
 model Projects {
-  id         String @id @default(cuid())
-  name       String
-  image      String?
-  html       String @db.Text
+  id                  String @id @default(cuid())
+  name                String
+  image               String?
+  html                String @db.Text
   
 
-  userId     String
-  user       User    @relation(fields: [userId]  , references: [id], onDelete: Cascade)
+  userId              String
+  user       User     @relation(fields: [userId]  , references: [id], onDelete: Cascade)
 
-  viewCount  Int    @default(0)
-  locked     Boolean @default(true)
+  viewCount  Int      @default(0)
+  locked     Boolean  @default(true)
+
+  linkPermissionType  LinkPermissionType  @default(LOCKED) 
+  specialPermissions  SpecialPermission[]
   
-  updatedAt DateTime @updatedAt
-  createdAt DateTime @default(now())
+  updatedAt DateTime  @updatedAt
+  createdAt DateTime  @default(now())
+}
+
+enum PermissionType {
+  VIEW
+  EDIT
+}
+
+
+model SpecialPermission {
+  id        String    @id @default(cuid())
+  userEmail String
+  permissionType      PermissionType @default(VIEW) 
+
+  projectId String
+  project   Projects  @relation(fields: [projectId] , references: [id] , onDelete: Cascade)
+
+  updatedAt DateTime  @updatedAt
+  createdAt DateTime  @default(now())
 }

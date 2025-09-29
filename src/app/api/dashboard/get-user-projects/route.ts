@@ -27,8 +27,12 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    if (!userProjects) {
-      return NextResponse.json({ error: "No projects found" }, { status: 404 });
+    console.log(userProjects);
+    if (userProjects.length === 0) {
+      return NextResponse.json(
+        { error: "No projects found. Create one now!!!" },
+        { status: 404 }
+      );
     }
 
     return NextResponse.json(
