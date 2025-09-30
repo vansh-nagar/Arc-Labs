@@ -29,6 +29,7 @@ export async function POST(req: NextRequest) {
         userId: foundUser.id,
         html: JSON.stringify(htmlContent),
         name: `Project ${new Date().toISOString()}`,
+        linkExpiresAt: null,
       },
     });
 

@@ -20,6 +20,7 @@ export const useProjectManager = (
     setUrlPermission,
     setIsOwner,
     projectId,
+    setLinkExpiresAt,
   } = useProjectData();
 
   const { data: session, status } = useSession();
@@ -74,10 +75,12 @@ export const useProjectManager = (
         fetcherEmail: session?.user?.email,
       })
       .then((res) => {
+        console.log("Fetched project data:", res.data);
         setHtmlContent(JSON.parse(res.data.projectData.html) || "");
         addVersion(JSON.parse(res.data.projectData.html) || "");
         setIsOwner(res.data.isOwner);
         setUrlPermission(res.data.urlPermission);
+        setLinkExpiresAt(res.data.projectData.linkExpiresAt);
 
         toast.success(res.data.message || "Project data loaded.");
       })
