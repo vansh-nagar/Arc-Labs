@@ -25,13 +25,14 @@ export const generateResumeDataStore = create<any>((set) => ({
   },
 }));
 
-export const useHTMLEditorStore = create<any>((set) => ({
-  htmlContent: "",
-  setHtmlContent: (html: string) => set({ htmlContent: html }),
-}));
-
-export const usePermissionStore = create<any>((set) => ({
+export const useProjectData = create<any>((set) => ({
   permissionType: LinkPermissionType.VIEW,
+  projectId: "",
+  htmlContent: "",
+  urlPermission: "",
+  setHtmlContent: (html: string) => set({ htmlContent: html }),
+  setProjectId: (id: string) => set({ projectId: id }),
   setPermissionType: (type: LinkPermissionType) =>
     set({ permissionType: type }),
+  setUrlPermission: (url: string) => set({ urlPermission: url }),
 }));

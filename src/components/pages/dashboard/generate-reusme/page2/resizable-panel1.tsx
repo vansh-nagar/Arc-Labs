@@ -12,7 +12,7 @@ import { Message, MessageContent } from "@/components/ai-elements/message";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { Loader2, MessageSquare, SmileIcon } from "lucide-react";
-import { useHTMLEditorStore } from "@/stores/generate_resume_p1";
+import { useProjectData } from "@/stores/gnerate-reusme/generate-resume-p1";
 import {
   PromptInput,
   PromptInputBody,
@@ -24,12 +24,12 @@ import { Response } from "@/components/ai-elements/response";
 import axios from "axios";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { useHistoryStore } from "@/stores/editor-history";
+import { useHistoryStore } from "@/stores/gnerate-reusme/editor-history";
 
 const ResizablePanel1 = () => {
   const [chatPrompt, setChatPrompt] = useState("");
 
-  const { htmlContent, setHtmlContent } = useHTMLEditorStore();
+  const { htmlContent, setHtmlContent } = useProjectData();
   const [updateCallLoading, setUpdateCallLoading] = useState(false);
 
   const { history, addVersion } = useHistoryStore();

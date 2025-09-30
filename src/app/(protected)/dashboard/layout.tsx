@@ -30,12 +30,14 @@ export default function RootLayout({
   }, [pathname, setCurrentPage]);
 
   return (
-    <div className="flex">
-      <Side_bar />
-      <div className="flex-1">
-        <Top_bar />
-        <Providers>{children}</Providers>
+    <Providers>
+      <div className="flex">
+        <Side_bar />
+        <div className="flex-1">
+          <Top_bar />
+          {children}
+        </div>
       </div>
-    </div>
+    </Providers>
   );
 }

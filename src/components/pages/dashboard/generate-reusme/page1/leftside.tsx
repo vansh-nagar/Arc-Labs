@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { optionsStore } from "@/stores/generate_resume_p1";
+import { optionsStore } from "@/stores/gnerate-reusme/generate-resume-p1";
 import {
   IconBrandLinkedinFilled,
   IconManualGearboxFilled,

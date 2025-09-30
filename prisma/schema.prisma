@@ -88,7 +88,6 @@ model Projects {
   user       User     @relation(fields: [userId]  , references: [id], onDelete: Cascade)
 
   viewCount  Int      @default(0)
-  locked     Boolean  @default(true)
 
   linkPermissionType  LinkPermissionType  @default(LOCKED) 
   specialPermissions  SpecialPermission[]

@@ -36,7 +36,7 @@ import {
   DropzoneContent,
   DropzoneEmptyState,
 } from "@/components/shadcn-io/dropzone";
-import { useHistoryStore } from "@/stores/editor-history";
+import { useHistoryStore } from "@/stores/gnerate-reusme/editor-history";
 
 type Project = {
   id: string;
@@ -197,7 +197,7 @@ const page = () => {
                               Edit
                             </Button>
                           </DialogTrigger>
-                          <DialogContent className="p-3  ">
+                          <DialogContent className="p-3 ">
                             <DialogHeader>
                               <DialogTitle className="mt-2">
                                 Edit Project

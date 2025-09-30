@@ -5,7 +5,7 @@ import { DatePickerDemo } from "@/components/ui/date-picker";
 import { Loader2, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { generateResumeDataStore } from "@/stores/generate_resume_p1";
+import { generateResumeDataStore } from "@/stores/gnerate-reusme/generate-resume-p1";
 
 const ManualForm = () => {
   const [isSmall, setIsSmall] = useState(false);
@@ -456,7 +456,7 @@ const ManualForm = () => {
       </form>
 
       {/* Hobbies / Interests Section */}
-      <div >
+      <div>
         <label className="mb-2 block text-xl font-semibold truncate">
           Hobbies / Interests (optional)
         </label>

@@ -6,24 +6,22 @@ import { toast } from "sonner";
 import { useCompletion } from "@ai-sdk/react";
 import {
   generateResumeDataStore,
-  useHTMLEditorStore,
-  usePermissionStore,
-} from "@/stores/generate_resume_p1";
-import { useHistoryStore } from "@/stores/editor-history";
+  useProjectData,
+} from "@/stores/gnerate-reusme/generate-resume-p1";
+import { useHistoryStore } from "@/stores/gnerate-reusme/editor-history";
 
 export const useProjectManager = (
   resolvedParams: any,
   originalProjectId: any
 ) => {
   const { data, type } = generateResumeDataStore();
-  const { htmlContent, setHtmlContent } = useHTMLEditorStore();
+  const { htmlContent, setHtmlContent, setProjectId, projectId } =
+    useProjectData();
 
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  const [projectId, setProjectId] = useState("");
   const [isLocked, setIsLocked] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [count, setCount] = useState(0);
   const [showCode, setShowCode] = useState(false);
   const [isSavingToDb, setIsSavingToDb] = useState(false);
@@ -31,8 +29,9 @@ export const useProjectManager = (
   const [isToggleLock, setIsToggleLock] = useState(false);
   const [ProjectDataLoading, setProjectDataLoading] = useState(false);
 
-  const { history, addVersion } = useHistoryStore();
-  const { permissionType, setPermissionType } = usePermissionStore();
+  const { addVersion } = useHistoryStore();
+  const { permissionType, setPermissionType, setUrlPermission } =
+    useProjectData();
 
   const apiIsCalled = useRef(false);
   const resumeRef = useRef<HTMLDivElement>(null);
@@ -74,11 +73,14 @@ export const useProjectManager = (
       })
       .then((res) => {
         console.log("Fetched project data:", res.data);
-        setHtmlContent(JSON.parse(res.data.project.html) || "");
 
+        setHtmlContent(JSON.parse(res.data.project.html) || "");
         addVersion(JSON.parse(res.data.project.html) || "");
-        setIsLocked(res.data.project.locked);
+        setIsLocked(
+          res.data.project.linkPermissionType === "LOCKED" ? true : false
+        );
         setPermissionType(res.data.permissionType);
+        setUrlPermission(res.data.project.linkPermissionType || "");
         toast.success(res.data.message || "Project data loaded.");
       })
       .catch((err) =>

@@ -1,17 +1,34 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSidebarStore } from "@/stores/sidebarStore";
-import { PanelRight, PanelRightClose } from "lucide-react";
+import { Edit, LogOut, PanelRight, PanelRightClose } from "lucide-react";
+
 import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@radix-ui/react-hover-card";
-import { Button } from "@/components/ui/button";
-import { signOut } from "next-auth/react";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { signOut, useSession } from "next-auth/react";
+import Image from "next/image";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Top_bar = () => {
+  const { data: session, status } = useSession();
   const { isSideBarOpen, setIsSideBarOpen, currentPage } = useSidebarStore();
+  const [image, setImage] = useState(
+    "https://i.pinimg.com/736x/f6/2c/67/f62c675e9a6ee4465be8f9a68dd70b4f.jpg"
+  );
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (status === "authenticated" && session?.user?.image) {
+      setImage(session?.user?.image);
+      setLoading(false);
+    }
+  }, [status]);
 
   return (
     <div
@@ -37,38 +54,37 @@ const Top_bar = () => {
         )}
       </div>
 
-      <HoverCard>
-        <HoverCardTrigger>
-          <img
-            src="https://i.pinimg.com/736x/a4/11/f9/a411f94f4622cfa7c1a87f4f79328064.jpg"
-            alt="Open popover"
-            className=" w-10 rounded-full   "
-          />
-        </HoverCardTrigger>
-        <HoverCardContent className=" border  rounded-lg bg-background mr-3 mt-2 ">
-          <div className=" flex justify-center items-center flex-col gap-3 py-5 m-2 bg-accent rounded-md shadow-md">
-            <img
-              src="https://i.pinimg.com/736x/a4/11/f9/a411f94f4622cfa7c1a87f4f79328064.jpg"
-              alt="Open popover"
-              className=" w-16 rounded-full  border-4 border-destructive    border-double "
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          {" "}
+          {loading ? (
+            <Skeleton className="w-10 aspect-square rounded-full" />
+          ) : (
+            <Image
+              src={image}
+              alt="User Avatar"
+              width={736} // put the real width
+              height={1104} // put the real height
+              className=" w-10 aspect-square  rounded-full hover:scale-105 transition-all duration-150  cursor-pointer  "
             />
-            <h2>username - vansh nagar</h2>
-          </div>
-          <div className="flex flex-col min-w-80 px-2 pb-2 ">
-            <div className="flex items-center text-sm hover:bg-accent py-2 px-3 gap-2 rounded-md shadow-inner  hover:shadow-md transition-all duration-150">
-              <PanelRight size={16} className="text-neutral-500" />
-              <Button
-                variant="ghost"
-                size={"sm"}
-                className="w-full text-left"
-                onClick={() => signOut()}
-              >
-                Sign out
-              </Button>
-            </div>
-          </div>
-        </HoverCardContent>
-      </HoverCard>
+          )}
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-80">
+          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+
+          <DropdownMenuItem>
+            <Edit /> Edit Profile
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => {
+              signOut({ callbackUrl: "/" });
+            }}
+          >
+            <LogOut /> Log Out
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 };

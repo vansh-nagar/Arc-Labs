@@ -16,11 +16,11 @@ import CodeEditor from "@/components/pages/dashboard/generate-reusme/page2/edito
 import UILoading from "@/components/ui/uiloading";
 import { toast } from "sonner";
 
-import { useProjectManager } from "@/hooks/resizable-panel2-manager";
+import { useProjectManager } from "@/hooks/generate-reusme/resizable-panel2-manager";
 import Lock from "@/components/ui/lock";
-import { useHistoryStore } from "@/stores/editor-history";
+import { useHistoryStore } from "@/stores/gnerate-reusme/editor-history";
 import ShareProject from "./sub-components/share-project";
-import { usePermissionStore } from "@/stores/generate_resume_p1";
+import { useProjectData } from "@/stores/gnerate-reusme/generate-resume-p1";
 
 const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
   const {
@@ -45,11 +45,11 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
 
   const { history, currentIndex, setIndex } = useHistoryStore();
 
-  const { permissionType } = usePermissionStore();
+  const { permissionType } = useProjectData();
 
   return (
     <ResizablePanel defaultSize={75} className="h-full ">
-      {isLocked && (permissionType !== "EDIT" && permissionType !== "VIEW") && (
+      {isLocked && permissionType !== "EDIT" && permissionType !== "VIEW" && (
         <Lock />
       )}
       <div className="ml-3 justify-between gap-2 flex  mb-3 overflow-x-auto hide-scrollbar">
@@ -132,28 +132,7 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
               <Download />
             )}
           </Button>
-          <Button
-            onClick={() => {
-              if (permissionType !== "EDIT") {
-                toast.error(
-                  "You are not authorized to lock/unlock this project."
-                );
-                return;
-              }
-              setIsLocked(!isLocked);
-              handleToggleLockProject(!isLocked);
-            }}
-            variant={`${isLocked ? "default" : "outline"}`}
-            size="icon"
-          >
-            {isToggleLock ? (
-              <Loader2 className="animate-spin" />
-            ) : isLocked ? (
-              <LockIcon />
-            ) : (
-              <UnlockIcon />
-            )}
-          </Button>
+
           <ShareProject />
           <Button variant="outline">
             <Eye /> <div>{count}</div>

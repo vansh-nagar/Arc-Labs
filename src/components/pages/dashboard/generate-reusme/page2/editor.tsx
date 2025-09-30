@@ -2,7 +2,7 @@
 
 import React, { useRef, useState } from "react";
 import Editor, { OnChange } from "@monaco-editor/react";
-import { useHTMLEditorStore } from "@/stores/generate_resume_p1";
+import { useProjectData } from "@/stores/gnerate-reusme/generate-resume-p1";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { Minus, PanelRight, Plus, RotateCw } from "lucide-react";
@@ -20,7 +20,7 @@ export default function CodeEditor({
   onChange,
 }: CodeEditorProps) {
   const editorRef = useRef<any>(null);
-  const { setHtmlContent, htmlContent } = useHTMLEditorStore();
+  const { setHtmlContent, htmlContent } = useProjectData();
   const { theme } = useTheme();
   const [changeLoading, setChangeLoading] = useState(false);
 

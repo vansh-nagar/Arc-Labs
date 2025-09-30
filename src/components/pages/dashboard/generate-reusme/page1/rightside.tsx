@@ -1,6 +1,6 @@
 import React from "react";
 import { FileUpload } from "@/components/ui/file-upload";
-import { optionsStore } from "@/stores/generate_resume_p1";
+import { optionsStore } from "@/stores/gnerate-reusme/generate-resume-p1";
 import ManualForm from "./sub-pages/manual-form";
 import TemplateForm from "./sub-pages/template-form";
 import { Input } from "@/components/ui/input";

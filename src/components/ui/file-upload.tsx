@@ -11,7 +11,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { Loader2, Terminal } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { generateResumeDataStore } from "@/stores/generate_resume_p1";
+import { generateResumeDataStore } from "@/stores/gnerate-reusme/generate-resume-p1";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const mainVariant = {

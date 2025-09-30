@@ -1,8 +1,8 @@
 "use client";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { templates } from "@/data/templates";
-import { generateResumeDataStore } from "@/stores/generate_resume_p1";
+import { templates } from "@/data/generate-resume/templates";
+import { generateResumeDataStore } from "@/stores/gnerate-reusme/generate-resume-p1";
 
 const TemplateForm = () => {
   const router = useRouter();
