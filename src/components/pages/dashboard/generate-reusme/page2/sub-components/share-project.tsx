@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "lucide-react";
-import React, { useState } from "react";
+import React from "react";
 import { toast } from "sonner";
 
 import {
@@ -18,16 +18,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
 import { ShineBorder } from "@/components/ui/shine-border";
-import { useProjectData } from "@/stores/gnerate-reusme/generate-resume-p1";
 import axios from "axios";
+import {
+  LinkPermissionType,
+  useProjectData,
+} from "@/stores/gnerate-reusme/project-data-store";
 
 const ShareProject = () => {
-  const { permissionType, projectId, urlPermission, setUrlPermission } =
+  const { projectId, urlPermission, setUrlPermission, isOwner } =
     useProjectData();
 
-  const handleLinkPermissionChange = (newPermission: string) => {
+  const handleLinkPermissionChange = (newPermission: LinkPermissionType) => {
     setUrlPermission(newPermission);
     axios
       .post("/api/generate-html/share/edit-link-permission", {
@@ -45,49 +47,12 @@ const ShareProject = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon">
+        <Button variant="outline" size="icon" disabled={!isOwner}>
           <Link />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-96 p-2">
         <ShineBorder />
-        <DropdownMenuLabel>Share</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuLabel className="text-muted-foreground">
-          Special access
-        </DropdownMenuLabel>
-
-        <div className=" flex flex-col gap-2 py-2">
-          <Input size={9} placeholder="Search...." />
-          <div className=" mt-2 flex  flex-col gap-1 max-h-44  mask-b-from-90% mask-t-from-90% overflow-y-auto hide-scrollbar">
-            {" "}
-            {Array.from([1, 2, 3, 4, 5, 6, 7]).map((item) => (
-              <div key={item} className=" flex gap-2 items-center">
-                <img
-                  src="https://i.pinimg.com/736x/07/46/3e/07463ee1e49f11c06655128369416b7c.jpg"
-                  className=" h-10 w-10 rounded-full"
-                  alt=""
-                />
-                <div className=" flex justify-between items-center flex-grow">
-                  <div className="  leading-5 ">
-                    Username <br />
-                    Email
-                  </div>
-                  <Select>
-                    <SelectTrigger size="sm" className="w-[120px] ">
-                      <SelectValue placeholder="Can view" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="light">Can view</SelectItem>
-                      <SelectItem value="dark">Can edit</SelectItem>
-                      <SelectItem value="system">Full Access</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
         <DropdownMenuLabel className="text-muted-foreground">
           General access
         </DropdownMenuLabel>
@@ -95,7 +60,7 @@ const ShareProject = () => {
         <div className=" flex items-center justify-between mt-2 ml-1">
           <div> Any one with the link</div>
           <Select
-            onValueChange={(newPermission) => {
+            onValueChange={(newPermission: LinkPermissionType) => {
               handleLinkPermissionChange(newPermission);
             }}
             value={urlPermission}

@@ -83,33 +83,17 @@ model Projects {
   image               String?
   html                String @db.Text
   
-
   userId              String
   user       User     @relation(fields: [userId]  , references: [id], onDelete: Cascade)
 
   viewCount  Int      @default(0)
 
   linkPermissionType  LinkPermissionType  @default(LOCKED) 
-  specialPermissions  SpecialPermission[]
-  
-  updatedAt DateTime  @updatedAt
-  createdAt DateTime  @default(now())
-}
-
-enum PermissionType {
-  VIEW
-  EDIT
-}
-
-
-model SpecialPermission {
-  id        String    @id @default(cuid())
-  userEmail String
-  permissionType      PermissionType @default(VIEW) 
-
-  projectId String
-  project   Projects  @relation(fields: [projectId] , references: [id] , onDelete: Cascade)
 
   updatedAt DateTime  @updatedAt
   createdAt DateTime  @default(now())
 }
+
+
+
+

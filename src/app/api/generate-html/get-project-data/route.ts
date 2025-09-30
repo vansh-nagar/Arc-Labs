@@ -22,19 +22,24 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Project not found" }, { status: 404 });
     }
 
-    if (projectData?.user.email === fetcherEmail) {
-      console.log("user is owner");
+    console.log(fetcherEmail);
+    console.log(projectData.user.email);
+
+    if (projectData.user.email === fetcherEmail) {
       return NextResponse.json(
-        { project: projectData, permissionType: "EDIT" },
+        {
+          isOwner: true,
+          urlPermission: projectData.linkPermissionType,
+          projectData: projectData,
+        },
         { status: 200 }
       );
     } else {
-      console.log("user is not owner");
-
       return NextResponse.json(
         {
-          project: projectData,
-          permissionType: projectData?.linkPermissionType,
+          isOwner: false,
+          urlPermission: projectData.linkPermissionType,
+          projectData: projectData,
         },
         { status: 200 }
       );

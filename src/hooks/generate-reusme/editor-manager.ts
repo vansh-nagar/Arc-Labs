@@ -1,4 +1,4 @@
-import { useProjectData } from "@/stores/gnerate-reusme/generate-resume-p1";
+import { useProjectData } from "@/stores/gnerate-reusme/project-data-store";
 
 export const useEditorManager = (editor: any) => {
   const { setHtmlContent } = useProjectData();

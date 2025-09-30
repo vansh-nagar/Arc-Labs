@@ -2,7 +2,7 @@
 
 import React, { useRef, useState } from "react";
 import Editor, { OnChange } from "@monaco-editor/react";
-import { useProjectData } from "@/stores/gnerate-reusme/generate-resume-p1";
+import { useProjectData } from "@/stores/gnerate-reusme/project-data-store";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { Minus, PanelRight, Plus, RotateCw } from "lucide-react";

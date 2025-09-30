@@ -12,7 +12,6 @@ import { Message, MessageContent } from "@/components/ai-elements/message";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { Loader2, MessageSquare, Redo, SmileIcon, Undo } from "lucide-react";
-import { useProjectData } from "@/stores/gnerate-reusme/generate-resume-p1";
 import {
   PromptInput,
   PromptInputBody,
@@ -25,13 +24,16 @@ import axios from "axios";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useHistoryStore } from "@/stores/gnerate-reusme/editor-history";
+import { useProjectData } from "@/stores/gnerate-reusme/project-data-store";
 
 const ResizablePanel1 = () => {
-  const [updateCallLoading, setUpdateCallLoading] = useState(false);
   const [chatPrompt, setChatPrompt] = useState("");
 
-  const { htmlContent, setHtmlContent } = useProjectData();
+  const { htmlContent, setHtmlContent, urlPermission, isOwner } =
+    useProjectData();
   const { currentIndex, setIndex } = useHistoryStore();
+  const [updateCallLoading, setUpdateCallLoading] = useState(false);
+
   const { history, addVersion } = useHistoryStore();
 
   const { messages } = useChat({
@@ -71,14 +73,9 @@ const ResizablePanel1 = () => {
       </Conversation>
       <div className=" flex gap-2 justify-end mb-2">
         <Button
+          disabled={currentIndex - 1 < 0}
           onClick={() => {
             const newIndex = currentIndex - 1;
-            console.log({ history });
-            console.log({ newIndex, currentIndex });
-            if (newIndex < 0) {
-              toast.error("No undo available");
-              return;
-            }
             setHtmlContent(history[newIndex]?.code || "");
             setIndex(newIndex);
           }}
@@ -88,15 +85,9 @@ const ResizablePanel1 = () => {
           <Undo />
         </Button>
         <Button
+          disabled={currentIndex + 1 >= history.length}
           onClick={() => {
             const newIndex = currentIndex + 1;
-            console.log({ history });
-
-            console.log({ newIndex, currentIndex });
-            if (newIndex >= history.length) {
-              toast.error("No redo available");
-              return;
-            }
             setHtmlContent(history[newIndex]?.code || "");
             if (newIndex < history.length) {
               setIndex(newIndex);
@@ -112,6 +103,11 @@ const ResizablePanel1 = () => {
         aria-placeholder="Ask me to improve your resume"
         className=" rounded-md"
         onSubmit={(e) => {
+          if (!isOwner && urlPermission !== "EDIT") {
+            return toast.error(
+              "Only the owner can make changes to the resume."
+            );
+          }
           if (updateCallLoading) return;
           setUpdateCallLoading(true);
           messages.push({

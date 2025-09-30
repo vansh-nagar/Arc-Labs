@@ -4,10 +4,8 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import { useCompletion } from "@ai-sdk/react";
-import {
-  generateResumeDataStore,
-  useProjectData,
-} from "@/stores/gnerate-reusme/generate-resume-p1";
+import { generateResumeDataStore } from "@/stores/gnerate-reusme/generate-resume-p1";
+import { useProjectData } from "@/stores/gnerate-reusme/project-data-store";
 import { useHistoryStore } from "@/stores/gnerate-reusme/editor-history";
 
 export const useProjectManager = (
@@ -15,13 +13,18 @@ export const useProjectManager = (
   originalProjectId: any
 ) => {
   const { data, type } = generateResumeDataStore();
-  const { htmlContent, setHtmlContent, setProjectId, projectId } =
-    useProjectData();
+  const {
+    htmlContent,
+    setHtmlContent,
+    setProjectId,
+    setUrlPermission,
+    setIsOwner,
+    projectId,
+  } = useProjectData();
 
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  const [isLocked, setIsLocked] = useState(false);
   const [count, setCount] = useState(0);
   const [showCode, setShowCode] = useState(false);
   const [isSavingToDb, setIsSavingToDb] = useState(false);
@@ -29,8 +32,6 @@ export const useProjectManager = (
   const [ProjectDataLoading, setProjectDataLoading] = useState(false);
 
   const { addVersion, resetHistory } = useHistoryStore();
-  const { permissionType, setPermissionType, setUrlPermission } =
-    useProjectData();
 
   const apiIsCalled = useRef(false);
   const resumeRef = useRef<HTMLDivElement>(null);
@@ -73,15 +74,11 @@ export const useProjectManager = (
         fetcherEmail: session?.user?.email,
       })
       .then((res) => {
-        console.log("Fetched project data:", res.data);
+        setHtmlContent(JSON.parse(res.data.projectData.html) || "");
+        addVersion(JSON.parse(res.data.projectData.html) || "");
+        setIsOwner(res.data.isOwner);
+        setUrlPermission(res.data.urlPermission);
 
-        setHtmlContent(JSON.parse(res.data.project.html) || "");
-        addVersion(JSON.parse(res.data.project.html) || "");
-        setIsLocked(
-          res.data.project.linkPermissionType === "LOCKED" ? true : false
-        );
-        setPermissionType(res.data.permissionType);
-        setUrlPermission(res.data.project.linkPermissionType || "");
         toast.success(res.data.message || "Project data loaded.");
       })
       .catch((err) =>
@@ -96,9 +93,6 @@ export const useProjectManager = (
 
   // ! AI Resume Generation for "new" project
   useEffect(() => {
-    console.log("originalProjectId", originalProjectId.current);
-    console.log("status", status);
-    console.log("data", data);
     if (
       originalProjectId.current !== "new" ||
       status === "loading" ||
@@ -107,8 +101,6 @@ export const useProjectManager = (
       return;
 
     apiIsCalled.current = true;
-
-    console.log("Type", type);
 
     if (type === "template" && data.template !== "") {
       setHtmlContent(data.template);
@@ -160,10 +152,6 @@ export const useProjectManager = (
 
   //! Save progress
   const handleSaveProgress = async () => {
-    if (permissionType !== "EDIT") {
-      toast.error("You are not authorized to save this project.");
-      return;
-    }
     if (isSavingToDb) return;
     setIsSavingToDb(true);
 
@@ -189,6 +177,7 @@ export const useProjectManager = (
       toast.error("Resume content is not available to download.");
       return;
     }
+
     setIsDownloading(true);
 
     const html = `
@@ -222,7 +211,6 @@ export const useProjectManager = (
   return {
     // state
     projectId,
-    isLocked,
     count,
     showCode,
     setShowCode,

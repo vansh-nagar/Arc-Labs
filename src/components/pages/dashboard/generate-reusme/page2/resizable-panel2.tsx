@@ -5,13 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Code, Download, Eye, Loader2 } from "lucide-react";
 import CodeEditor from "@/components/pages/dashboard/generate-reusme/page2/editor";
 import UILoading from "@/components/ui/uiloading";
-import { toast } from "sonner";
 
 import { useProjectManager } from "@/hooks/generate-reusme/resizable-panel2-manager";
 import Lock from "@/components/ui/lock";
 import { useHistoryStore } from "@/stores/gnerate-reusme/editor-history";
 import ShareProject from "./sub-components/share-project";
-import { useProjectData } from "@/stores/gnerate-reusme/generate-resume-p1";
+import { useProjectData } from "@/stores/gnerate-reusme/project-data-store";
 
 const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
   const {
@@ -25,29 +24,22 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
     setHtmlContent,
     htmlContent,
     resumeRef,
-    isLocked,
-
     handleSaveProgress,
     handleDownloadPDF,
   } = useProjectManager(resolvedParams, originalProjectId);
 
   const { addVersion } = useHistoryStore();
 
-  const { permissionType } = useProjectData();
+  const { urlPermission, isOwner } = useProjectData();
 
   return (
     <ResizablePanel defaultSize={75} className="h-full ">
-      {isLocked && permissionType !== "EDIT" && permissionType !== "VIEW" && (
-        <Lock />
-      )}
+      {urlPermission === "LOCKED" && !isOwner && <Lock />}
       <div className="ml-3 justify-between gap-2 flex  mb-3 overflow-x-auto hide-scrollbar">
         <div className=" flex gap-2">
           <Button
+            disabled={!isOwner && urlPermission !== "EDIT"}
             onClick={() => {
-              if (permissionType !== "EDIT") {
-                toast.error("You are not authorized to open code editor.");
-                return;
-              }
               setShowCode(!showCode);
             }}
             size="icon"
@@ -59,6 +51,7 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
 
         <div className=" flex gap-2 ">
           <Button
+            disabled={!isOwner && urlPermission !== "EDIT"}
             variant="outline"
             onClick={() => {
               if (isSavingToDb) return;
@@ -73,6 +66,7 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
             )}
           </Button>
           <Button
+            disabled={!isOwner && urlPermission !== "EDIT"}
             variant="outline"
             size={"icon"}
             onClick={() => {
