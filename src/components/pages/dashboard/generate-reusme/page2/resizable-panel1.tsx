@@ -11,7 +11,7 @@ import {
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
-import { Loader2, MessageSquare, SmileIcon } from "lucide-react";
+import { Loader2, MessageSquare, Redo, SmileIcon, Undo } from "lucide-react";
 import { useProjectData } from "@/stores/gnerate-reusme/generate-resume-p1";
 import {
   PromptInput,
@@ -27,11 +27,11 @@ import { Button } from "@/components/ui/button";
 import { useHistoryStore } from "@/stores/gnerate-reusme/editor-history";
 
 const ResizablePanel1 = () => {
+  const [updateCallLoading, setUpdateCallLoading] = useState(false);
   const [chatPrompt, setChatPrompt] = useState("");
 
   const { htmlContent, setHtmlContent } = useProjectData();
-  const [updateCallLoading, setUpdateCallLoading] = useState(false);
-
+  const { currentIndex, setIndex } = useHistoryStore();
   const { history, addVersion } = useHistoryStore();
 
   const { messages } = useChat({
@@ -43,7 +43,10 @@ const ResizablePanel1 = () => {
       defaultSize={25}
       className="h-full rounded-md   flex justify-between flex-col  mr-3  "
     >
-      <Conversation className=" w-full" style={{ height: "100%" }}>
+      <Conversation
+        className=" w-full mask-b-from-90% hide-scrollbar"
+        style={{ height: "100%" }}
+      >
         <ConversationContent className="p-0">
           {messages.length === 0 ? (
             <ConversationEmptyState
@@ -66,6 +69,45 @@ const ResizablePanel1 = () => {
         </ConversationContent>
         <ConversationScrollButton />
       </Conversation>
+      <div className=" flex gap-2 justify-end mb-2">
+        <Button
+          onClick={() => {
+            const newIndex = currentIndex - 1;
+            console.log({ history });
+            console.log({ newIndex, currentIndex });
+            if (newIndex < 0) {
+              toast.error("No undo available");
+              return;
+            }
+            setHtmlContent(history[newIndex]?.code || "");
+            setIndex(newIndex);
+          }}
+          variant={currentIndex - 1 < 0 ? "outline" : "default"}
+          size={"icon"}
+        >
+          <Undo />
+        </Button>
+        <Button
+          onClick={() => {
+            const newIndex = currentIndex + 1;
+            console.log({ history });
+
+            console.log({ newIndex, currentIndex });
+            if (newIndex >= history.length) {
+              toast.error("No redo available");
+              return;
+            }
+            setHtmlContent(history[newIndex]?.code || "");
+            if (newIndex < history.length) {
+              setIndex(newIndex);
+            }
+          }}
+          variant={currentIndex + 1 >= history.length ? "outline" : "default"}
+          size={"icon"}
+        >
+          <Redo />
+        </Button>
+      </div>
       <PromptInput
         aria-placeholder="Ask me to improve your resume"
         className=" rounded-md"
@@ -108,8 +150,7 @@ const ResizablePanel1 = () => {
             value={chatPrompt}
           />
         </PromptInputBody>
-        <PromptInputToolbar className=" flex items-center justify-between">
-          <SmileIcon className="ml-1" />
+        <PromptInputToolbar className=" flex items-center justify-end">
           {updateCallLoading ? (
             <Button size="icon">
               <Loader2 className=" animate-spin" />

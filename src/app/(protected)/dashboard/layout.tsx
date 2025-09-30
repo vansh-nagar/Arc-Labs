@@ -6,6 +6,7 @@ import Side_bar from "@/components/pages/dashboard/sidebar/sidebar";
 import Top_bar from "@/components/pages/dashboard/topbar/top-bar";
 import { Providers } from "@/components/pages/session-provider";
 import { useSidebarStore } from "@/stores/sidebarStore";
+import { MusicToggleButton } from "@/components/ui/music";
 
 export default function RootLayout({
   children,

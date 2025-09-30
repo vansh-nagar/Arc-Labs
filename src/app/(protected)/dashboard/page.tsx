@@ -54,11 +54,9 @@ const page = () => {
   const { isSideBarOpen } = useSidebarStore();
   const { data: session, status } = useSession();
   const [projects, setProjects] = useState<Project[]>([]);
-  const router = useRouter();
   const calledGetProjects = useRef(false);
   const [showSkeletonLoading, setShowSkeletonLoading] = useState(true);
   const [projectIsDeleting, setProjectIsDeleting] = useState(false);
-  const { resetHistory } = useHistoryStore();
 
   useEffect(() => {
     if (status !== "authenticated") return;
@@ -66,8 +64,6 @@ const page = () => {
     if (calledGetProjects.current) return;
     calledGetProjects.current = true;
     toast.loading("Fetching your projects...");
-
-    resetHistory();
 
     const email = session?.user?.email;
     axios

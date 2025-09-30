@@ -64,7 +64,92 @@ export async function POST(
               role: "user",
               content: `Using the information below, generate a **resume in plain HTML** with **all CSS inlined** using style attributes. 
 Make the layout **clean, professional, and compact** like a modern corporate resume. 
-Use subtle colors for section headers (#333 for main text, #555 for subtext), a sans-serif font, slightly smaller font sizes, and balanced spacing.  
+resume_styles:
+  font_family: "Arial, Helvetica, sans-serif"
+  colors:
+    main_text: "#333"
+    subtext: "#555"
+    separator: "#ddd"
+    accent: "#0073b1"  # optional subtle accent for headings or links
+  spacing:
+    section_margin_bottom: "0.8rem"  # slightly smaller for compact look
+    line_height_default: 1.4
+    paragraph_margin_bottom: "0.5rem"
+  elements:
+    name:
+      font_size: 32px
+      color: "#333"
+      font_weight: 700
+      line_height: 1.2
+      notes: "Primary focal point, large but not overpowering make last name lighter weight"
+    contact_info:
+      font_size: 12-13px
+      color: "#555"
+      font_weight: 400
+      line_height: 1.3
+      notes: "Compact, clean, and subtle"
+    section_headers:
+      font_size: 17-18px
+      color: "#333"
+      font_weight: 700
+      line_height: 1.25
+      notes: "Bold, clean separators, slightly smaller for modern look"
+    company_project_name:
+      font_size: 15-16px
+      color: "#333"
+      font_weight: 600
+      line_height: 1.3
+      notes: "Slightly larger than descriptions, premium feel"
+    dates_locations:
+      font_size: 12-13px
+      color: "#555"
+      font_weight: 400
+      line_height: 1.25
+      notes: "Compact subtext; display dates on the right and headings/titles on the left for a clean, justified layout."
+    bullet_points:
+      font_size: 14-15px
+      color: "#333"
+      font_weight: 400
+      line_height: 1.4
+      notes: "Tighter spacing, clear achievement focus"
+    skills_list:
+      font_size: 14px
+      color: "#333"
+      font_weight: 400
+      line_height: 1.5
+      notes: "put all skills in bullet points"
+    summary_text:
+      font_size: 14-15px
+      color: "#333"
+      font_weight: 400
+      line_height: 1.4
+      notes: "Concise, professional, easy to read"
+    education_details:
+      font_size: 14-15px
+      color: "#333"
+      font_weight: 400
+      line_height: 1.3
+      notes: "Tighter spacing, compact, professional"
+    bullet_points:
+      notes: "Use anywhere bullet points are written"
+      bullet_symbol: "•"
+      use_ul_li: true  # AI should generate <ul> + <li> instead of plain <p>
+
+      
+  separators:
+    section_border: "1px solid #ddd"  # very subtle line between sections
+    section_padding_bottom: "0.5rem"
+  ats_friendly_tips:
+    - "Keep colors subtle (#333 for main, #555 for secondary)."
+    - "Use plain text in descriptions; avoid images or fancy layouts."
+    - "Include measurable achievements and relevant keywords in each section."
+    - "Keep spacing consistent, avoid extra line breaks."
+    - "Use bullet points for easy parsing by ATS."
+
+
+
+
+
 
 When writing sections, make them **descriptive and achievement-focused**:
 - For Experience: use action verbs, quantify achievements where possible, mention technologies used.
@@ -95,15 +180,15 @@ ${prompt}
             Template reference for styling and structure (ignore classes):
             <div style="max-width:700px; margin:1.5rem auto; background-color:#fff; padding:1.5rem; font-family:Arial,sans-serif; font-size:14px; line-height:1.5; color:#333;">
               <!-- SECTION: HEADER -->
-              <div style="margin-bottom:1rem; border-bottom:1px solid #ccc; padding-bottom:0.5rem;">
-                <h1 style="font-size:1.75rem; font-weight:700; margin:0;">John <span style="font-weight:400;">Doe</span></h1>
-                <div style="color:#555; font-size:13px; margin-top:0.25rem;">
+              <div>
+                <h1>Doe</span></h1>
+                <div>
                   <span>Email:</span> john.doe@gmail.com 
-                  <span style="margin:0 0.5rem; border-left:1px solid #999; height:0.75rem; display:inline-block;"></span>
+                  <span></span>
                   <span>Phone:</span> 111-222-3333
                 </div>
                 <p style="margin-top:0.5rem; font-size:13px;">
-                  <span style="font-weight:600;">Front-End Developer</span> – Creative and detail-oriented developer with 4+ years’ experience building responsive, user-friendly websites and web apps.
+                  <span>Front-End Developer</span> – Creative and detail-oriented developer with 4+ years’ experience building responsive, user-friendly websites and web apps.
                 </p>
               </div>
 
@@ -134,68 +219,7 @@ ${prompt}
       return NextResponse.json({ method });
     }
     case "linkedin": {
-      const { LinkedinUrl } = await req.json();
-
-      if (!LinkedinUrl) {
-        return NextResponse.json(
-          { error: "No LinkedIn URL provided" },
-          { status: 400 }
-        );
-      }
-
-      let browser;
-      try {
-        // Launch Puppeteer
-        browser = await puppeteer.launch({ headless: true });
-        const page = await browser.newPage();
-
-        // Set User-Agent to mimic real browser
-        await page.setUserAgent(
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
-            "(KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36"
-        );
-
-        // Go to LinkedIn profile
-        await page.goto(LinkedinUrl, { waitUntil: "networkidle2" });
-
-        // Extract profile data
-        const profile = await page.evaluate(() => {
-          const name = document.querySelector("h1")?.textContent?.trim() || "";
-          const headline =
-            document
-              .querySelector("div.text-body-medium")
-              ?.textContent?.trim() || "";
-          const summary =
-            document
-              .querySelector("section.pv-about-section p")
-              ?.textContent?.trim() || "";
-
-          const experience: Array<{ title: string; company: string }> = [];
-          const expElements = document.querySelectorAll(
-            "li.pv-entity__position-group-pager"
-          );
-          expElements.forEach((el) => {
-            const title = el.querySelector("h3")?.textContent?.trim() || "";
-            const company =
-              el
-                .querySelector("p.pv-entity__secondary-title")
-                ?.textContent?.trim() || "";
-            experience.push({ title, company });
-          });
-
-          return { name, headline, summary, experience };
-        });
-
-        return NextResponse.json(profile);
-      } catch (err) {
-        console.error(err);
-        return NextResponse.json(
-          { error: "Failed to fetch LinkedIn profile" },
-          { status: 500 }
-        );
-      } finally {
-        if (browser) await browser.close();
-      }
+      console.log("Linkedin method called");
     }
   }
 

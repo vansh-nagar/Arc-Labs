@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useThemeToggle } from "@/components/ui/light-dark";
 import { Meteors } from "@/components/ui/meteors";
+import { ShineBorder } from "@/components/ui/shine-border";
 import { useSidebarStore } from "@/stores/sidebarStore";
 import { BellDot, Moon, Settings, Sun, Zap } from "lucide-react";
 import React from "react";
@@ -50,10 +51,11 @@ const SideBarBottom = () => {
       ))}
 
       <Button
-        className=" l_gradient  mt-2   w-full   overflow-hidden border-2 relative cursor-pointer   "
+        className=" l_gradient  mt-2   w-full   overflow-hidden  relative cursor-pointer   "
         variant={"ghost"}
         size={"default"}
       >
+        <ShineBorder shineColor={["#ffffff", "#000000"]} borderWidth={2} />
         <Zap /> {isSideBarOpen ? "Upgrade" : ""}
         {isSideBarOpen ? <Meteors number={30} className=" absolute " /> : null}
       </Button>

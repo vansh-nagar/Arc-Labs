@@ -220,7 +220,7 @@ export const FileUpload = ({
         </motion.div>
         <div className=" flex justify-center items-center">
           {" "}
-          <div className=" flex flex-col justify-center items-center   ">
+          <div className=" flex flex-col justify-center items-center  sm:ml-3  ">
             <Alert variant="default" className=" mb-2">
               <Terminal />
               <AlertTitle>Steps!</AlertTitle>

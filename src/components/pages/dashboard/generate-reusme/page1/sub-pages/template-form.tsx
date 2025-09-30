@@ -1,14 +1,14 @@
 "use client";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { templates } from "@/data/generate-resume/templates";
+import { templates } from "@/data/templates";
 import { generateResumeDataStore } from "@/stores/gnerate-reusme/generate-resume-p1";
 
 const TemplateForm = () => {
   const router = useRouter();
   const { setType, setData } = generateResumeDataStore();
   return (
-    <div className="p-0 sm:pl-4 mask-b-from-70% ">
+    <div className="p-0 sm:pl-3 mask-b-from-70% ">
       <div className=" column-1 md:columns-2 ">
         {templates.map((template, index) => (
           <img

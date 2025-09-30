@@ -2,16 +2,7 @@ import React from "react";
 import { ResizablePanel } from "@/components/ui/resizable";
 
 import { Button } from "@/components/ui/button";
-import {
-  Code,
-  Download,
-  Eye,
-  Loader2,
-  LockIcon,
-  Redo,
-  Undo,
-  UnlockIcon,
-} from "lucide-react";
+import { Code, Download, Eye, Loader2 } from "lucide-react";
 import CodeEditor from "@/components/pages/dashboard/generate-reusme/page2/editor";
 import UILoading from "@/components/ui/uiloading";
 import { toast } from "sonner";
@@ -32,18 +23,15 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
     isSavingToDb,
     isDownloading,
     setHtmlContent,
-    isToggleLock,
-    setIsLocked,
     htmlContent,
     resumeRef,
     isLocked,
 
     handleSaveProgress,
-    handleToggleLockProject,
     handleDownloadPDF,
   } = useProjectManager(resolvedParams, originalProjectId);
 
-  const { history, currentIndex, setIndex } = useHistoryStore();
+  const { addVersion } = useHistoryStore();
 
   const { permissionType } = useProjectData();
 
@@ -67,41 +55,6 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
           >
             <Code />
           </Button>
-          <Button
-            onClick={() => {
-              const newIndex = currentIndex - 1;
-              console.log({ history });
-              console.log({ newIndex, currentIndex });
-              if (newIndex < 0) {
-                toast.error("No undo available");
-                return;
-              }
-              setHtmlContent(history[newIndex]?.code || "");
-              setIndex(newIndex);
-            }}
-            variant={currentIndex - 1 < 0 ? "outline" : "default"}
-            size={"icon"}
-          >
-            <Undo />
-          </Button>
-          <Button
-            onClick={() => {
-              const newIndex = currentIndex + 1;
-              console.log({ newIndex, currentIndex });
-              if (newIndex >= history.length) {
-                toast.error("No redo available");
-                return;
-              }
-              setHtmlContent(history[newIndex]?.code || "");
-              if (newIndex < history.length) {
-                setIndex(newIndex);
-              }
-            }}
-            variant={currentIndex + 1 >= history.length ? "outline" : "default"}
-            size={"icon"}
-          >
-            <Redo />
-          </Button>
         </div>
 
         <div className=" flex gap-2 ">
@@ -109,6 +62,7 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
             variant="outline"
             onClick={() => {
               if (isSavingToDb) return;
+              addVersion(htmlContent);
               handleSaveProgress();
             }}
           >

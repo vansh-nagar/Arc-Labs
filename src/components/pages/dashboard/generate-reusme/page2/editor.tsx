@@ -7,6 +7,7 @@ import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { Minus, PanelRight, Plus, RotateCw } from "lucide-react";
 import { toast } from "sonner";
+import { useEditorManager } from "@/hooks/generate-reusme/editor-manager";
 
 interface CodeEditorProps {
   code: string;
@@ -22,8 +23,6 @@ export default function CodeEditor({
   const editorRef = useRef<any>(null);
   const { setHtmlContent, htmlContent } = useProjectData();
   const { theme } = useTheme();
-  const [changeLoading, setChangeLoading] = useState(false);
-
   const [size, setSize] = useState<number>(
     JSON.parse(localStorage.getItem("size") || "14")
   );
@@ -31,9 +30,7 @@ export default function CodeEditor({
     JSON.parse(localStorage.getItem("isMiniMapOpen") || "false")
   );
 
-  function handleEditorDidMount(editor: any) {
-    editorRef.current = editor;
-  }
+  const { handleOnEditorDidMount } = useEditorManager(editorRef);
 
   const settingButtons = [
     {
@@ -86,7 +83,7 @@ export default function CodeEditor({
         defaultLanguage={language}
         defaultValue={code}
         theme={theme === "dark" ? "vs-dark" : "light"} // looks like VS Code
-        onMount={handleEditorDidMount}
+        onMount={handleOnEditorDidMount}
         onChange={handleChange}
         options={{
           fontSize: size,

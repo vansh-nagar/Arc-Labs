@@ -24,7 +24,7 @@ const LinkedinForm = () => {
       });
   };
   return (
-    <div className=" overflow-hidden">
+    <div className=" sm:ml-3">
       <div className="mb-2 text-2xl">Enter your linkedin URL</div>
       <Alert variant="default" className=" mb-2">
         <Terminal />

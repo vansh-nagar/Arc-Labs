@@ -26,10 +26,9 @@ export const useProjectManager = (
   const [showCode, setShowCode] = useState(false);
   const [isSavingToDb, setIsSavingToDb] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
-  const [isToggleLock, setIsToggleLock] = useState(false);
   const [ProjectDataLoading, setProjectDataLoading] = useState(false);
 
-  const { addVersion } = useHistoryStore();
+  const { addVersion, resetHistory } = useHistoryStore();
   const { permissionType, setPermissionType, setUrlPermission } =
     useProjectData();
 
@@ -40,17 +39,19 @@ export const useProjectManager = (
     api: "/api/generate-html/manual",
   });
 
-  // set projectId from route
+  //! on mount
+  //? set projectId from route
   useEffect(() => {
+    resetHistory();
     setProjectId(resolvedParams["project-id"]);
   }, [resolvedParams]);
 
-  // sync completion
+  //? sync completion
   useEffect(() => {
     setHtmlContent(completion || "");
   }, [completion]);
 
-  // fetch project data
+  // ! Project Fetching
   useEffect(() => {
     if (
       !projectId ||
@@ -93,7 +94,7 @@ export const useProjectManager = (
       });
   }, [projectId, status]);
 
-  // auto generate resume if new
+  // ! AI Resume Generation for "new" project
   useEffect(() => {
     console.log("originalProjectId", originalProjectId.current);
     console.log("status", status);
@@ -157,6 +158,7 @@ export const useProjectManager = (
     });
   }, [status]);
 
+  //! Save progress
   const handleSaveProgress = async () => {
     if (permissionType !== "EDIT") {
       toast.error("You are not authorized to save this project.");
@@ -171,9 +173,7 @@ export const useProjectManager = (
         projectId,
       })
       .then((res) => {
-        if (res.status === 200) {
-          toast.success(res.data.message || "Project updated successfully.");
-        }
+        toast.success(res.data.message || "Project updated successfully.");
       })
       .catch((err) =>
         toast.error(err?.response?.data?.error || "Failed to update project.")
@@ -183,34 +183,7 @@ export const useProjectManager = (
       });
   };
 
-  const handleToggleLockProject = async (lockState: boolean) => {
-    if (isToggleLock) return;
-    if (permissionType !== "EDIT") {
-      toast.error("You are not authorized to lock/unlock this project.");
-      return;
-    }
-    setIsToggleLock(true);
-
-    axios
-      .post("/api/generate-html/toggle-lock-project", {
-        projectId,
-        lockState,
-      })
-      .then((res) => {
-        if (res.status === 200) {
-          toast.success(res.data.message || "Project lock state updated.");
-        }
-      })
-      .catch((err) =>
-        toast.error(
-          err?.response?.data?.error || "Failed to update lock state."
-        )
-      )
-      .finally(() => {
-        setIsToggleLock(false);
-      });
-  };
-
+  //!download PDF
   const handleDownloadPDF = async () => {
     if (!resumeRef.current) {
       toast.error("Resume content is not available to download.");
@@ -250,13 +223,11 @@ export const useProjectManager = (
     // state
     projectId,
     isLocked,
-    setIsLocked,
     count,
     showCode,
     setShowCode,
     isSavingToDb,
     isDownloading,
-    isToggleLock,
     error,
     htmlContent,
     setHtmlContent,
@@ -264,7 +235,6 @@ export const useProjectManager = (
     completion,
     // handlers
     handleSaveProgress,
-    handleToggleLockProject,
     handleDownloadPDF,
   };
 };

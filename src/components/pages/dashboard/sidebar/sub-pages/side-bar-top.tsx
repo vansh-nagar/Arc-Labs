@@ -11,7 +11,9 @@ const SideBarTop = () => {
   return (
     <>
       <div
-        className={` mt-6  min-h-10 text-xl  flex   justify-between items-center px-5`}
+        className={` mt-6  min-h-10 text-xl  flex   ${
+          isSideBarOpen ? "justify-between" : "justify-center"
+        } items-center px-5 `}
       >
         {isSideBarOpen && (
           <Link href="/">
@@ -27,13 +29,13 @@ const SideBarTop = () => {
         {isSideBarOpen ? (
           <PanelRight
             size={15}
-            className=" cursor-pointer text-neutral-500 "
+            className=" cursor-pointer text-neutral-500  "
             onClick={() => setIsSideBarOpen(!isSideBarOpen)}
           />
         ) : (
           <PanelRightClose
             size={15}
-            className=" cursor-pointer  "
+            className=" cursor-pointer   "
             onClick={() => setIsSideBarOpen(!isSideBarOpen)}
           />
         )}
