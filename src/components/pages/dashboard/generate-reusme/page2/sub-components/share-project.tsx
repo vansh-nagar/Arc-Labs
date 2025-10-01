@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Info, Link, Terminal } from "lucide-react";
+import { Info, Link, Share, Share2, Terminal } from "lucide-react";
 import React, { useState } from "react";
 import { toast } from "sonner";
 
@@ -107,7 +107,7 @@ const ShareProject = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="icon" disabled={!isOwner}>
-          <Link />
+          <Share2 />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-96 p-2">

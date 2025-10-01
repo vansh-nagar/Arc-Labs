@@ -6,17 +6,19 @@ const DashboardImage = () => {
   const { theme } = useTheme();
 
   return (
-    <div className=" h-screen  border-x bg-background min-w-[90vw]  max-w-[90vw]  flex flex-col   ">
-      <div className=" border-t text-accent  px-3 ">Dashboard</div>
-      <div className="p-3 bg-accent bg-diagonal-grid shadow-inner">
-      <img
-          src="https://pbs.twimg.com/media/G0FOCcpXgAArDLT?format=jpg&name=large"
-          alt=""
-          className=" rounded-lg  "
-        />
-      </div>
+    <div className="flex justify-center items-center w-full">
+      <div className=" pb-3  border-x bg-background min-w-[90vw]  max-w-[90vw]  flex flex-col   ">
+        <div className=" border-t text-accent  px-3 ">Dashboard</div>
+        <div className="sm:p-3 p-1 bg-accent bg-diagonal-grid shadow-inner">
+          <img
+            src="https://pbs.twimg.com/media/G0FOCcpXgAArDLT?format=jpg&name=large"
+            alt=""
+            className=" rounded-lg  "
+          />
+        </div>
 
-      <div className=" border-b text-accent  px-3 text-right"> Dashboard</div>
+        <div className=" border-b text-accent  px-3 text-right"> Dashboard</div>
+      </div>
     </div>
   );
 };

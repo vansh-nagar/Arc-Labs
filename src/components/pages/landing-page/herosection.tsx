@@ -11,11 +11,11 @@ const HeroSection = () => {
     <div className=" h-[70vh] w-full flex  justify-center items-center pt-[60px]   ">
       <div className=" relative w-full max-w-[90vw]  flex justify-center items-center flex-col  bg-background    h-full  text-center  border-x  overflow-hidden    ">
         <div className="bg-diagonal-grid  h-10 border-t w-full"></div>
-        <div className=" font-semibold text-4xl bg-background border-y  w-full sm:text-6xl md:text-8xl  text-transparent dark:text-background line-text  ">
+        <div className=" font-semibold text-4xl bg-background border-y  w-full sm:text-6xl md:text-8xl   ">
           ARC LABS
         </div>
         <div className="bg-diagonal-grid  h-4  w-full"></div>
-        <div className=" bg-background  leading-5  text-xs sm:text-base border-y w-full ">
+        <div className=" bg-background  leading-5  text-xs sm:text-base border-y w-full text-muted-foreground ">
           Land your dream job with AI-powered tools for resumes, interviews, and
           more....
         </div>
@@ -29,7 +29,10 @@ const HeroSection = () => {
             <Link href="/dashboard">Get started</Link>
           </Button>
 
-          <Button variant={"secondary"} className="   border-x px-12 max-sm:px-6   rounded-none">
+          <Button
+            variant={"secondary"}
+            className="   border-x px-12 max-sm:px-6   rounded-none"
+          >
             {" "}
             Learn more
           </Button>

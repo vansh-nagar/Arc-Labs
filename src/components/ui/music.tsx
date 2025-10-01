@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import useSound from "use-sound";
+import { ShineBorder } from "./shine-border";
 
 const Skiper25 = () => {
   return (
@@ -19,8 +20,8 @@ const Skiper25 = () => {
 
 export { Skiper25 };
 
-export const MusicToggleButton = () => {
-  const bars = 5;
+export const MusicToggleButton = ({ className }: { className?: string }) => {
+  const bars = 10;
 
   const getRandomHeights = () => {
     return Array.from({ length: bars }, () => Math.random() * 0.8 + 0.2);
@@ -67,11 +68,11 @@ export const MusicToggleButton = () => {
       <motion.div
         onClick={handleClick}
         key="audio"
-        initial={{ padding: "14px 14px " }}
+        initial={{ padding: "12px 12px " }}
         whileHover={{ padding: "14px 22px " }}
         whileTap={{ padding: "18px 22px " }}
         transition={{ duration: 1, bounce: 0.6, type: "spring" }}
-        className="bg-background cursor-pointer rounded-full p-2 border"
+        className={`bg-background cursor-pointer rounded-full p-2 border ${className}`}
       >
         <motion.div
           initial={{ opacity: 0, filter: "blur(4px)" }}

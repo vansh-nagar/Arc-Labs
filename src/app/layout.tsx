@@ -3,15 +3,14 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "sonner";
+import { Inter_Tight } from "next/font/google";
+import { SmoothCursor } from "@/components/ui/smooth-cursor";
+import Navbar from "@/components/pages/landing-page/navbar";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const interTight = Inter_Tight({
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: "--font-inter-tight",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -26,12 +25,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${interTight.className}  antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           {children}
         </ThemeProvider>
+        {/* <SmoothCursor/> */}
         <Toaster />
       </body>
     </html>
