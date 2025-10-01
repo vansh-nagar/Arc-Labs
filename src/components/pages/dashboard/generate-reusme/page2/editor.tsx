@@ -10,13 +10,11 @@ import { toast } from "sonner";
 import { useEditorManager } from "@/hooks/generate-reusme/editor-manager";
 
 interface CodeEditorProps {
-  code: string;
   language?: string;
   onChange?: (value: string) => void;
 }
 
 export default function CodeEditor({
-  code,
   language = "html",
   onChange,
 }: CodeEditorProps) {
@@ -81,7 +79,7 @@ export default function CodeEditor({
         value={htmlContent}
         height="100%"
         defaultLanguage={language}
-        defaultValue={code}
+        defaultValue={htmlContent}
         theme={theme === "dark" ? "vs-dark" : "light"} // looks like VS Code
         onMount={handleOnEditorDidMount}
         onChange={handleChange}

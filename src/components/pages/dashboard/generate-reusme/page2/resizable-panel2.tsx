@@ -2,12 +2,11 @@ import React from "react";
 import { ResizablePanel } from "@/components/ui/resizable";
 
 import { Button } from "@/components/ui/button";
-import { Code, Download, Eye, Loader2 } from "lucide-react";
+import { Code, Download, Eye, Loader2, Lock } from "lucide-react";
 import CodeEditor from "@/components/pages/dashboard/generate-reusme/page2/editor";
 import UILoading from "@/components/ui/uiloading";
 
 import { useProjectManager } from "@/hooks/generate-reusme/resizable-panel2-manager";
-import Lock from "@/components/ui/lock";
 import { useHistoryStore } from "@/stores/gnerate-reusme/editor-history";
 import ShareProject from "./sub-components/share-project";
 import { useProjectData } from "@/stores/gnerate-reusme/project-data-store";
@@ -34,7 +33,6 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
 
   return (
     <ResizablePanel defaultSize={75} className="h-full ">
-      {urlPermission === "LOCKED" && !isOwner && <Lock />}
       <div className="ml-3 justify-between gap-2 flex  mb-3 overflow-x-auto hide-scrollbar">
         <div className=" flex gap-2">
           <Button
@@ -88,25 +86,35 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
         </div>
       </div>
       {showCode ? (
-        <div className=" h-full ml-3 rounded-md  overflow-hidden  ">
-          <CodeEditor code={htmlContent} onChange={setHtmlContent} />
+        <div className="h-full ml-3 rounded-md overflow-hidden">
+          <CodeEditor onChange={setHtmlContent} />
+        </div>
+      ) : urlPermission === "LOCKED" && !isOwner ? (
+        <div className="flex flex-col items-center justify-center h-full ml-3 border rounded-md p-4 text-center">
+          <Lock size={50} className="text-destructive mb-4" />
+          <h3 className="text-lg font-semibold mb-2">Access Restricted</h3>
+          <p className="text-muted-foreground">
+            You don't have permission to view this content. <br /> Please
+            contact the owner for access.
+          </p>
         </div>
       ) : (
         <>
           {error && (
-            <div className=" overflow-y-auto border ml-3 rounded-md p-4">
+            <div className="overflow-y-auto border ml-3 rounded-md p-4">
               Error: {error.message}
             </div>
           )}
+
           {htmlContent || completion ? (
-            <div className="ml-3 h-full border rounded-md  overflow-y-auto">
+            <div className="ml-3 h-full border rounded-md overflow-y-auto">
               <div
                 ref={resumeRef}
-                className="h-full overflow-auto  "
+                className="h-full overflow-auto"
                 dangerouslySetInnerHTML={{
                   __html: htmlContent || completion,
                 }}
-              ></div>
+              />
             </div>
           ) : (
             <UILoading />

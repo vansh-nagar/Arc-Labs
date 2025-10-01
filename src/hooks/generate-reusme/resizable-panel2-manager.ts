@@ -176,30 +176,25 @@ export const useProjectManager = (
 
   //!download PDF
   const handleDownloadPDF = async () => {
-    if (!resumeRef.current) {
+    if (!htmlContent) {
       toast.error("Resume content is not available to download.");
       return;
     }
 
-    setIsDownloading(true);
+    console.log("downloading");
+    console.log(htmlContent);
 
-    const html = `
-              <html>
-                <head>
-                  <meta charset="utf-8">
-                </head>
-                <body>
-                  ${resumeRef.current.innerHTML}
-                </body>
-              </html>`;
+    setIsDownloading(true);
 
     const resp = await fetch("/api/generate-html/generate-pdf", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ html, filename: "resume.pdf" }),
+      body: JSON.stringify({ html: `${htmlContent}`, filename: "resume.pdf" }),
     });
 
-    if (!resp.ok) throw new Error("PDF generation failed");
+    if (!resp.ok) {
+      throw new Error("PDF generation failed");
+    }
 
     const blob = await resp.blob();
     const url = URL.createObjectURL(blob);

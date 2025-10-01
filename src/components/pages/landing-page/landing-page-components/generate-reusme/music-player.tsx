@@ -6,8 +6,14 @@ const MusicPlayer = () => {
   return (
     <div className=" relative border rounded-lg bg-background flex justify-center  max-xl:aspect-square  items-center  overflow-hidden">
       <div className="z-20 flex  justify-center items-center  flex-col gap-2 ">
-        <MusicToggleButton className="px-40 py-40" />
-        <div>Listen to music</div>
+        <div className="text-3xl text-center mix-blend-difference ">
+          Boost Productivity
+        </div>
+        <div className="text-3xl text-center mix-blend-difference ">
+          {" "}
+          with Music
+        </div>
+        <MusicToggleButton />
       </div>
       <FlickeringGrid
         className=" absolute   -right-1 -bottom-1 z-0 mask-b-from-80% "

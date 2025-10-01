@@ -12,6 +12,7 @@ import { Info, Lock } from "lucide-react";
 import { AnimatedNumber_001 } from "@/components/ui/animated-count-down";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { LightRays } from "@/components/ui/light-rays";
 
 const Security = () => {
   const [countDown, setCountDown] = useState(60);
@@ -22,7 +23,7 @@ const Security = () => {
         size={130}
         className="text-muted absolute z-0 right-1/2 bottom-1/2 translate-x-1/2 translate-y-1/2"
       />
-      <AnimatedNumber_001 duration={countDown} />
+      <AnimatedNumber_001 duration={countDown} setPermission={setPermission} />
       <div className="z-20 flex items-center justify-between mt-2 ml-1">
         <div> Any one with the link</div>
         <Select

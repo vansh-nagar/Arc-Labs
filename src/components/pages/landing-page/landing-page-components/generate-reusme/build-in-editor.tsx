@@ -47,7 +47,7 @@ const BuiltInEditor = () => {
           </Tooltip>
         ))}
       </div>
-      <div className=" absolute  bottom-0 -right-1/2 w-72 border p-1 rounded-sm overflow-hidden">
+      <div className=" absolute  bottom-0 -right-1/4 w-72 border p-1 rounded-sm overflow-hidden">
         {" "}
         <img
           src={"https://ik.imagekit.io/ijuiklevk/image.png"}

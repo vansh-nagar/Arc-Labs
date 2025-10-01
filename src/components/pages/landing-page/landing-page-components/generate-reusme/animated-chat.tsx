@@ -89,11 +89,11 @@ const AnimatedChat = () => {
             description="Start a conversation to see messages here"
           />
         ) : (
-          messages.map((message) =>
+          messages.map((message, index) =>
             message ? (
               <Message
                 from={message.from as "user" | "assistant" | "system"}
-                key={message.id}
+                key={index}
               >
                 <MessageContent>{message.content}</MessageContent>
               </Message>

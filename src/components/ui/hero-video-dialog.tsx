@@ -88,7 +88,7 @@ export function HeroVideoDialog({
         <img
           src={thumbnailSrc}
           alt={thumbnailAlt}
-          className=" h-full mask-b-from-70%  object-cover object-left   rounded-md  shadow-lg transition-all duration-200 ease-out group-hover:brightness-[0.8]"
+          className=" h-full mask-b-from-85%  object-cover object-left   rounded-md  shadow-lg transition-all duration-200 ease-out group-hover:brightness-[0.8]"
         />
         <div className="absolute inset-0 flex scale-[0.9] items-center justify-center rounded-2xl transition-all duration-200 ease-out group-hover:scale-100">
           <div className="bg-primary/10 flex size-28 items-center justify-center rounded-full backdrop-blur-md">
