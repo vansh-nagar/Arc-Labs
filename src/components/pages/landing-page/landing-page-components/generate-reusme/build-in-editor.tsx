@@ -47,12 +47,12 @@ const BuiltInEditor = () => {
           </Tooltip>
         ))}
       </div>
-      <div className=" absolute  bottom-0 -right-1/4 w-72 border p-1 rounded-sm overflow-hidden">
+      <div className=" absolute  bottom-0 -right-1/4 w-72 border p-1 mask-b-from-70% rounded-t-sm overflow-hidden">
         {" "}
         <img
           src={"https://ik.imagekit.io/ijuiklevk/image.png"}
           alt=""
-          className="  rounded-xs "
+          className="  rounded-xs  "
         />
         <div className=" h-10 w-10 absolute top-0 left-0 bg-accent-foreground blur-[60px]"></div>
       </div>
