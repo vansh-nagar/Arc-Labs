@@ -7,6 +7,7 @@ import { useCompletion } from "@ai-sdk/react";
 import { generateResumeDataStore } from "@/stores/gnerate-reusme/generate-resume-p1";
 import { useProjectData } from "@/stores/gnerate-reusme/project-data-store";
 import { useHistoryStore } from "@/stores/gnerate-reusme/editor-history";
+import { LinkPermissionType } from "@prisma/client";
 
 export const useProjectManager = (
   resolvedParams: any,
@@ -55,6 +56,7 @@ export const useProjectManager = (
 
   // ! Project Fetching
   useEffect(() => {
+    console.log("ProjectId changed, fetching data:", projectId);
     if (
       !projectId ||
       projectId === "new" ||
@@ -94,7 +96,6 @@ export const useProjectManager = (
       });
   }, [projectId, status]);
 
-  // ! AI Resume Generation for "new" project
   useEffect(() => {
     if (
       originalProjectId.current !== "new" ||
@@ -104,6 +105,9 @@ export const useProjectManager = (
       return;
 
     apiIsCalled.current = true;
+
+    setHtmlContent("");
+    setProjectId("");
 
     if (type === "template" && data.template !== "") {
       setHtmlContent(data.template);

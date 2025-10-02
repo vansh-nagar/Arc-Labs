@@ -2,9 +2,6 @@ import { NextResponse, NextRequest } from "next/server";
 import { streamText } from "ai";
 import { groq } from "@ai-sdk/groq";
 import pdfParse from "pdf-parse-new";
-import axios from "axios";
-import * as cheerio from "cheerio";
-import puppeteer from "puppeteer";
 
 export async function POST(
   req: NextRequest,
@@ -147,10 +144,6 @@ resume_styles:
     - "Use bullet points for easy parsing by ATS."
 
 
-
-
-
-
 When writing sections, make them **descriptive and achievement-focused**:
 - For Experience: use action verbs, quantify achievements where possible, mention technologies used.
 - For Projects: explain purpose, features, technologies, and impact.
@@ -165,6 +158,7 @@ Do not add shadows or rounded corners.
 
 **Important for editing later:**
 + give each section a unique id attribute matching the section name so it can be selected programmatically later:
++ <div id="page">...</div>
 + <div id="header-section">...</div>
 + <div id="summary-section">...</div>
 + <div id="skills-section">...</div>
@@ -178,7 +172,7 @@ Candidate Data:
 ${prompt}
 
             Template reference for styling and structure (ignore classes):
-            <div style="max-width:700px; margin:1.5rem auto; background-color:#fff; padding:1.5rem; font-family:Arial,sans-serif; font-size:14px; line-height:1.5; color:#333;">
+            <div id="page" style="max-width:700px; margin:1.5rem auto; background-color:#fff; padding:1.5rem; font-family:Arial,sans-serif; font-size:14px; line-height:1.5; color:#333;">
               <!-- SECTION: HEADER -->
               <div>
                 <h1>Doe</span></h1>

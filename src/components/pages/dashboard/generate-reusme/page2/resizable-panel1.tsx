@@ -36,6 +36,8 @@ const ResizablePanel1 = () => {
 
   const { history, addVersion } = useHistoryStore();
 
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+
   const { messages } = useChat({
     transport: new DefaultChatTransport({ api: "/api/dummy" }),
   });
@@ -54,7 +56,11 @@ const ResizablePanel1 = () => {
             <ConversationEmptyState
               icon={<MessageSquare className="size-12" />}
               title="No messages yet"
-              description="Start a conversation to refine and improve your resume"
+              description={
+                !isOwner && urlPermission !== "EDIT"
+                  ? "You do not have permission to edit this resume."
+                  : "Start a conversation to refine and improve your resume. I am broke so please be kind :)"
+              }
             />
           ) : (
             messages.map((message) => (
@@ -100,7 +106,6 @@ const ResizablePanel1 = () => {
         </Button>
       </div>
       <PromptInput
-        aria-placeholder="Ask me to improve your resume"
         className=" rounded-md"
         onSubmit={(e) => {
           if (!isOwner && urlPermission !== "EDIT") {
@@ -116,6 +121,7 @@ const ResizablePanel1 = () => {
             parts: [{ type: "text", text: chatPrompt }],
           });
           setChatPrompt("");
+          setSuggestions([]);
           axios
             .post("/api/generate-html/look-up-calls", {
               htmlContent,
@@ -129,6 +135,8 @@ const ResizablePanel1 = () => {
               });
               setHtmlContent(res.data.finalHtml);
               addVersion(res.data.finalHtml);
+              console.log("SUGGESTIONS", res.data.suggestions);
+              setSuggestions(res.data.suggestions || []);
             })
             .catch((err) => {
               toast.error(err.response?.data?.error);
@@ -140,6 +148,11 @@ const ResizablePanel1 = () => {
       >
         <PromptInputBody>
           <PromptInputTextarea
+            placeholder={
+              suggestions.length > 0
+                ? suggestions[0]
+                : "Make changes to a section and see AI suggestions to improve it here."
+            }
             onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
               setChatPrompt(e.target.value);
             }}
