@@ -77,7 +77,7 @@ export const useProjectManager = (
       })
       .then((res) => {
         setHtmlContent(JSON.parse(res.data.projectData.html) || "");
-        addVersion(JSON.parse(res.data.projectData.html) || "");
+        addVersion(JSON.parse(res.data.projectData.html), "page");
         setIsOwner(res.data.isOwner);
         setUrlPermission(res.data.urlPermission);
         setLinkExpiresAt(res.data.projectData.linkExpiresAt);
@@ -182,8 +182,6 @@ export const useProjectManager = (
       toast.error("Resume content is not available to download.");
       return;
     }
-
- 
 
     setIsDownloading(true);
 

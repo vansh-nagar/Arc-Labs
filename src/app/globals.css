@@ -226,3 +226,21 @@ body {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+.highlighted-div {
+  animation: highlightFlash 1s ease forwards;
+  background-color: rgba(255, 255, 0, 0.6); /* soft yellow */
+  border-radius: 4px; /* optional for nicer look */
+}
+
+@keyframes highlightFlash {
+  0% {
+    background-color: rgba(255, 255, 0, 0.8);
+  }
+  50% {
+    background-color: rgba(255, 255, 0, 0.4);
+  }
+  100% {
+    background-color: transparent;
+  }
+}

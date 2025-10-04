@@ -98,7 +98,8 @@ const ResizablePanel1 = () => {
         <ConversationScrollButton />
       </Conversation>
       <div className=" flex gap-2 justify-between mb-2">
-        <Button  variant={"ghost"}
+        <Button
+          variant={"ghost"}
           onClick={() => {
             if (suggestions.length <= 0)
               return toast.error("no suggestions for now");
@@ -113,6 +114,7 @@ const ResizablePanel1 = () => {
             onClick={() => {
               const newIndex = currentIndex - 1;
               setHtmlContent(history[newIndex]?.code || "");
+              setlookUpDivId(history[newIndex].changedDiv);
               setIndex(newIndex);
             }}
             variant={currentIndex - 1 < 0 ? "outline" : "default"}
@@ -125,6 +127,7 @@ const ResizablePanel1 = () => {
             onClick={() => {
               const newIndex = currentIndex + 1;
               setHtmlContent(history[newIndex]?.code || "");
+              setlookUpDivId(history[newIndex].changedDiv);
               if (newIndex < history.length) {
                 setIndex(newIndex);
               }
@@ -165,7 +168,7 @@ const ResizablePanel1 = () => {
                 parts: [{ type: "text", text: res.data.reply }],
               });
               setHtmlContent(res.data.finalHtml);
-              addVersion(res.data.finalHtml);
+              addVersion(res.data.finalHtml, res.data.divId);
               setlookUpDivId(res.data.divId);
               setSuggestions(res.data.suggestions || []);
             })

@@ -12,7 +12,7 @@ interface MusicToggleButtonProps {
 export const MusicToggleButton: React.FC<MusicToggleButtonProps> = ({
   className,
 }) => {
-  const bars = 20;
+  const bars = 10;
 
   const getRandomHeights = () =>
     Array.from({ length: bars }, () => Math.random() * 0.8 + 0.2);
@@ -93,7 +93,7 @@ export const MusicToggleButton: React.FC<MusicToggleButtonProps> = ({
             {heights.map((height, index) => (
               <motion.div
                 key={index}
-                className="bg-foreground w-[1px] rounded-full"
+                className="bg-foreground w-[2px] rounded-full"
                 initial={{ height: 1 }}
                 animate={{ height: Math.max(3, height * 15) }}
                 transition={{ type: "spring", stiffness: 500, damping: 12 }}

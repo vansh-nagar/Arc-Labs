@@ -33,9 +33,15 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
 
   useEffect(() => {
     if (!resumeRef) return;
-    const page = resumeRef.current?.querySelector(`#${lookUpDivId}`);
+    console.log("lookUpDivId changed:", lookUpDivId);
+    const div = resumeRef.current?.querySelector(`#${lookUpDivId}`);
 
-    page?.scrollIntoView({ behavior: "smooth" });
+    div?.scrollIntoView({ behavior: "smooth" });
+
+    div?.classList.add("highlighted-div");
+    setTimeout(() => {
+      div?.classList.remove("highlighted-div");
+    }, 2000);
   }, [lookUpDivId]);
 
   return (
@@ -60,7 +66,7 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
             variant="outline"
             onClick={() => {
               if (isSavingToDb) return;
-              addVersion(htmlContent);
+              addVersion(htmlContent, "page");
               handleSaveProgress();
             }}
           >
@@ -94,7 +100,7 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
       </div>
       {showCode ? (
         <div className="h-full ml-3 rounded-md overflow-hidden">
-          <CodeEditor  onChange={setHtmlContent} />
+          <CodeEditor onChange={setHtmlContent} />
         </div>
       ) : urlPermission === "LOCKED" && !isOwner ? (
         <div className="flex flex-col items-center justify-center h-full ml-3 border rounded-md p-4 text-center">
