@@ -94,7 +94,7 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
       </div>
       {showCode ? (
         <div className="h-full ml-3 rounded-md overflow-hidden">
-          <CodeEditor onChange={setHtmlContent} />
+          <CodeEditor  onChange={setHtmlContent} />
         </div>
       ) : urlPermission === "LOCKED" && !isOwner ? (
         <div className="flex flex-col items-center justify-center h-full ml-3 border rounded-md p-4 text-center">

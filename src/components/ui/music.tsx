@@ -3,105 +3,121 @@
 import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import useSound from "use-sound";
-import { ShineBorder } from "./shine-border";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const Skiper25 = () => {
-  return (
-    <div className="flex h-full w-full flex-col items-center justify-center">
-      <div className="text-foreground absolute top-[20%] grid content-start justify-items-center gap-6 py-20 text-center">
-        <span className="after:from-background after:to-foreground relative max-w-[12ch] text-xs uppercase leading-tight opacity-40 after:absolute after:left-1/2 after:top-full after:h-16 after:w-px after:bg-gradient-to-b after:content-['']">
-          Click to play the music
-        </span>
-      </div>
-      <MusicToggleButton />
-    </div>
-  );
-};
+interface MusicToggleButtonProps {
+  className?: string;
+}
 
-export { Skiper25 };
+export const MusicToggleButton: React.FC<MusicToggleButtonProps> = ({
+  className,
+}) => {
+  const bars = 20;
 
-export const MusicToggleButton = ({ className }: { className?: string }) => {
-  const bars = 10;
+  const getRandomHeights = () =>
+    Array.from({ length: bars }, () => Math.random() * 0.8 + 0.2);
 
-  const getRandomHeights = () => {
-    return Array.from({ length: bars }, () => Math.random() * 0.8 + 0.2);
-  };
+  const tracks = [
+    { src: "/music/silk&colegne.mp3", name: "Silk & Cologne" },
+    { src: "/music/linkUp.mp3", name: "Link Up" },
+    { src: "/music/home.mp3", name: "Home" },
+    { src: "/music/selfLove.mp3", name: "Self Love" },
+  ];
 
   const [heights, setHeights] = useState(getRandomHeights());
-
   const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
 
-  const [play, { pause, sound }] = useSound("/music/silk&colegne.mp3", {
+  const [play, { pause, sound }] = useSound(tracks[currentTrackIndex].src, {
     loop: true,
     onplay: () => setIsPlaying(true),
-    onend: () => setIsPlaying(false),
     onpause: () => setIsPlaying(false),
     onstop: () => setIsPlaying(false),
     soundEnabled: true,
   });
 
+  // Waveform animation
   useEffect(() => {
     if (isPlaying) {
-      const waveformIntervalId = setInterval(() => {
-        setHeights(getRandomHeights());
-      }, 100);
-
-      return () => {
-        clearInterval(waveformIntervalId);
-      };
+      const interval = setInterval(() => setHeights(getRandomHeights()), 100);
+      return () => clearInterval(interval);
     }
     setHeights(Array(bars).fill(0.1));
   }, [isPlaying]);
 
-  const handleClick = () => {
-    if (isPlaying) {
-      pause();
-      setIsPlaying(false);
-      return;
-    }
-    play();
-    setIsPlaying(true);
+  const handlePlayPause = () => {
+    if (isPlaying) pause();
+    else play();
+  };
+
+  const handleNextTrack = () => {
+    pause();
+    const nextIndex = (currentTrackIndex + 1) % tracks.length;
+    setCurrentTrackIndex(nextIndex);
+  };
+
+  const handlePrevTrack = () => {
+    pause();
+    const prevIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
+    setCurrentTrackIndex(prevIndex);
   };
 
   return (
-    <>
-      <motion.div
-        onClick={handleClick}
-        key="audio"
-        initial={{ padding: "12px 12px " }}
-        whileHover={{ padding: "14px 22px " }}
-        whileTap={{ padding: "18px 22px " }}
-        transition={{ duration: 1, bounce: 0.6, type: "spring" }}
-        className={`bg-background cursor-pointer rounded-full p-2 border ${className}`}
-      >
-        <motion.div
-          initial={{ opacity: 0, filter: "blur(4px)" }}
-          animate={{
-            opacity: 1,
-            filter: "blur(0px)",
-          }}
-          exit={{ opacity: 0, filter: "blur(4px)" }}
-          transition={{ type: "spring", bounce: 0.35 }}
-          className="flex h-[18px] w-full items-center gap-1 rounded-full"
+    <div className={`flex flex-col items-center  justify-center ${className}`}>
+      <div className="flex items-center gap-1">
+        {/* Previous Track */}
+        <button
+          onClick={handlePrevTrack}
+          className="p-2 bg-background rounded-full border cursor-pointer"
         >
-          {/* Waveform visualization */}
-          {heights.map((height, index) => (
-            <motion.div
-              key={index}
-              className="bg-foreground w-[1px] rounded-full"
-              initial={{ height: 1 }}
-              animate={{
-                height: Math.max(4, height * 14),
-              }}
-              transition={{
-                type: "spring",
-                stiffness: 300,
-                damping: 10,
-              }}
-            />
-          ))}
+          <ChevronLeft size={16} />
+        </button>
+
+        {/* Waveform / Play-Pause */}
+        <motion.div
+          onClick={handlePlayPause}
+          key="audio"
+          initial={{ padding: "6px 8px" }}
+          whileHover={{ padding: "8px 10px" }}
+          whileTap={{ padding: "10px 12px" }}
+          transition={{ duration: 0.3, bounce: 0.4, type: "spring" }}
+          className="bg-background cursor-pointer rounded-full border flex items-center"
+        >
+          <motion.div
+            initial={{ opacity: 0, filter: "blur(2px)" }}
+            animate={{ opacity: 1, filter: "blur(0px)" }}
+            exit={{ opacity: 0, filter: "blur(2px)" }}
+            transition={{ type: "spring", bounce: 0.3 }}
+            className="flex w-[60px] h-5 justify-center items-center gap-[1px] relative"
+          >
+            {heights.map((height, index) => (
+              <motion.div
+                key={index}
+                className="bg-foreground w-[1px] rounded-full"
+                initial={{ height: 1 }}
+                animate={{ height: Math.max(3, height * 15) }}
+                transition={{ type: "spring", stiffness: 500, damping: 12 }}
+              />
+            ))}
+            <div
+              about=""
+              className="text-[6px] font-medium  absolute mix-blend-difference text-muted-foreground text-nowrap right-1/2 -bottom-4 translate-x-1/2"
+            >
+              {tracks[currentTrackIndex].name}
+            </div>
+          </motion.div>
         </motion.div>
-      </motion.div>
-    </>
+
+        {/* Next Track */}
+        <button
+          onClick={handleNextTrack}
+          className="p-2 bg-background rounded-full border cursor-pointer"
+        >
+          <ChevronRight size={16} />
+        </button>
+      </div>
+
+      {/* Track Name */}
+    </div>
   );
 };

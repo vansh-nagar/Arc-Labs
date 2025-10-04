@@ -11,7 +11,14 @@ import {
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
-import { Loader2, MessageSquare, Redo, SmileIcon, Undo } from "lucide-react";
+import {
+  Loader2,
+  MessageSquare,
+  Redo,
+  Sparkle,
+  Sparkles,
+  Undo,
+} from "lucide-react";
 import {
   PromptInput,
   PromptInputBody,
@@ -25,6 +32,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useHistoryStore } from "@/stores/gnerate-reusme/editor-history";
 import { useProjectData } from "@/stores/gnerate-reusme/project-data-store";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const ResizablePanel1 = () => {
   const [chatPrompt, setChatPrompt] = useState("");
@@ -68,47 +76,65 @@ const ResizablePanel1 = () => {
               }
             />
           ) : (
-            messages.map((message) => (
-              <Message from={message.role} key={message.id}>
-                <MessageContent>
-                  <Response>
-                    {message.parts.find((part) => part.type === "text")?.text ||
-                      ""}
-                  </Response>
-                </MessageContent>
-              </Message>
-            ))
+            <>
+              {messages.map((message) => (
+                <Message from={message.role} key={message.id}>
+                  <MessageContent>
+                    <Response>
+                      {message.parts.find((part) => part.type === "text")
+                        ?.text || ""}
+                    </Response>
+                  </MessageContent>
+                </Message>
+              ))}
+              {updateCallLoading && (
+                <div className="flex justify-start p-2">
+                  <Skeleton className="h-10 w-40" />
+                </div>
+              )}
+            </>
           )}
         </ConversationContent>
         <ConversationScrollButton />
       </Conversation>
-      <div className=" flex gap-2 justify-end mb-2">
-        <Button
-          disabled={currentIndex - 1 < 0}
+      <div className=" flex gap-2 justify-between mb-2">
+        <Button  variant={"ghost"}
           onClick={() => {
-            const newIndex = currentIndex - 1;
-            setHtmlContent(history[newIndex]?.code || "");
-            setIndex(newIndex);
+            if (suggestions.length <= 0)
+              return toast.error("no suggestions for now");
+            setChatPrompt(suggestions[0]);
           }}
-          variant={currentIndex - 1 < 0 ? "outline" : "default"}
-          size={"icon"}
         >
-          <Undo />
+          Apply AI Suggestion <Sparkles />{" "}
         </Button>
-        <Button
-          disabled={currentIndex + 1 >= history.length}
-          onClick={() => {
-            const newIndex = currentIndex + 1;
-            setHtmlContent(history[newIndex]?.code || "");
-            if (newIndex < history.length) {
+        <div className="flex gap-2">
+          <Button
+            disabled={currentIndex - 1 < 0}
+            onClick={() => {
+              const newIndex = currentIndex - 1;
+              setHtmlContent(history[newIndex]?.code || "");
               setIndex(newIndex);
-            }
-          }}
-          variant={currentIndex + 1 >= history.length ? "outline" : "default"}
-          size={"icon"}
-        >
-          <Redo />
-        </Button>
+            }}
+            variant={currentIndex - 1 < 0 ? "outline" : "default"}
+            size={"icon"}
+          >
+            <Undo />
+          </Button>
+          <Button
+            disabled={currentIndex + 1 >= history.length}
+            onClick={() => {
+              const newIndex = currentIndex + 1;
+              setHtmlContent(history[newIndex]?.code || "");
+              if (newIndex < history.length) {
+                setIndex(newIndex);
+              }
+            }}
+            variant={currentIndex + 1 >= history.length ? "outline" : "default"}
+            size={"icon"}
+          >
+            <Redo />
+          </Button>
+        </div>
       </div>
       <PromptInput
         className=" rounded-md"
