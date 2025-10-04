@@ -94,6 +94,7 @@ export const useProjectManager = (
       });
   }, [projectId, status]);
 
+  // ! Auto Save New Project
   useEffect(() => {
     if (
       originalProjectId.current !== "new" ||

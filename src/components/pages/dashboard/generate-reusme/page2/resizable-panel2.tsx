@@ -79,6 +79,7 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
           <Button
             disabled={!isOwner && urlPermission !== "EDIT"}
             variant="outline"
+            title="Download PDF"
             size={"icon"}
             onClick={() => {
               if (isDownloading) return;
@@ -93,7 +94,7 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
           </Button>
 
           <ShareProject />
-          <Button variant="outline">
+          <Button title="Views" variant="outline">
             <Eye /> <div>{count}</div>
           </Button>
         </div>
@@ -120,7 +121,7 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
           )}
 
           {htmlContent || completion ? (
-            <div className="ml-3 h-full border rounded-md overflow-y-auto">
+            <div className="ml-3  h-full border rounded-md overflow-y-auto">
               <div
                 ref={resumeRef}
                 className="h-full overflow-auto"

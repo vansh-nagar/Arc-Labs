@@ -156,6 +156,7 @@ Do not use class names, React JSX, or TSX syntax.
 Do not wrap the output in markdown or code blocks. 
 Do not add shadows or rounded corners.  
 
+
 **Important for editing later:**
 + give each section a unique id attribute matching the section name so it can be selected programmatically later:
 + <div id="page">...</div>
@@ -167,12 +168,13 @@ Do not add shadows or rounded corners.
 + <div id="projects-section">...</div>
 
 - Make each section descriptive and achievement-oriented, using metrics, technologies, and outcomes wherever applicable.
+- Use bullet points (•) wherever they improve clarity — especially for achievements, responsibilities, skills, and project details — while keeping descriptions concise and easy to scan.
 
 Candidate Data:
 ${prompt}
 
             Template reference for styling and structure (ignore classes):
-            <div id="page" style="max-width:700px; margin:1.5rem auto; background-color:#fff; padding:1.5rem; font-family:Arial,sans-serif; font-size:14px; line-height:1.5; color:#333;">
+            <div id="page" style="max-width:700px; margin:0rem auto; background-color:#fff; padding:0 1rem; font-family:Arial,sans-serif; font-size:14px; line-height:1.5; color:#333;">
               <!-- SECTION: HEADER -->
               <div>
                 <h1>Doe</span></h1>

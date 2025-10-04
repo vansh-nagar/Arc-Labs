@@ -106,7 +106,12 @@ const ShareProject = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon" disabled={!isOwner}>
+        <Button
+          variant="outline"
+          title="Share project"
+          size="icon"
+          disabled={!isOwner}
+        >
           <Share2 />
         </Button>
       </DropdownMenuTrigger>

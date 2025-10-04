@@ -6,17 +6,16 @@ export async function POST(req: Request) {
     const { html, filename } = await req.json();
 
     const browser = await puppeteer.launch({
-      args: ["--no-sandbox", "--disable-setuid-sandbox"], // needed in some environments
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
     const page = await browser.newPage();
 
-    // Set content to the HTML you sent
     await page.setContent(html, { waitUntil: "networkidle0" });
 
-    // Generate PDF
     const pdfBuffer: any = await page.pdf({
       format: "A4",
       printBackground: true,
+      margin: { top: "10mm", bottom: "10mm", left: "15mm", right: "15mm" },
     });
 
     await browser.close();
