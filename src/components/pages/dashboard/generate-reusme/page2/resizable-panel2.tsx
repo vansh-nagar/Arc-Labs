@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ResizablePanel } from "@/components/ui/resizable";
 
 import { Button } from "@/components/ui/button";
@@ -29,11 +29,18 @@ const ResizablePanel2 = ({ originalProjectId, resolvedParams }: any) => {
 
   const { addVersion } = useHistoryStore();
 
-  const { urlPermission, isOwner } = useProjectData();
+  const { urlPermission, isOwner, lookUpDivId } = useProjectData();
+
+  useEffect(() => {
+    if (!resumeRef) return;
+    const page = resumeRef.current?.querySelector(`#${lookUpDivId}`);
+
+    page?.scrollIntoView({ behavior: "smooth" });
+  }, [lookUpDivId]);
 
   return (
-    <ResizablePanel defaultSize={75} className="h-full ">
-      <div className="ml-3 justify-between gap-2 flex  mb-3 overflow-x-auto hide-scrollbar">
+    <ResizablePanel defaultSize={75} className="h-full flex flex-col gap-3 ">
+      <div className="ml-3 justify-between gap-2 flex   ">
         <div className=" flex gap-2">
           <Button
             disabled={!isOwner && urlPermission !== "EDIT"}

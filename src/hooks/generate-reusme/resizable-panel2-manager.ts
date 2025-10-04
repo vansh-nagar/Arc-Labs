@@ -56,7 +56,6 @@ export const useProjectManager = (
 
   // ! Project Fetching
   useEffect(() => {
-    console.log("ProjectId changed, fetching data:", projectId);
     if (
       !projectId ||
       projectId === "new" ||
@@ -77,7 +76,6 @@ export const useProjectManager = (
         fetcherEmail: session?.user?.email,
       })
       .then((res) => {
-        console.log("Fetched project data:", res.data);
         setHtmlContent(JSON.parse(res.data.projectData.html) || "");
         addVersion(JSON.parse(res.data.projectData.html) || "");
         setIsOwner(res.data.isOwner);
@@ -185,8 +183,7 @@ export const useProjectManager = (
       return;
     }
 
-    console.log("downloading");
-    console.log(htmlContent);
+ 
 
     setIsDownloading(true);
 

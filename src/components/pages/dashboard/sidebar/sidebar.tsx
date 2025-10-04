@@ -14,11 +14,7 @@ const sidebarPages = [
     icon: <FileText />,
     path: "/dashboard/generate-resume/page1",
   },
-  {
-    label: "Roast My Resume",
-    icon: <Zap />,
-    path: "/dashboard/roast-my-resume/page1",
-  },
+
   {
     label: "Find & Apply",
     icon: <Send />,
@@ -33,11 +29,6 @@ const sidebarPages = [
     label: "Simulate Interview",
     icon: <Monitor />,
     path: "/dashboard/simulate-interview/page1",
-  },
-  {
-    label: "LeetCode Daily",
-    icon: <Calendar />,
-    path: "/dashboard/leetcode_daily",
   },
 ];
 const Side_bar = () => {

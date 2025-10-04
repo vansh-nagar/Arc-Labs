@@ -29,8 +29,13 @@ import { useProjectData } from "@/stores/gnerate-reusme/project-data-store";
 const ResizablePanel1 = () => {
   const [chatPrompt, setChatPrompt] = useState("");
 
-  const { htmlContent, setHtmlContent, urlPermission, isOwner } =
-    useProjectData();
+  const {
+    htmlContent,
+    setHtmlContent,
+    urlPermission,
+    isOwner,
+    setlookUpDivId,
+  } = useProjectData();
   const { currentIndex, setIndex } = useHistoryStore();
   const [updateCallLoading, setUpdateCallLoading] = useState(false);
 
@@ -135,7 +140,7 @@ const ResizablePanel1 = () => {
               });
               setHtmlContent(res.data.finalHtml);
               addVersion(res.data.finalHtml);
-              console.log("SUGGESTIONS", res.data.suggestions);
+              setlookUpDivId(res.data.divId);
               setSuggestions(res.data.suggestions || []);
             })
             .catch((err) => {

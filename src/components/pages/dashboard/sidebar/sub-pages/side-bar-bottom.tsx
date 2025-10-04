@@ -3,7 +3,7 @@ import { useThemeToggle } from "@/components/ui/light-dark";
 import { Meteors } from "@/components/ui/meteors";
 import { ShineBorder } from "@/components/ui/shine-border";
 import { useSidebarStore } from "@/stores/sidebarStore";
-import { BellDot, Moon, Settings, Sun, Zap } from "lucide-react";
+import { BellDot, Moon, Sun, Zap } from "lucide-react";
 import React from "react";
 
 const sidebarPages = [
@@ -11,11 +11,6 @@ const sidebarPages = [
     label: "Notifications",
     icon: <BellDot />,
     path: "/dashboard/generate-resume/page1",
-  },
-  {
-    label: "Settings",
-    icon: <Settings />,
-    path: "/dashboard/roast-resume",
   },
 ];
 

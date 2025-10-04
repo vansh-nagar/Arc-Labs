@@ -11,12 +11,14 @@ type ProjectDataState = {
   urlPermission: LinkPermissionType;
   isOwner?: boolean;
   linkExpiresAt: Date | null;
+  lookUpDivId: String;
 
   setHtmlContent: (html: string) => void;
   setProjectId: (id: string) => void;
   setUrlPermission: (permission: LinkPermissionType) => void;
   setIsOwner: (isOwner: boolean) => void;
   setLinkExpiresAt: (date: Date | null) => void;
+  setlookUpDivId: (divId: string) => void;
 };
 
 export const useProjectData = create<ProjectDataState>((set) => ({
@@ -26,10 +28,12 @@ export const useProjectData = create<ProjectDataState>((set) => ({
   specialPermissionUsers: [],
   isOwner: false,
   linkExpiresAt: null,
+  lookUpDivId: "",
 
   setHtmlContent: (html) => set({ htmlContent: html }),
   setProjectId: (id) => set({ projectId: id }),
   setUrlPermission: (permission) => set({ urlPermission: permission }),
   setIsOwner: (isOwner) => set({ isOwner }),
   setLinkExpiresAt: (date) => set({ linkExpiresAt: date }),
+  setlookUpDivId: (divId) => set({ lookUpDivId: divId }),
 }));
